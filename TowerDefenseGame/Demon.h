@@ -1,5 +1,8 @@
 #pragma once
-
+#include <SFML/Graphics.hpp>
+#include "Waypoint.h"
+#include "AnimatedObject.h"
+using namespace sf;
 /*
 Metrics du Demon (à effacer à la fin)
 - Rectangle d'animation: 100 X 50
@@ -13,11 +16,27 @@ Metrics du Demon (à effacer à la fin)
 - Position de départ des démons au niveau 2: -100, 410
 */
 
-class Demon
+
+class Demon : public AnimatedObject
 {
 public:
-	Demon();
+	   static constexpr int RECTANGLE_SIZE_X = 100;
+	   static constexpr int RECTANGLE_SIZE_Y = 50;
+
+	   enum AnimationIndex { FLY = 0, DEATH = 1, ANIMATION_COUNT = 2 };
+
+	   Demon();
+	   void spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNumber);
+	   void update(float deltaTime);
+	   bool init();
 
 private:
+	   static const int BASE_HEALTH = 60;
+	   int health;
+	   int maxHp;
+
+	   float speed;
+
+	   Waypoint* currentTargetWaypoint;
 };
 

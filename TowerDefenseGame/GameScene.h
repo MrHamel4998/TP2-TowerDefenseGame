@@ -3,6 +3,8 @@
 #include "Hud.h"
 #include "Inputs.h"
 #include "Waypoint.h"
+#include "Demon.h"
+#include <vector>
 
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
@@ -39,7 +41,8 @@ public:
 	bool init() override;
 
 private:
-	static constexpr int NUM_WAYPOINTS = 11;
+	static const int NUM_WAYPOINTS = 11;
+	static const int NUM_DEMONS_TOTAL = 50;
 
 	void getInputs() override;
 	void update() override;
@@ -55,4 +58,6 @@ private:
 	Sprite* map = nullptr;
 
 	Waypoint* waypoints[NUM_WAYPOINTS];
+	Demon* demons[NUM_DEMONS_TOTAL];
+	int currentWaveNumber = 1;
 };

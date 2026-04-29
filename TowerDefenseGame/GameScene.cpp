@@ -39,9 +39,20 @@ bool GameScene::init()
 	waypoints[9] = new Waypoint(Vector2f(968, 850));
 	waypoints[10] = new Waypoint(Vector2f(1110, 682));
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < NUM_WAYPOINTS - 1; i++)
 	{
 		waypoints[i]->setNextWaypoint(waypoints[i + 1]);
+	}
+
+	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
+	{
+		demons[i] = nullptr;
+	}
+
+	for (int i = 0; i < 20; i++)
+	{
+		demons[i] = new Demon();
+		demons[i]->spawn(Vector2f(610, -100), waypoints[0], currentWaveNumber);
 	}
 
 	return true;
@@ -63,7 +74,13 @@ void GameScene::getInputs()
 
 void GameScene::update()
 {
-
+	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
+	{
+		if (demons[i] != nullptr && demons[i]->isActive())
+		{
+			demons[i]->update(deltaTime);
+		}
+	}
 }
 
 void GameScene::draw()
@@ -71,6 +88,14 @@ void GameScene::draw()
 	//Toujours important d'effacer l'écran précédent
 	renderWindow.clear();
 	renderWindow.draw(*map);
+
+	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
+	{
+		if (demons[i] != nullptr && demons[i]->isActive())
+		{
+			demons[i]->draw(renderWindow);
+		}
+	}
 
 	hud.draw(renderWindow);
 	drawWaypoints();
@@ -84,6 +109,13 @@ bool GameScene::unload()
 	for (int i = 0; i < NUM_WAYPOINTS; i++)
 	{
 		delete waypoints[i];
+	}
+	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
+	{
+		if (demons[i] != nullptr)
+		{
+			delete demons[i];
+		}
 	}
 
 	return true;
