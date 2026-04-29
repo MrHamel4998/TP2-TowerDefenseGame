@@ -27,6 +27,23 @@ bool GameScene::init()
 
 	hud.hudInit(ContentPipeline::getInstance().getHudmaskTexture(), ContentPipeline::getInstance().getComiciFont());
 
+	waypoints[0] = new Waypoint(Vector2f(610, 8));
+	waypoints[1] = new Waypoint(Vector2f(630, 222));
+	waypoints[2] = new Waypoint(Vector2f(595, 444));
+	waypoints[3] = new Waypoint(Vector2f(478, 514));
+	waypoints[4] = new Waypoint(Vector2f(320, 558));
+	waypoints[5] = new Waypoint(Vector2f(260, 620));
+	waypoints[6] = new Waypoint(Vector2f(280, 720));
+	waypoints[7] = new Waypoint(Vector2f(348, 812));
+	waypoints[8] = new Waypoint(Vector2f(720, 830));
+	waypoints[9] = new Waypoint(Vector2f(968, 850));
+	waypoints[10] = new Waypoint(Vector2f(1110, 682));
+
+	for (int i = 0; i < 10; i++)
+	{
+		waypoints[i]->setNextWaypoint(waypoints[i + 1]);
+	}
+
 	return true;
 }
 
@@ -40,6 +57,7 @@ void GameScene::getInputs()
 			isRunning = false;
 			transitionToScene = Scene::Scenes::Exit;
 		}
+		inputs.showWaypoints = Keyboard::isKeyPressed(Keyboard::Key::W);
 	}
 }
 
@@ -55,11 +73,34 @@ void GameScene::draw()
 	renderWindow.draw(*map);
 
 	hud.draw(renderWindow);
+	drawWaypoints();
 	renderWindow.display();
 }
 
 bool GameScene::unload()
 {
 	if (map != nullptr) delete map;
+
+	for (int i = 0; i < NUM_WAYPOINTS; i++)
+	{
+		delete waypoints[i];
+	}
+
 	return true;
+}
+
+void GameScene::drawWaypoints()
+{
+	if (!inputs.showWaypoints)
+		return;
+	if (inputs.showWaypoints)
+	{
+		for (int i = 0; i < NUM_WAYPOINTS - 1; i++)
+		{
+			CircleShape waypointShape(10.0f);
+			waypointShape.setFillColor(Color::Red);
+			waypointShape.setPosition(waypoints[i]->getNextWaypoint()->getPosition());
+			renderWindow.draw(waypointShape);
+		}
+	}
 }

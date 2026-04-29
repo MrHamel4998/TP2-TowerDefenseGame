@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Hud.h"
 #include "Inputs.h"
+#include "Waypoint.h"
 
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
@@ -32,19 +33,26 @@ Metrics de du level 2 (à effacer à la fin)
 class GameScene : public Scene
 {
 public:
+
 	GameScene(RenderWindow& renderWindow);
 	Scenes run() override;
 	bool init() override;
 
 private:
+	static constexpr int NUM_WAYPOINTS = 11;
+
 	void getInputs() override;
 	void update() override;
 	void draw() override;
 	bool unload() override;
+
+	void drawWaypoints();
 
 	View view;
 	Hud hud;
 	Inputs inputs;
 
 	Sprite* map = nullptr;
+
+	Waypoint* waypoints[NUM_WAYPOINTS];
 };
