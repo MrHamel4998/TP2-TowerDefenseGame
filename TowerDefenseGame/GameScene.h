@@ -41,7 +41,7 @@ public:
 	bool init() override;
 
 private:
-	static const int NUM_WAYPOINTS = 11;
+	static const int NUM_WAYPOINTS = 12;
 	static const int NUM_DEMONS_TOTAL = 20;
 	static const int DEMON_TO_SPAWN = 50;
 	static constexpr Vector2f DEMON_SPAWN_POSITION = Vector2f(610, -100);

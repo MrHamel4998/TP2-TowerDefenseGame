@@ -35,9 +35,10 @@ bool GameScene::init()
 	waypoints[5] = new Waypoint(Vector2f(260, 620));
 	waypoints[6] = new Waypoint(Vector2f(280, 720));
 	waypoints[7] = new Waypoint(Vector2f(348, 812));
-	waypoints[8] = new Waypoint(Vector2f(720, 830));
-	waypoints[9] = new Waypoint(Vector2f(968, 850));
-	waypoints[10] = new Waypoint(Vector2f(1110, 682));
+	waypoints[8] = new Waypoint(Vector2f(526, 862));
+	waypoints[9] = new Waypoint(Vector2f(720, 830));
+	waypoints[10] = new Waypoint(Vector2f(968, 850));
+	waypoints[11] = new Waypoint(Vector2f(1110, 682));
 
 	for (int i = 0; i < NUM_WAYPOINTS - 1; i++)
 	{
