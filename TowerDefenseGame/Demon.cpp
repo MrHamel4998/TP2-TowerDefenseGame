@@ -56,7 +56,14 @@ void Demon::update(float deltaTime)
 
    updateAnimation(deltaTime);
 
-   if (currentTargetWaypoint == nullptr) return;
+   // Le démon a atteint la fin du chemin : déclencher l'animation de mort
+   if (currentTargetWaypoint == nullptr)
+   {
+       setActiveAnimation(DEATH, true);
+       isDying = true;
+       updateAnimation(deltaTime);
+       return;
+   }
 
 	Vector2f currentPos = getPosition();
 	Vector2f targetPos = currentTargetWaypoint->getPosition();
@@ -68,7 +75,6 @@ void Demon::update(float deltaTime)
 		currentTargetWaypoint = currentTargetWaypoint->getNextWaypoint();
 		if (currentTargetWaypoint == nullptr)
 		{
-			deactivate();
 			return;
 		}
 		return;
