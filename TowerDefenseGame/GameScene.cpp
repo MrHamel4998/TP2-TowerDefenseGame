@@ -46,13 +46,7 @@ bool GameScene::init()
 
 	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
 	{
-		demons[i] = nullptr;
-	}
-
-	for (int i = 0; i < 20; i++)
-	{
 		demons[i] = new Demon();
-		demons[i]->spawn(Vector2f(610, -100), waypoints[0], currentWaveNumber);
 	}
 
 	return true;
@@ -79,6 +73,39 @@ void GameScene::update()
 		if (demons[i] != nullptr && demons[i]->isActive())
 		{
 			demons[i]->update(deltaTime);
+		}
+	}
+
+	spawnTimer += deltaTime;
+
+	if (spawnTimer >= nextSpawnTime && demonsSpawned < DEMON_TO_SPAWN) {
+		// Chercher un slot libre dans le tableau
+		int freeSlot = -1;
+		for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
+		{
+			if (demons[i] == nullptr || !demons[i]->isActive())
+			{
+				freeSlot = i;
+				break;
+			}
+		}
+
+		// Si un slot est libre, spawner le démon
+		if (freeSlot != -1)
+		{
+			if (demons[freeSlot] == nullptr)
+			{
+				demons[freeSlot] = new Demon();
+			}
+			demons[freeSlot]->spawn(DEMON_SPAWN_POSITION, waypoints[0], currentWaveNumber);
+			spawnTimer = 0.f;
+			nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * (0.2f - 0.1f);
+			demonsSpawned++;
+		}
+		// Sinon, on réinitialise le timer pour réessayer au prochain intervalle
+		else
+		{
+			spawnTimer = 0.f;
 		}
 	}
 }

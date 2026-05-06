@@ -42,7 +42,9 @@ public:
 
 private:
 	static const int NUM_WAYPOINTS = 11;
-	static const int NUM_DEMONS_TOTAL = 50;
+	static const int NUM_DEMONS_TOTAL = 20;
+	static const int DEMON_TO_SPAWN = 50;
+	static constexpr Vector2f DEMON_SPAWN_POSITION = Vector2f(610, -100);
 
 	void getInputs() override;
 	void update() override;
@@ -59,5 +61,9 @@ private:
 
 	Waypoint* waypoints[NUM_WAYPOINTS];
 	Demon* demons[NUM_DEMONS_TOTAL];
+
 	int currentWaveNumber = 1;
+	float spawnTimer = 0.0f;
+	float nextSpawnTime = 0.0f;
+	int demonsSpawned = 0;
 };

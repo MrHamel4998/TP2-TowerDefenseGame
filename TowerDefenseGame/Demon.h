@@ -29,6 +29,7 @@ public:
 	   void spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNumber);
 	   void update(float deltaTime);
 	   bool init();
+	   void takeDamage(int damage);
 
 private:
 	   static const int BASE_HEALTH = 60;
@@ -38,6 +39,7 @@ private:
 	   float speed;
 
 	   Waypoint* currentTargetWaypoint;
+	   AnimationIndex currentAnimation;
 
 	bool isDying = false;
 };

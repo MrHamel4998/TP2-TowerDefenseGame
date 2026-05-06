@@ -29,6 +29,7 @@ void Demon::spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNum
 	this->health = BASE_HEALTH;
 	this->maxHp = BASE_HEALTH;
 	this->speed = (0.9f + 0.1f * waveNumber) * 60.0f;
+	isDying = false;
 	activate();
 }
 
@@ -97,5 +98,16 @@ void Demon::update(float deltaTime)
 			setScale(Vector2f(1.0f, 1.0f));    // Waypoint à droite
 		else
 			setScale(Vector2f(-1.0f, 1.0f));   // Waypoint à gauche
+	}
+}
+
+void Demon::takeDamage(int damage)
+{
+	if (currentAnimation != FLY) return;
+
+	health -= damage;
+	if (health <= 0)
+	{
+		health = 0;
 	}
 }
