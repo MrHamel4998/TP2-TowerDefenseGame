@@ -99,7 +99,7 @@ void GameScene::update()
 			}
 			demons[freeSlot]->spawn(DEMON_SPAWN_POSITION, waypoints[0], currentWaveNumber);
 			spawnTimer = 0.f;
-			nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * (0.2f - 0.1f);
+			nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * (3.0f - 1.0f);
 			demonsSpawned++;
 		}
 		// Sinon, on réinitialise le timer pour réessayer au prochain intervalle

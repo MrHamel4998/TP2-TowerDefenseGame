@@ -26,6 +26,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="ContentPipeline.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="HealthBar.h" />
     <ClInclude Include="Hud.h" />
     <ClInclude Include="Inputs.h" />
     <ClInclude Include="IObserver.h" />
@@ -48,6 +49,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="ContentPipeline.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="Hud.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Projectile.cpp" />

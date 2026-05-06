@@ -15,6 +15,9 @@ bool Demon::init()
 	   if (!initAnimation(FLY, 5, 0.1f, AnimationType::Circular)) return false;
 	   if (!initAnimation(DEATH, 5, 0.1f, AnimationType::Linear)) return false;
 	   setActiveAnimation(FLY, true);
+	   
+	   getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
+	   
 	   return true;
 }
 
@@ -30,6 +33,7 @@ void Demon::spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNum
 	this->maxHp = BASE_HEALTH;
 	this->speed = (0.9f + 0.1f * waveNumber) * 60.0f;
 	isDying = false;
+	setHealth(health, maxHp);
 	activate();
 }
 
@@ -60,6 +64,7 @@ void Demon::update(float deltaTime)
    // Le démon a atteint la fin du chemin : déclencher l'animation de mort
    if (currentTargetWaypoint == nullptr)
    {
+	   setHealth(0, maxHp); // Afficher la barre de vie vide
        setActiveAnimation(DEATH, true);
        isDying = true;
        updateAnimation(deltaTime);
@@ -110,4 +115,6 @@ void Demon::takeDamage(int damage)
 	{
 		health = 0;
 	}
+	
+	setHealth(health, maxHp);
 }
