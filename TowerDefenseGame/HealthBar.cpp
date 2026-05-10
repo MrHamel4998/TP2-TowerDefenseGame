@@ -18,8 +18,8 @@ void HealthBar::initHealthBar(const Texture& redTexture, const Texture& greenTex
     redBar = new Sprite(redTexture);
     greenBar = new Sprite(greenTexture);
 
-    redBar->setOrigin(Vector2f(HEALTH_BAR_WIDTH / 2.0f, 0.0f));
-    greenBar->setOrigin(Vector2f(HEALTH_BAR_WIDTH / 2.0f, 0.0f));
+    redBar->setOrigin(Vector2f(0.0f, 0.0f));
+    greenBar->setOrigin(Vector2f(0.0f, 0.0f));
 }
 
 void HealthBar::setHealth(int current, int max)

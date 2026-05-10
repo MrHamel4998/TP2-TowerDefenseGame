@@ -16,7 +16,7 @@ public:
 
 private:
     static constexpr float HEALTH_BAR_WIDTH = 50.0f;
-    static constexpr float HEALTH_BAR_OFFSET_X = 0.0f;
+    static constexpr float HEALTH_BAR_OFFSET_X = -30.0f;
     static constexpr float HEALTH_BAR_OFFSET_Y = -30.0f;
 
     Sprite* redBar = nullptr;

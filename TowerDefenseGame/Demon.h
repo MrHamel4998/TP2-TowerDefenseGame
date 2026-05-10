@@ -39,7 +39,6 @@ private:
 	   float speed;
 
 	   Waypoint* currentTargetWaypoint;
-	   AnimationIndex currentAnimation;
 
 	bool isDying = false;
 };
