@@ -5,6 +5,8 @@ class TowerEmplacement
 public:
 	TowerEmplacement();
 
+
 private:
+	
 };
 
