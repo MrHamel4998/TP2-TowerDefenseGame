@@ -12,8 +12,10 @@ struct Inputs
 	{
 		mousePosition = Vector2f(0.0f, 0.0f);
 		mouseLeftButtonClicked = false;
+		showWaypoints = false;
 	}
 
 	Vector2f mousePosition;
 	bool mouseLeftButtonClicked;
+	bool showWaypoints;
 };

@@ -2,6 +2,9 @@
 #include "Scene.h"
 #include "Hud.h"
 #include "Inputs.h"
+#include "Waypoint.h"
+#include "Demon.h"
+#include <vector>
 
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
@@ -32,19 +35,35 @@ Metrics de du level 2 (à effacer à la fin)
 class GameScene : public Scene
 {
 public:
+
 	GameScene(RenderWindow& renderWindow);
 	Scenes run() override;
 	bool init() override;
 
 private:
+	static const int NUM_WAYPOINTS = 12;
+	static const int NUM_DEMONS_TOTAL = 20;
+	static const int DEMON_TO_SPAWN = 50;
+	static constexpr Vector2f DEMON_SPAWN_POSITION = Vector2f(610, -100);
+
 	void getInputs() override;
 	void update() override;
 	void draw() override;
 	bool unload() override;
+
+	void drawWaypoints();
 
 	View view;
 	Hud hud;
 	Inputs inputs;
 
 	Sprite* map = nullptr;
+
+	Waypoint* waypoints[NUM_WAYPOINTS];
+	Demon* demons[NUM_DEMONS_TOTAL];
+
+	int currentWaveNumber = 1;
+	float spawnTimer = 0.0f;
+	float nextSpawnTime = 0.0f;
+	int demonsSpawned = 0;
 };

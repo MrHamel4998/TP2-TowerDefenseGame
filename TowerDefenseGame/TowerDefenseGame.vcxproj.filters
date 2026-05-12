@@ -144,6 +144,8 @@
     <ClCompile Include="AnimatedObject.cpp">
       <Filter>Fichiers sources\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="HealthBar.cpp">
+      <Filter>Fichiers sources</Filter>
     <ClCompile Include="MageTower.cpp">
       <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
@@ -218,6 +220,8 @@
     <ClInclude Include="AnimatedObject.h">
       <Filter>Fichiers d%27en-tête\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="HealthBar.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     <ClInclude Include="TowersType.h">
       <Filter>Fichiers d%27en-tête\Utils</Filter>
     </ClInclude>

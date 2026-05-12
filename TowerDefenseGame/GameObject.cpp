@@ -76,6 +76,7 @@ void GameObject::setPosition(const Vector2f& position)
 {
 	Sprite::setPosition(position);
 	collisionCircle.setPosition(position.x, position.y);
+	healthBar.setPosition(position);
 }
 
 void GameObject::move(const float offsetX, const float offsetY)
@@ -90,6 +91,7 @@ void GameObject::move(const Vector2f& offset)
 		backupPosition = getPosition();
 		Sprite::move(offset);
 		collisionCircle.setPosition(getPosition().x, getPosition().y);
+		healthBar.setPosition(getPosition());
 	}
 }
 
@@ -100,5 +102,18 @@ void GameObject::moveBack()
 
 void GameObject::draw(RenderWindow& renderWindow) const
 {
-	if (active) renderWindow.draw(*this);
+	if (active) {
+		renderWindow.draw(*this);
+		healthBar.draw(renderWindow);
+	}
+}
+
+HealthBar& GameObject::getHealthBar()
+{
+	return healthBar;
+}
+
+void GameObject::setHealth(int current, int max)
+{
+	healthBar.setHealth(current, max);
 }
