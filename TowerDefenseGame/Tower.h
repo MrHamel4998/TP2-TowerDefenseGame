@@ -1,4 +1,8 @@
 #pragma once
+#include <SFML/Audio.hpp>
+#include "GameObject.h";
+#include "TowersType.h";
+#include "TowerEmplacement.h"
 
 /*
 Metrics des tours  (à effacer à la fin)
@@ -14,11 +18,26 @@ Metrics des tours  (à effacer à la fin)
 */
 
 
-class Tower
+class Tower : public GameObject 
 {
 public:
 	Tower();
+	~Tower();
+	virtual void init() = 0;
+	virtual void update(const float deltaTime) = 0;
+
+	TowersType getType() const;
+	int getLifePoints() const;
+	void heal(const int amount);
+	void takeDamage(const int amount);
+	bool isDead() const;
+	TowerEmplacement getEmplacement() const;
 
 private:
+
+	TowersType type;
+	int lifePoints = 0;
+	TowerEmplacement emplacement;
+	Sound* towerSound = nullptr;
 };
 

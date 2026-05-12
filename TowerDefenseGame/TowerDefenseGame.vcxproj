@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedObject.h" />
+    <ClInclude Include="ArcherTower.h" />
     <ClInclude Include="CollisionCircle.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Demon.h" />
@@ -30,11 +31,15 @@
     <ClInclude Include="Hud.h" />
     <ClInclude Include="Inputs.h" />
     <ClInclude Include="IObserver.h" />
+    <ClInclude Include="KingTower.h" />
+    <ClInclude Include="MageTower.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="EndScene.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="ShootingTower.h" />
     <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="TowersType.h" />
     <ClInclude Include="TransitionScene.h" />
     <ClInclude Include="Spell.h" />
     <ClInclude Include="Subject.h" />
@@ -44,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedObject.cpp" />
+    <ClCompile Include="ArcherTower.cpp" />
     <ClCompile Include="CollisionCircle.cpp" />
     <ClCompile Include="Demon.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -51,6 +57,8 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="Hud.cpp" />
+    <ClCompile Include="KingTower.cpp" />
+    <ClCompile Include="MageTower.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="EndScene.cpp" />

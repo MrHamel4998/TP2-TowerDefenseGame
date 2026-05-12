@@ -146,6 +146,14 @@
     </ClCompile>
     <ClCompile Include="HealthBar.cpp">
       <Filter>Fichiers sources</Filter>
+    <ClCompile Include="MageTower.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="ArcherTower.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="KingTower.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +222,20 @@
     </ClInclude>
     <ClInclude Include="HealthBar.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="TowersType.h">
+      <Filter>Fichiers d%27en-tête\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="KingTower.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="ArcherTower.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="MageTower.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="ShootingTower.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
