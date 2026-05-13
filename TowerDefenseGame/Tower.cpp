@@ -1,4 +1,4 @@
-#include "Tower.h"
+﻿#include "Tower.h"
 #include "ContentPipeline.h" 
 #include "ArcherTower.h"
 #include "MageTower.h"
@@ -41,7 +41,7 @@ void Tower::setType(const TowersType type)
 
 int Tower::getLifePoints() const
 {
-	return lifePoints;
+	return getHealth();
 }
 
 void Tower::setLifePoints(const int desiredLifePoints)
@@ -51,20 +51,32 @@ void Tower::setLifePoints(const int desiredLifePoints)
 
 void Tower::heal(const int amount)
 {
-	lifePoints += amount;
+	Damageable::heal(amount);
 }
 
 void Tower::takeDamage(const int amount)
 {
-	lifePoints -= amount;
+	Damageable::takeDamage(amount);
 }
 
 bool Tower::isDead() const
 {
-	return lifePoints <= 0;
+	return Damageable::isDead();
 }
 
 TowerEmplacement Tower::getEmplacement() const
 {
 	return emplacement;
 }
+
+void Tower::onHealthChanged()
+{
+	setHealth(getHealth(), getMaxHealth());
+}
+
+void Tower::onDeath()
+{
+	notifyAllObservers(EventType::TowerDeactivated);
+	deactivate();
+}
+

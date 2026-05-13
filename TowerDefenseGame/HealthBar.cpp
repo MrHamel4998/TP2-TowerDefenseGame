@@ -1,4 +1,4 @@
-#include "HealthBar.h"
+﻿#include "HealthBar.h"
 
 HealthBar::HealthBar()
 {

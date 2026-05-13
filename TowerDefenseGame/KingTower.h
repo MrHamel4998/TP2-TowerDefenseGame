@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Tower.h"
 
 class KingTower : public Tower

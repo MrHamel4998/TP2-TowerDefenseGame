@@ -1,4 +1,4 @@
-#include "Hud.h"
+﻿#include "Hud.h"
 
 const float Hud::TEXT_POSITION_X = 1250.0f;
 

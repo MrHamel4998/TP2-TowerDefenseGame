@@ -1,4 +1,4 @@
-#include "Demon.h"
+﻿#include "Demon.h"
 #include "ContentPipeline.h"
 #include "Tower.h"
 
@@ -30,11 +30,11 @@ void Demon::spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNum
 	setActiveAnimation(FLY, true);
 	setPosition(position);
 	this->currentTargetWaypoint = firstWaypoint;
-	this->health = BASE_HEALTH;
-	this->maxHp = BASE_HEALTH;
 	this->speed = (0.9f + 0.1f * waveNumber) * 60.0f;
 	isDying = false;
-	setHealth(health, maxHp);
+	damageTimer = 0.0f;
+	initDamageable(BASE_HEALTH);
+	setHealth(getHealth(), getMaxHealth());
 	activate();
 }
 
@@ -50,7 +50,7 @@ void Demon::update(float deltaTime)
 	   return;
    }
 
-   if (health <= 0)
+   if (isDead())
    {
 	   setActiveAnimation(DEATH, true);
 	   isDying = true;
@@ -60,10 +60,19 @@ void Demon::update(float deltaTime)
 
    updateAnimation(deltaTime);
 
+   // DEBUG: Les démons perdent 1 PV par seconde
+   damageTimer += deltaTime;
+   if (damageTimer >= 1)
+   {
+	   takeDamage(1);
+	   damageTimer = 0.0f;
+   }
+
    // Le démon a atteint la fin du chemin : déclencher l'animation de mort
    if (currentTargetWaypoint == nullptr)
    {
-	   takeDamage(health); // Mettre la santé à 0 pour déclencher l'animation de mort
+	   notifyAllObservers(EventType::DemonReachedEnd);
+	   takeDamage(getHealth()); // Mettre la santé à 0 pour déclencher l'animation de mort
        return;
    }
 
@@ -102,20 +111,18 @@ void Demon::update(float deltaTime)
 	}
 }
 
-void Demon::takeDamage(int damage)
+void Demon::onHealthChanged()
+{
+	notifyAllObservers(EventType::DemonDamageTaken);
+	setHealth(getHealth(), getMaxHealth());
+}
+
+void Demon::onDeath()
 {
 	if (isDying)
 		return;
 
-	health -= damage;
-	if (health <= 0)
-	{
-		health = 0;
-		setHealth(health, maxHp);
-		setActiveAnimation(DEATH, true);
-		isDying = true;
-		return;
-	}
-
-	setHealth(health, maxHp);
+	setActiveAnimation(DEATH, true);
+	isDying = true;
+	notifyAllObservers(EventType::DemonKilled);
 }
