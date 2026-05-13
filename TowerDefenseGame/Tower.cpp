@@ -47,6 +47,7 @@ void Tower::onHealthChanged()
 
 void Tower::onDeath()
 {
+	notifyAllObservers(EventType::TowerDeactivated);
 	deactivate();
 }
 

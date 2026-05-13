@@ -1,10 +1,11 @@
 ﻿#pragma once
 #include <SFML/Audio.hpp>
-#include "GameObject.h";
+#include "GameObject.h"
 #include "Damageable.h"
-#include "TowersType.h";
+#include "Subject.h"
+#include "TowersType.h"
 #include "TowerEmplacement.h"
-
+#include "EventType.h"
 /*
 Metrics des tours (à effacer à la fin)
 
@@ -18,7 +19,7 @@ Metrics des tours (à effacer à la fin)
 - L'image 0 est l'image idle. Quand on initie le tir, on passe tout de suite à l'image 1.
 */
 
-class Tower : public GameObject, public Damageable
+class Tower : public GameObject, public Damageable, public Subject
 {
 public:
 	Tower();

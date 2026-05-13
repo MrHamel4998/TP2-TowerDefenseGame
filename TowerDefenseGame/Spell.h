@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Subject.h"
+#include "GameObject.h"
 
 /*
 Metrics du Spell (à effacer à la fin)
@@ -14,11 +16,16 @@ Metrics du Spell (à effacer à la fin)
 
 */
 
-class Spell
+class Spell : public Subject
 {
 public:
 	Spell();
+	virtual ~Spell() = default;
 
-private:
+	virtual void cast(const Vector2f& position) = 0;
+	virtual void update(float deltaTime) = 0;
+
+protected:
+	void notifyCast();
 };
 

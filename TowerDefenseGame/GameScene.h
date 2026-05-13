@@ -4,6 +4,7 @@
 #include "Inputs.h"
 #include "Waypoint.h"
 #include "Demon.h"
+#include "IObserver.h"
 #include <vector>
 
 /*
@@ -32,12 +33,14 @@ Metrics du level 2 (à effacer à la fin)
 - Le reste est identique à la scène 1
 */
 
-class GameScene : public Scene
+class GameScene : public Scene, IObserver
 {
 public:
+
 	GameScene(RenderWindow& renderWindow);
 	Scenes run() override;
 	bool init() override;
+	void notify(Subject* subject, EventType eventType) override;
 
 private:
 	static const int NUM_WAYPOINTS = 12;
@@ -65,4 +68,6 @@ private:
 	float spawnTimer = 0.0f;
 	float nextSpawnTime = 0.0f;
 	int demonsSpawned = 0;
+	int demonsKilled = 0;
 };
+

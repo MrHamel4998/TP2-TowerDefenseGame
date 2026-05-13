@@ -1,5 +1,6 @@
 ﻿#include "GameScene.h"
 #include "ContentPipeline.h"
+#include <iostream>
 
 GameScene::GameScene(RenderWindow& renderWindow) : Scene(renderWindow)
 {
@@ -49,6 +50,11 @@ bool GameScene::init()
 	{
 		demons[i] = new Demon();
 	}
+
+	Subject::addObserver(this);
+
+	isRunning = true;
+	demonsKilled = 0;
 
 	return true;
 }
@@ -132,6 +138,8 @@ void GameScene::draw()
 
 bool GameScene::unload()
 {
+	Subject::removeAllObservers();
+
 	if (map != nullptr) delete map;
 
 	for (int i = 0; i < NUM_WAYPOINTS; i++)
@@ -149,6 +157,42 @@ bool GameScene::unload()
 	return true;
 }
 
+void GameScene::notify(Subject* subject, EventType eventType)
+{
+	if (eventType == EventType::DemonKilled)
+	{
+		demonsKilled++;
+
+		if (demonsKilled >= DEMON_TO_SPAWN)
+		{
+			isRunning = false;
+			transitionToScene = Scene::Scenes::End; // CH: Passer au niveau 2
+		}
+	}
+	else if (eventType == EventType::DemonDamageTaken)
+	{
+		// CH: Mettre à jour les points, le mana, etc.
+		// On peut call le hud ou la gameScene
+	}
+	else if (eventType == EventType::TowerActivated)
+	{
+		// CH: Quand une tour est placée (Activée), on retire du mana, etc.
+	}
+	else if (eventType == EventType::TowerDeactivated)
+	{
+		// CH: Quand une tour est détruite (Désactivée), on peut réinitialiser l'emplacement, etc.
+	}
+	else if (eventType == EventType::SpellCast)
+	{
+		// CH: Les démons et tours réagissent aux sorts
+	}
+	else if (eventType == EventType::WaveFinished)
+	{
+		// CH: La vague est terminée
+		// A voir, car on le fait déja dans le notify de DemonKilled
+	}
+}
+
 void GameScene::drawWaypoints()
 {
 	if (!inputs.showWaypoints)
@@ -164,3 +208,4 @@ void GameScene::drawWaypoints()
 		}
 	}
 }
+

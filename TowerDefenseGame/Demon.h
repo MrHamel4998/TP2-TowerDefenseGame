@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Waypoint.h"
 #include "AnimatedObject.h"
+#include "Subject.h"
 #include "Damageable.h"
 using namespace sf;
 /*
@@ -18,7 +19,7 @@ Metrics du Demon (à effacer à la fin)
 */
 
 
-class Demon : public AnimatedObject, public Damageable
+class Demon : public AnimatedObject, public Subject, public Damageable
 {
 public:
 	   static constexpr int RECTANGLE_SIZE_X = 100;
@@ -33,13 +34,14 @@ public:
 
 private:
 	   static const int BASE_HEALTH = 60;
+
 	   float speed;
+	   float damageTimer = 0.0f;
 
 	   Waypoint* currentTargetWaypoint;
 
-	bool isDying = false;
+	   bool isDying = false;
 
-	void onHealthChanged() override;
-	void onDeath() override;
+	   void onHealthChanged() override;
+	   void onDeath() override;
 };
-

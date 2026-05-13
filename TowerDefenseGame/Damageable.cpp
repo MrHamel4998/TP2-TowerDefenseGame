@@ -55,15 +55,20 @@ void Damageable::setCurrentHealth(int health)
 {
 	currentHealth = health;
 	if (currentHealth < 0)
+	{
 		currentHealth = 0;
+	}
 	if (currentHealth > maxHealth)
+	{
 		currentHealth = maxHealth;
+	}
 
 	notifyHealthChanged();
 }
 
 void Damageable::onHealthChanged()
 {
+	// A voir
 }
 
 void Damageable::notifyHealthChanged()

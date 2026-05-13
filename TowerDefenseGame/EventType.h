@@ -3,7 +3,12 @@
 enum class EventType
 {
 	DemonKilled,
-	DemonReachedEnd,
-	WaveFinished,
-	SpellCast
+	DemonDamageTaken,
+
+	TowerActivated,
+	TowerDeactivated,
+
+	SpellCast,
+
+	WaveFinished
 };
