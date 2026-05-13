@@ -117,6 +117,9 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
+    <ClCompile Include="Damageable.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
     <ClCompile Include="Subject.cpp">
       <Filter>Fichiers sources\PublishSubscribe</Filter>
     </ClCompile>
@@ -146,6 +149,7 @@
     </ClCompile>
     <ClCompile Include="HealthBar.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
     <ClCompile Include="MageTower.cpp">
       <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
@@ -182,6 +186,9 @@
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
     <ClInclude Include="Projectile.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Damageable.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
     <ClInclude Include="Constants.h">
@@ -222,6 +229,7 @@
     </ClInclude>
     <ClInclude Include="HealthBar.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
     <ClInclude Include="TowersType.h">
       <Filter>Fichiers d%27en-tête\Utils</Filter>
     </ClInclude>

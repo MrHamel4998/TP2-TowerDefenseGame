@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <SFML/Audio.hpp>
 #include "GameObject.h";
+#include "Damageable.h"
 #include "TowersType.h";
 #include "TowerEmplacement.h"
 
@@ -17,11 +18,11 @@ Metrics des tours (à effacer à la fin)
 - L'image 0 est l'image idle. Quand on initie le tir, on passe tout de suite à l'image 1.
 */
 
-class Tower : public GameObject
+class Tower : public GameObject, public Damageable
 {
 public:
 	Tower();
-	~Tower();
+	virtual ~Tower();
 	virtual void init() = 0;
 	virtual void update(const float deltaTime) = 0;
 
@@ -33,8 +34,10 @@ public:
 	TowerEmplacement getEmplacement() const;
 
 private:
+	void onHealthChanged() override;
+	void onDeath() override;
+
 	TowersType type;
-	int lifePoints = 0;
 	TowerEmplacement emplacement;
 	Sound* towerSound = nullptr;
 };

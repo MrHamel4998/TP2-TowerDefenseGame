@@ -23,6 +23,7 @@
     <ClInclude Include="ArcherTower.h" />
     <ClInclude Include="CollisionCircle.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Damageable.h" />
     <ClInclude Include="Demon.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ContentPipeline.h" />
@@ -51,6 +52,7 @@
     <ClCompile Include="AnimatedObject.cpp" />
     <ClCompile Include="ArcherTower.cpp" />
     <ClCompile Include="CollisionCircle.cpp" />
+    <ClCompile Include="Damageable.cpp" />
     <ClCompile Include="Demon.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="ContentPipeline.cpp" />

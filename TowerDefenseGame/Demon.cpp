@@ -29,11 +29,9 @@ void Demon::spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNum
 	setActiveAnimation(FLY, true);
 	setPosition(position);
 	this->currentTargetWaypoint = firstWaypoint;
-	this->health = BASE_HEALTH;
-	this->maxHp = BASE_HEALTH;
 	this->speed = (0.9f + 0.1f * waveNumber) * 60.0f;
 	isDying = false;
-	setHealth(health, maxHp);
+	initDamageable(BASE_HEALTH);
 	activate();
 }
 
@@ -49,10 +47,9 @@ void Demon::update(float deltaTime)
 	   return;
    }
 
-   if (health <= 0)
+   if (isDead())
    {
-	   setActiveAnimation(DEATH, true);
-	   isDying = true;
+	   onDeath();
 	   updateAnimation(deltaTime);
 	   return;
    }
@@ -62,7 +59,7 @@ void Demon::update(float deltaTime)
    // Le démon a atteint la fin du chemin : déclencher l'animation de mort
    if (currentTargetWaypoint == nullptr)
    {
-	   takeDamage(health); // Mettre la santé à 0 pour déclencher l'animation de mort
+	   takeDamage(getHealth()); // Mettre la santé à 0 pour déclencher l'animation de mort
        return;
    }
 
@@ -101,20 +98,16 @@ void Demon::update(float deltaTime)
 	}
 }
 
-void Demon::takeDamage(int damage)
+void Demon::onHealthChanged()
+{
+	setHealth(getHealth(), getMaxHealth());
+}
+
+void Demon::onDeath()
 {
 	if (isDying)
 		return;
 
-	health -= damage;
-	if (health <= 0)
-	{
-		health = 0;
-		setHealth(health, maxHp);
-		setActiveAnimation(DEATH, true);
-		isDying = true;
-		return;
-	}
-
-	setHealth(health, maxHp);
+	setActiveAnimation(DEATH, true);
+	isDying = true;
 }
