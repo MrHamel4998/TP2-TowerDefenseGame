@@ -1,11 +1,12 @@
-﻿#pragma once
-#include "Tower.h"
+#pragma once
+#include "ShootingTower.h"
 
 
-class ArcherTower : public Tower
+class ArcherTower : public ShootingTower
 {
 public:
-	void init() override;
+	ArcherTower();
+	bool init() override;
 	void update(const float deltaTime);
 
 private:
