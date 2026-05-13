@@ -14,6 +14,8 @@ bool ArcherTower::init()
 	setAttackDamage(10);
 	setFireRate(0.0f);
 
+	GameObject::getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
+
 	return true;
 }
 
