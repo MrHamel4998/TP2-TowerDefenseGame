@@ -191,6 +191,9 @@
     <ClInclude Include="Damageable.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
+    <ClInclude Include="EventType.h">
+      <Filter>Fichiers d%27en-tête\PublishSubscribe</Filter>
+    </ClInclude>
     <ClInclude Include="Constants.h">
       <Filter>Fichiers d%27en-tête\Utils</Filter>
     </ClInclude>

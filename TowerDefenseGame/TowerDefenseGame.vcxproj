@@ -25,6 +25,7 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Damageable.h" />
     <ClInclude Include="Demon.h" />
+    <ClInclude Include="EventType.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ContentPipeline.h" />
     <ClInclude Include="GameObject.h" />
