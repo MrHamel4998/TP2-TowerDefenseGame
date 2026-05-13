@@ -1,9 +1,23 @@
 #include "ArcherTower.h"
+#include "ContentPipeline.h"
 
-void ArcherTower::init()
+ArcherTower::ArcherTower()
 {
+	setTexture(ContentPipeline::getInstance().getArcherTowerTexture());
+	init();
+}
+
+bool ArcherTower::init()
+{
+	setType(TowersType::ARCHER);
+	setLifePoints(250);
+	setAttackDamage(10);
+	setFireRate(0.0f);
+
+	return true;
 }
 
 void ArcherTower::update(const float deltaTime)
 {
+
 }

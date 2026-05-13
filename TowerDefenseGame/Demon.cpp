@@ -1,5 +1,6 @@
 #include "Demon.h"
 #include "ContentPipeline.h"
+#include "Tower.h"
 
 Demon::Demon()
 {
