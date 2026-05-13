@@ -1,4 +1,4 @@
-#include "GameScene.h"
+ï»¿#include "GameScene.h"
 #include "ContentPipeline.h"
 
 GameScene::GameScene(RenderWindow& renderWindow) : Scene(renderWindow)
@@ -22,7 +22,7 @@ Scene::Scenes GameScene::run()
 }
 
 bool GameScene::init()
-{	
+{
 	map = new Sprite(ContentPipeline::getInstance().getMapTexture(Maps::Map1));
 
 	hud.hudInit(ContentPipeline::getInstance().getHudmaskTexture(), ContentPipeline::getInstance().getComiciFont());
@@ -57,7 +57,7 @@ void GameScene::getInputs()
 {
 	while (const optional event = renderWindow.pollEvent())
 	{
-		//x sur la fenêtre
+		// x sur la fenÃªtre
 		if (event->is<Event::Closed>())
 		{
 			isRunning = false;
@@ -91,7 +91,7 @@ void GameScene::update()
 			}
 		}
 
-		// Si un slot est libre, spawner le démon
+		// Si un slot est libre, spawner le dÃ©mon
 		if (freeSlot != -1)
 		{
 			if (demons[freeSlot] == nullptr)
@@ -103,7 +103,7 @@ void GameScene::update()
 			nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * (3.0f - 1.0f);
 			demonsSpawned++;
 		}
-		// Sinon, on réinitialise le timer pour réessayer au prochain intervalle
+		// Sinon, on rÃ©initialise le timer pour rÃ©essayer au prochain intervalle
 		else
 		{
 			spawnTimer = 0.f;
@@ -113,7 +113,7 @@ void GameScene::update()
 
 void GameScene::draw()
 {
-	//Toujours important d'effacer l'écran précédent
+	// Toujours important d'effacer l'Ã©cran prÃ©cÃ©dent
 	renderWindow.clear();
 	renderWindow.draw(*map);
 

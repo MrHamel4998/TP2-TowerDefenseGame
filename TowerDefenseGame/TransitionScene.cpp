@@ -1,4 +1,4 @@
-#include "TransitionScene.h"
+﻿#include "TransitionScene.h"
 #include "ContentPipeline.h"
 
 TransitionScene::TransitionScene(RenderWindow& renderWindow) : Scene(renderWindow)
@@ -37,7 +37,7 @@ void TransitionScene::getInputs()
 {
 	while (const optional event = renderWindow.pollEvent())
 	{
-		//x sur la fen�tre
+		//x sur la fenêtre
 		if (event->is<Event::Closed>())
 		{
 			isRunning = false;

@@ -1,4 +1,4 @@
-#include "TitleScene.h"
+﻿#include "TitleScene.h"
 #include "ContentPipeline.h"
 
 TitleScene::TitleScene(RenderWindow& renderWindow) : Scene(renderWindow)
@@ -43,7 +43,7 @@ void TitleScene::getInputs()
 {
 	while (const optional event = renderWindow.pollEvent())
 	{
-		//x sur la fen�tre
+		//x sur la fenêtre
 		if (event->is<Event::Closed>())
 		{			
 			isRunning = false;

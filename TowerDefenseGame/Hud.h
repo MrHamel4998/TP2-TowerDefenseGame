@@ -1,10 +1,10 @@
-#pragma once
+﻿#pragma once
 #include <SFML/Graphics.hpp>
 
 using namespace sf;
 
 /*
-� NOTER: La couleur Gold pour le texte de "l'action active" : Color(212, 175, 55, 255)
+À NOTER: La couleur Gold pour le texte de "l'action active" : Color(212, 175, 55, 255)
 */
 class Hud
 {

@@ -1,8 +1,8 @@
-#include "AnimatedObject.h"
+﻿#include "AnimatedObject.h"
 
 /// <summary>
-/// Actuellement, si un AnimatedObject n'a pas �t� correctement initialis�, ce destructeur fera crasher l'application
-/// �a ou un crash par Assert, �a s'�quivaut pas mal.
+/// Actuellement, si un AnimatedObject n'a pas été correctement initialisé, ce destructeur fera crasher l'application
+/// Ça ou un crash par Assert, ça s'équivaut pas mal.
 /// </summary>
 AnimatedObject::~AnimatedObject()
 {
@@ -18,8 +18,8 @@ AnimatedObject::~AnimatedObject()
 /// <summary>
 /// Initialisation du nombre d'animations que notre acteur disposera et de la taille de chaque frame
 /// </summary>
-/// <param name="numberOfAnimations">Doit id�alement correspondre au nombre de lignes sur la spritesheet</param>
-/// <param name="frameSize">Consid�re que la spritesheet dispose de frame d'animation r�guliers, sinon voir la m�thode adjustFrame</param>
+/// <param name="numberOfAnimations">Doit idéalement correspondre au nombre de lignes sur la spritesheet</param>
+/// <param name="frameSize">Considère que la spritesheet dispose de frame d'animation réguliers, sinon voir la méthode adjustFrame</param>
 /// <returns>Si l'initialisation s'est faite correctement ou non.</returns>
 
 bool AnimatedObject::initAnimationsStructure(const int numberOfAnimations, const Vector2i frameSize)
@@ -38,12 +38,12 @@ bool AnimatedObject::initAnimationsStructure(const int numberOfAnimations, const
 }
 
 /// <summary>
-/// Permet d'initialiser une animation donn�e
+/// Permet d'initialiser une animation donnée
 /// </summary>
-/// <param name="animationNumber">Num�ro de la ligne sur la spritesheet (la premi�re est 0)</param>
+/// <param name="animationNumber">Numéro de la ligne sur la spritesheet (la première est 0)</param>
 /// <param name="numberOfFrames">Nombre de frames pour cette animation sur la spritesheet</param>
 /// <param name="animationSpeed">Nombre de secondes que va durer chaque frame sur cette animation</param>
-/// <param name="animationType">L'animation est de quel type? Lin�air, cyclique ou en pendule?</param>
+/// <param name="animationType">L'animation est de quel type? Linéaire, cyclique ou en pendule?</param>
 /// <returns>Si l'initialisation s'est faite correctement ou non.</returns>
 bool AnimatedObject::initAnimation(const int animationNumber, const int numberOfFrames, const float animationSpeed, const AnimationType animationType)
 {
@@ -79,13 +79,13 @@ void AnimatedObject::setActiveAnimation(const int animationNumber, const bool re
 }
 
 /// <summary>
-/// Mise � jour de l'animation suivant les r�gles construites durant l'impl�mentation.
+/// Mise à jour de l'animation suivant les règles construites durant l'implémentation.
 /// </summary>
-/// <param name="deltaTime">Temps �coul� depuis le dernier rafraichissement d'�cran</param>
+/// <param name="deltaTime">Temps écoulé depuis le dernier rafraichissement d'écran</param>
 int AnimatedObject::updateAnimation(const float deltaTime)
 {
-	//� consid�rer seulement pour la dynamique ou on utilise la m�thode setIdleImage.
-	//Si on ne l'utilise pas, ce bloc de code ne sera jamais utilis�.
+	//À considérer seulement pour la dynamique ou on utilise la méthode setIdleImage.
+	//Si on ne l'utilise pas, ce bloc de code ne sera jamais utilisé.
 	if (wasIdle)
 	{
 		timer = 0.0f;
@@ -97,7 +97,7 @@ int AnimatedObject::updateAnimation(const float deltaTime)
 
 	timer += deltaTime;
 
-	if (timer >= animationSpeeds[currentAnimation]) //� chaque fois que le temps �galise ou d�passe notre temps d'animation
+	if (timer >= animationSpeeds[currentAnimation]) //À chaque fois que le temps égalise ou dépasse notre temps d'animation
 	{
 		timer -= animationSpeeds[currentAnimation];
 
@@ -114,7 +114,7 @@ int AnimatedObject::updateAnimation(const float deltaTime)
 			{
 				if (animationTypes[currentAnimation] == AnimationType::Linear)
 				{
-					currentFrame = numbersOfFrames[currentAnimation] - 1;  //En lin�aire on remet toujours le m�me rectangle
+					currentFrame = numbersOfFrames[currentAnimation] - 1;  //En linéaire on remet toujours le même rectangle
 					currentLinearAnimationIsOver = true;
 				}
 				else
@@ -126,7 +126,7 @@ int AnimatedObject::updateAnimation(const float deltaTime)
 
 		setTextureRect(frames[currentAnimation][currentFrame]);
 
-		//Parfois �a peut-�tre pratique de savoir � quel frame on est rendu
+		//Parfois ça peut-être pratique de savoir à quel frame on est rendu
 		//L'Animation par contre c'est beaucoup plus clair
 		return currentFrame;
 	}
@@ -135,12 +135,12 @@ int AnimatedObject::updateAnimation(const float deltaTime)
 }
 
 /// <summary>
-/// N�cessaire si notre image idle est une image quelconque sur la spriteSheet
-/// Une fois que l'image idle est d�termin�e, updateAnimation ne devra pas �tre appell�
+/// Nécessaire si notre image idle est une image quelconque sur la spriteSheet
+/// Une fois que l'image idle est déterminée, updateAnimation ne devra pas être appellé
 /// tant qu'on voudra que notre personnage reste idle.
 /// </summary>
-/// <param name="animationNumber">Le num�ro de l'animation o� se trouve notre image idle</param>
-/// <param name="idleFrameNumber">Le num�ro du frame o� se trouve notre image idle</param>
+/// <param name="animationNumber">Le numéro de l'animation où se trouve notre image idle</param>
+/// <param name="idleFrameNumber">Le numéro du frame où se trouve notre image idle</param>
 void AnimatedObject::setIdleImage(const int animationNumber, const int idleFrameNumber)
 {
 	wasIdle = true;
@@ -151,12 +151,12 @@ void AnimatedObject::setIdleImage(const int animationNumber, const int idleFrame
 }
 
 /// <summary>
-/// N�cessaire si notre image idle est une image quelconque sur la spriteSheet
-/// Une fois que l'image idle est d�termin�e, updateAnimation ne devra pas �tre appell�
+/// Nécessaire si notre image idle est une image quelconque sur la spriteSheet
+/// Une fois que l'image idle est déterminée, updateAnimation ne devra pas être appellé
 /// tant qu'on voudra que notre personnage reste idle.
 /// </summary>
-/// <param name="animationNumber">Le num�ro de l'animation o� se trouve notre image idle</param>
-/// <param name="idleFrameNumber">Le num�ro du frame o� se trouve notre image idle</param>
+/// <param name="animationNumber">Le numéro de l'animation où se trouve notre image idle</param>
+/// <param name="idleFrameNumber">Le numéro du frame où se trouve notre image idle</param>
 bool AnimatedObject::ajustFrame(const int animationNumber, const int animationFrame, Vector2i framePosition, Vector2i frameSize)
 {
 	if (animationNumber >= numberOfAnimations || animationNumber < 0) return false;

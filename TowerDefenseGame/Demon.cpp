@@ -1,4 +1,4 @@
-#include "Demon.h"
+﻿#include "Demon.h"
 #include "ContentPipeline.h"
 
 Demon::Demon()

@@ -1,13 +1,13 @@
-#pragma once
+ï»¿#pragma once
 
 /*
-Metrics du Spell (à effacer à la fin)
-- Portée des deux types de Spell: 400
-- Durée de vie des deux spells: 5 secondes
+Metrics du Spell (Ã  effacer Ã  la fin)
+- PortÃ©e des deux types de Spell: 400
+- DurÃ©e de vie des deux spells: 5 secondes
 - Vitesse de rotation:
-    - Va de 0 à 20, progressivement en avancant dans le temps
-    - Ajoute 1/15 à la rotation à chaque rafraichissement d'écran.
-    - Ajoute deltaTime / 15 à chaque update si on utilise le deltaTime
+    - Va de 0 Ã  20, progressivement en avancant dans le temps
+    - Ajoute 1/15 Ã  la rotation Ã  chaque rafraichissement d'Ã©cran.
+    - Ajoute deltaTime / 15 Ã  chaque update si on utilise le deltaTime
 
 - Couleur transmise par la peste: Color(96, 241, 76, 255);
 - Couleur transmise par la sacred light: Color(214, 172, 2, 255);

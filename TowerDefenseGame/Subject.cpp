@@ -1,11 +1,11 @@
-#include "Subject.h"
+Ôªø#include "Subject.h"
 #include "IObserver.h"
 
 std::vector<IObserver*> Subject::observers;
 
 void Subject::addObserver(IObserver* observer)
 {
-	//Si l'observateur n'est pas dÈj‡ dans la liste...
+	//Si l'observateur n'est pas d√©j√† dans la liste...
 	if (!(std::find(observers.begin(), observers.end(), observer) != observers.end()))
 	{
 		observers.push_back(observer);

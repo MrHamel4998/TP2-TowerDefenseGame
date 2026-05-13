@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "IObserver.h"
 
 class Subject;

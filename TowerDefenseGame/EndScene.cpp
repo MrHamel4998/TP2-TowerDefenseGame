@@ -1,4 +1,4 @@
-#include "EndScene.h"
+ï»¿#include "EndScene.h"
 #include "ContentPipeline.h"
 
 EndScene::EndScene(RenderWindow& renderWindow) : Scene(renderWindow)
@@ -35,7 +35,7 @@ bool EndScene::init()
 		endGameScreen = new Sprite(ContentPipeline::getInstance().getGameOverScreenTexture());
 	}
 
-	//--Préparation de la font-------------------------------------------------------------------------//
+	//--PrÃ©paration de la font-------------------------------------------------------------------------//
 	instructions[0] = new Text(ContentPipeline::getInstance().getComiciFont(), "", 50U);
 	instructions[0]->setOutlineThickness(4.0f);
 
@@ -86,7 +86,7 @@ void EndScene::getInputs()
 {
 	while (const optional event = renderWindow.pollEvent())
 	{
-		//x sur la fenêtre
+		//x sur la fenÃªtre
 		if (event->is<Event::Closed>())
 		{
 			isRunning = false;
