@@ -10,10 +10,16 @@ public:
 
 	Waypoint* getNextWaypoint() const;
 	void setNextWaypoint(Waypoint* nextWaypoint);
+	
+	Waypoint* getAlternativeWaypoint() const;
+	void setAlternativeWaypoint(Waypoint* alternativeWaypoint);
+	
 	Vector2f getPosition() const;
+	bool hasAlternative() const;
 
 private:
 	Vector2f position;
 	Waypoint* nextWaypoint = nullptr;
+	Waypoint* alternativeWaypoint = nullptr;
 };
 

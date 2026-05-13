@@ -166,7 +166,7 @@ void GameScene::notify(Subject* subject, EventType eventType)
 		if (demonsKilled >= DEMON_TO_SPAWN)
 		{
 			isRunning = false;
-			transitionToScene = Scene::Scenes::End; // CH: Passer au niveau 2
+			transitionToScene = Scene::Scenes::Level2;
 		}
 	}
 	else if (eventType == EventType::DemonDamageTaken)

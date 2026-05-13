@@ -17,7 +17,7 @@ public:
 	//Game est très générique et est valable si on a une seule scène de jeu.
 	//Sinon on pourrait parler de "Level1, Level2, ou encore Game_Scene1, Game_Scene2, etc.
 	//Exit et Fail devraient toujours être présents.
-	enum Scenes { Title, Level1, Transition, End, Exit, Fail };
+	enum Scenes { Title, Level1, Level2, Transition, End, Exit, Fail };
 
 	//après le : on fait appel au constructeur de la super classe
 	//qui doit être aussi dans la liste d'initialisation

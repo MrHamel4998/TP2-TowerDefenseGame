@@ -70,7 +70,7 @@ void Demon::update(float deltaTime)
    // Le démon a atteint la fin du chemin : déclencher l'animation de mort
    if (currentTargetWaypoint == nullptr)
    {
-	   notifyAllObservers(EventType::DemonReachedEnd);
+	   // notifyAllObservers(EventType::DemonReachedEnd);
 	   takeDamage(getHealth()); // Mettre la santé à 0 pour déclencher l'animation de mort
        return;
    }
@@ -82,7 +82,22 @@ void Demon::update(float deltaTime)
 
 	if (distance < 2.0f)
 	{
-		currentTargetWaypoint = currentTargetWaypoint->getNextWaypoint();
+		if (currentTargetWaypoint->hasAlternative())
+		{
+			if (rand() % 2 == 0)
+			{
+				currentTargetWaypoint = currentTargetWaypoint->getNextWaypoint();
+			}
+			else
+			{
+				currentTargetWaypoint = currentTargetWaypoint->getAlternativeWaypoint();
+			}
+		}
+		else
+		{
+			currentTargetWaypoint = currentTargetWaypoint->getNextWaypoint();
+		}
+
 		if (currentTargetWaypoint == nullptr)
 		{
 			return;
