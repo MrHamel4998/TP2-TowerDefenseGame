@@ -36,13 +36,11 @@ public:
 	void heal(const int amount);
 	void takeDamage(const int amount);
 	bool isDead() const;
-	TowerEmplacement getEmplacement() const;
 
 private:
 	void onHealthChanged() override;
 	void onDeath() override;
 
 	TowersType type;
-	TowerEmplacement emplacement;
 	Sound* towerSound = nullptr;
 };

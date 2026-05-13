@@ -46,7 +46,7 @@ int Tower::getLifePoints() const
 
 void Tower::setLifePoints(const int desiredLifePoints)
 {
-	lifePoints = desiredLifePoints;
+	Damageable::setCurrentHealth(desiredLifePoints);
 }
 
 void Tower::heal(const int amount)
@@ -62,11 +62,6 @@ void Tower::takeDamage(const int amount)
 bool Tower::isDead() const
 {
 	return Damageable::isDead();
-}
-
-TowerEmplacement Tower::getEmplacement() const
-{
-	return emplacement;
 }
 
 void Tower::onHealthChanged()
