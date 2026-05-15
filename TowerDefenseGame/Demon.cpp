@@ -71,7 +71,7 @@ void Demon::update(float deltaTime)
    // Le démon a atteint la fin du chemin : déclencher l'animation de mort
    if (currentTargetWaypoint == nullptr)
    {
-	   notifyAllObservers(EventType::DemonReachedEnd);
+	   notifyAllObservers(EventType::DemonReachedEnd); //À CORRIGER: Ton paramètre d'énum n'existe pas.
 	   takeDamage(getHealth()); // Mettre la santé à 0 pour déclencher l'animation de mort
        return;
    }
