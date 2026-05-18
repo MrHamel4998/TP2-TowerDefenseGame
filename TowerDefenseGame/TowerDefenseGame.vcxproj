@@ -123,9 +123,6 @@
   <ItemGroup>
     <Font Include="Ressources\Font\comici.ttf" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="LEVEL2_WAYPOINTS_TODO.txt" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{e2963ebd-9bdc-49c7-99d0-7ad73d395f43}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

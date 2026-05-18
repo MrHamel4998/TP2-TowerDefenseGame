@@ -1,5 +1,6 @@
 ﻿#include "Demon.h"
 #include "ContentPipeline.h"
+#include "Tower.h"
 
 Demon::Demon()
 {
@@ -70,7 +71,6 @@ void Demon::update(float deltaTime)
    // Le démon a atteint la fin du chemin : déclencher l'animation de mort
    if (currentTargetWaypoint == nullptr)
    {
-	   // notifyAllObservers(EventType::DemonReachedEnd);
 	   takeDamage(getHealth()); // Mettre la santé à 0 pour déclencher l'animation de mort
        return;
    }

@@ -4,8 +4,8 @@
 class KingTower : public Tower
 {
 public:
-
-private:
-
+	KingTower();
+	bool init() override;
+	void update(const float deltaTime) override;
 
 };

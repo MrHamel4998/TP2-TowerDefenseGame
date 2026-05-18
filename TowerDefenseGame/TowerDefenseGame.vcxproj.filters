@@ -117,6 +117,9 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
+    <ClCompile Include="Damageable.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
     <ClCompile Include="Subject.cpp">
       <Filter>Fichiers sources\PublishSubscribe</Filter>
     </ClCompile>
@@ -156,9 +159,6 @@
     <ClCompile Include="KingTower.cpp">
       <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
-    <ClCompile Include="Damageable.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -186,6 +186,9 @@
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
     <ClInclude Include="Projectile.h">
+      <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Damageable.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>
     <ClInclude Include="EventType.h">
@@ -244,9 +247,6 @@
     </ClInclude>
     <ClInclude Include="ShootingTower.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
-    </ClInclude>
-    <ClInclude Include="Damageable.h">
-      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

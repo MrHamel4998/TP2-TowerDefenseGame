@@ -23,22 +23,24 @@ class Tower : public GameObject, public Damageable, public Subject
 {
 public:
 	Tower();
-	virtual ~Tower();
-	virtual void init() = 0;
+	~Tower();
+	virtual bool init() = 0;
 	virtual void update(const float deltaTime) = 0;
 
+	static Tower* create(const TowersType type);
+
 	TowersType getType() const;
+	void setType(const TowersType type);
 	int getLifePoints() const;
+	void setLifePoints(const int desiredLifePoints);
 	void heal(const int amount);
 	void takeDamage(const int amount);
 	bool isDead() const;
-	TowerEmplacement getEmplacement() const;
 
 private:
 	void onHealthChanged() override;
 	void onDeath() override;
 
 	TowersType type;
-	TowerEmplacement emplacement;
 	Sound* towerSound = nullptr;
 };
