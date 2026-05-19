@@ -34,6 +34,7 @@ public:
     bool init();
 
     void notify(Subject* subject, EventType eventType) override;
+    void takeDamage(int damage) override;
 private:
     static const int BASE_HEALTH = 60;
 

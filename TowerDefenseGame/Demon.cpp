@@ -4,6 +4,7 @@
 #include "Spell.h"
 #include "SacredLight.h"
 #include "Plague.h"
+#include <iostream>
 
 Demon::Demon()
 {
@@ -39,6 +40,19 @@ void Demon::spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNum
 	initDamageable(BASE_HEALTH);
 	setHealth(getHealth(), getMaxHealth());
 	activate();
+	Subject::addObserver(this);
+}
+
+void Demon::takeDamage(int damage)
+{
+	if (damage <= 0 || isDead())
+	{
+		return;
+	}
+
+	damage = static_cast<int>(damage * plagueDamageMultiplier);
+
+	Damageable::takeDamage(damage);
 }
 
 void Demon::update(float deltaTime)
@@ -63,19 +77,27 @@ void Demon::update(float deltaTime)
 
    updateAnimation(deltaTime);
 
-   // DEBUG: Les démons perdent 1 PV par seconde
-   plagueTimer += deltaTime;
-   if (plagueTimer >= 1)
-   {
-		takeDamage(1);
-		plagueTimer = 0.0f;
+   if (sacredLightTimer > 0.0f) {
+	   sacredLightTimer -= deltaTime;
+	   if (sacredLightTimer <= 0.0f) {
+		   sacredLightRatio = 1.0f;
+		   setColor(Color::White);
+	   }
+   }
+
+   if (plagueTimer > 0.0f) {
+	   plagueTimer -= deltaTime;
+	   if (plagueTimer <= 0.0f) {
+		   plagueDamageMultiplier = 1.0f;
+		   setColor(Color::White);
+	   }
    }
 
    // Le démon a atteint la fin du chemin : déclencher l'animation de mort
    if (currentTargetWaypoint == nullptr)
    {
 	   takeDamage(getHealth()); // Mettre la santé à 0 pour déclencher l'animation de mort
-       return;
+	   return;
    }
 
 	Vector2f currentPos = getPosition();
@@ -111,12 +133,6 @@ void Demon::update(float deltaTime)
 	if (distance > 0.0f)
 	{
 		direction /= distance;
-		if (sacredLightTimer > 0.0f) {
-			sacredLightTimer -= deltaTime;
-			if (sacredLightTimer <= 0.0f) {
-				sacredLightRatio = 1.0f; 
-			}
-		}
 
 		float movement = speed * deltaTime * sacredLightRatio;
 		move(direction * movement);
@@ -156,9 +172,10 @@ void Demon::notify(Subject* subject, EventType eventType)
 		}
 
 		takeDamage(sacredLight->getRandomDamage());
+		setColor(sacredLight->getEffectColor());
 
 		sacredLightRatio = 0.5f;
-		sacredLightTimer = 5.0f;
+		sacredLightTimer = sacredLight->getLifetime();
 
 		break;
 	}
@@ -173,9 +190,10 @@ void Demon::notify(Subject* subject, EventType eventType)
 		}
 
 		takeDamage(plague->getRandomDamage());
+		setColor(plague->getEffectColor());
 
 		plagueDamageMultiplier = 2.0f;
-		plagueTimer = 5.0f;
+		plagueTimer = plague->getLifetime();
 
 		break;
 	}
@@ -184,6 +202,7 @@ void Demon::notify(Subject* subject, EventType eventType)
 
 void Demon::onHealthChanged()
 {
+	setHealth(getHealth(), getMaxHealth());
 	Subject::notifyAllObservers(EventType::DemonDamageTaken);
 }
 

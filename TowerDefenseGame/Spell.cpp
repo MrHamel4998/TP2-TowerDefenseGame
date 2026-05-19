@@ -1,19 +1,39 @@
 ﻿#include "Spell.h"
+#include <iostream>
 
-Spell::Spell(const Color& color)
-    : color(color)
+Spell::Spell()
 {
+}
+
+bool Spell::init()
+{
+    deactivate();
+
+    affectedCount = 0;
+
+    for (int i = 0; i < MAX_TARGETS; i++)
+    {
+        affectedTargets[i] = nullptr;
+    }
+
+    radius = 400.f;
+    lifetime = 5.f;
+    timer = 0.f;
+
+    return true;
 }
 
 void Spell::cast(const Vector2f& position, GameObject* gameEntities[], int entityCount)
 {
-    this->position = position;
-	this->isActive = true;
-    timer = lifetime;
+	this->position = position;
+	this->activate();
+	timer = lifetime;
 	this->affectedCount = 0;
 
-    findTargets(gameEntities, entityCount);
-    notifyCast();
+	findTargets(gameEntities, entityCount);
+
+	// Enregistrer les observateurs cibles et notifier
+	notifyCast();
 }
 
 SpellType Spell::getSpellType() const
@@ -23,13 +43,13 @@ SpellType Spell::getSpellType() const
 
 void Spell::update(float deltaTime)
 {
-    if (!isActive)
+    if (!this->isActive())
         return;
 
     timer -= deltaTime;
 
     if (timer <= 0.f) {
-        isActive = false;
+        this->deactivate();
     }
 }
 

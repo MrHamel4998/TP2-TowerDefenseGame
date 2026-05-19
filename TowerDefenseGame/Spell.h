@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "Damageable.h"
 #include "Constants.h"
+#include "ContentPipeline.h"
 using namespace sf;
 
 /*
@@ -46,8 +47,10 @@ indus.
 class Spell : public GameObject, public Subject
 {
 public:
-    Spell(const Color& color);
+    Spell();
     virtual ~Spell() = default;
+
+    bool init();
 
     void cast(const Vector2f& position, GameObject* gameEntities[], int entityCount);
 
@@ -62,6 +65,7 @@ public:
 public:
     virtual int getRandomDamage() const = 0;
     virtual float getLifetime() const = 0;
+	virtual Color getEffectColor() const = 0;
 
 protected:
 

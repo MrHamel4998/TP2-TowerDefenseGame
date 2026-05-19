@@ -52,6 +52,8 @@ bool GameScene::init()
 	}
 
 	Subject::addObserver(this);
+	sacredLight.init();
+	plague.init();
 
 	isRunning = true;
 	demonsKilled = 0;
@@ -77,6 +79,7 @@ void GameScene::getInputs()
 		{
 			inputs.sacredLightSelected = true;
 			inputs.plagueSelected = false;
+			std::cout << "Sacred Light selected" << std::endl;
 		}
 
 		// Sélection Plague
@@ -84,6 +87,7 @@ void GameScene::getInputs()
 		{
 			inputs.plagueSelected = true;
 			inputs.sacredLightSelected = false;
+			std::cout << "Plague selected" << std::endl;
 		}
 
 		inputs.leftMousePressed = Mouse::isButtonPressed(Mouse::Button::Left);
@@ -242,10 +246,15 @@ void GameScene::handleSpells()
 
 	Vector2f mouseWorldPos = renderWindow.mapPixelToCoords(Mouse::getPosition(renderWindow));
 
+	targetCount = 0;
 	for (Demon* demon : demons)
 	{
-		targets[targetCount] = demon;
-		targetCount++;
+		if (demon != nullptr && demon->isActive())
+		{
+			if (targetCount >= 100) break;
+			targets[targetCount] = demon;
+			targetCount++;
+		}
 	}
 
 	// CH: Lorsque les tours seront implémentées, il faudra aussi les ajouter à la liste des cibles potentielles pour les sorts.
@@ -258,6 +267,7 @@ void GameScene::handleSpells()
 	// Sacred Light
 	if (inputs.sacredLightSelected && !sacredLight.isActive())
 	{
+		std::cout << "Casting Sacred Light at position: " << mouseWorldPos.x << ", " << mouseWorldPos.y << std::endl;
 		sacredLight.cast(
 			mouseWorldPos,
 			targets,
@@ -266,9 +276,9 @@ void GameScene::handleSpells()
 	}
 
 	// Plague
-	if (inputs.plagueSelected &&
-		!plague.isActive())
+	if (inputs.plagueSelected && !plague.isActive())
 	{
+		std::cout << "Casting Plague at position: " << mouseWorldPos.x << ", " << mouseWorldPos.y << std::endl;
 		plague.cast(
 			mouseWorldPos,
 			targets,
