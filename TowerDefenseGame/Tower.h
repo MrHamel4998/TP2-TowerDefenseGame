@@ -3,9 +3,11 @@
 #include "GameObject.h"
 #include "Damageable.h"
 #include "Subject.h"
+#include "IObserver.h"
 #include "TowersType.h"
 #include "TowerEmplacement.h"
-#include "EventType.h"
+#include "Constants.h"
+
 /*
 Metrics des tours (à effacer à la fin)
 
@@ -19,7 +21,7 @@ Metrics des tours (à effacer à la fin)
 - L'image 0 est l'image idle. Quand on initie le tir, on passe tout de suite à l'image 1.
 */
 
-class Tower : public GameObject, public Damageable, public Subject
+class Tower : public GameObject, public Damageable, public Subject, public IObserver
 {
 public:
 	Tower();
@@ -36,6 +38,8 @@ public:
 	void heal(const int amount);
 	void takeDamage(const int amount);
 	bool isDead() const;
+
+	void notify(Subject* subject, EventType eventType) override;
 
 private:
 	void onHealthChanged() override;

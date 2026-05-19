@@ -12,6 +12,7 @@ public:
     void setAttackDamage(const int damage);
     void setFireRate(const float rate);
     void setRange(const float range);
+    void notify(Subject* subject, EventType eventType) override;
 
 private:
     int attackDamage = 0;
@@ -19,4 +20,9 @@ private:
     float fireRateTimer = 0;
     float range = 300;
     bool isShooting = false;
+
+    float fireRateMultiplier = 1.f;
+
+    bool doubleDamage = false;
+    float doubleDamageTimer = 0.f;
 };

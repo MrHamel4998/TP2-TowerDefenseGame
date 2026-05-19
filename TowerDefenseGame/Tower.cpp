@@ -3,6 +3,7 @@
 #include "ArcherTower.h"
 #include "MageTower.h"
 #include "KingTower.h"
+#include "Spell.h"
 
 
 Tower::Tower()
@@ -75,3 +76,7 @@ void Tower::onDeath()
 	deactivate();
 }
 
+void Tower::notify(Subject* subject, EventType eventType)
+{
+
+}

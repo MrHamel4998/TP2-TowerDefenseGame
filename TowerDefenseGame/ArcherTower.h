@@ -7,7 +7,7 @@ class ArcherTower : public ShootingTower
 public:
 	ArcherTower();
 	bool init() override;
-	void update(const float deltaTime);
+	void update(const float deltaTime) override;
 
 private:
 	int attackDamage;

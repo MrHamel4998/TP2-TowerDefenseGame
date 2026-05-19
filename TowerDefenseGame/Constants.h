@@ -7,3 +7,4 @@ enum TowerType { King, Archer, Mage, Knight };
 enum ProjectileType { Arrow, Blast, Fireball };
 enum SpellType { SacredLight, Plague };
 enum Maps { Map1, Map2, Map3 };
+enum EventType { DemonKilled, DemonDamageTaken, TowerActivated, TowerDeactivated, SpellCast, WaveFinished };

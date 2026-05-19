@@ -25,7 +25,6 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Damageable.h" />
     <ClInclude Include="Demon.h" />
-    <ClInclude Include="EventType.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ContentPipeline.h" />
     <ClInclude Include="GameObject.h" />
@@ -36,7 +35,9 @@
     <ClInclude Include="IObserver.h" />
     <ClInclude Include="KingTower.h" />
     <ClInclude Include="MageTower.h" />
+    <ClInclude Include="Plague.h" />
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="SacredLight.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="EndScene.h" />
     <ClInclude Include="GameScene.h" />
@@ -65,9 +66,11 @@
     <ClCompile Include="KingTower.cpp" />
     <ClCompile Include="MageTower.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Plague.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="EndScene.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="SacredLight.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TransitionScene.cpp" />
     <ClCompile Include="Spell.cpp" />

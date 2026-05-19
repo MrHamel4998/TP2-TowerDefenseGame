@@ -1,11 +1,12 @@
 ﻿#include "Demon.h"
 #include "ContentPipeline.h"
 #include "Tower.h"
+#include "Spell.h"
 
 Demon::Demon()
 {
-	   setTexture(ContentPipeline::getInstance().getDemonTexture());
-	   init();
+		setTexture(ContentPipeline::getInstance().getDemonTexture());
+		init();
 }
 
 bool Demon::init()
@@ -108,7 +109,7 @@ void Demon::update(float deltaTime)
 	if (distance > 0.0f)
 	{
 		direction /= distance;
-		float movement = speed * deltaTime;
+		float movement = speed * deltaTime * sacredLightRatio;
 		move(direction * movement);
 	}
 
@@ -139,4 +140,26 @@ void Demon::onDeath()
 	setActiveAnimation(DEATH, true);
 	isDying = true;
 	notifyAllObservers(EventType::DemonKilled);
+}
+
+void Demon::notify(Subject* subject, EventType eventType)
+{
+	Spell* spell = dynamic_cast<Spell*>(subject);
+
+    if (eventType != EventType::SpellCast || spell == nullptr || !spell->containsTarget(this))
+    {
+		return;
+    }
+	
+	switch (spell->getSpellType())
+	{
+	case SpellType::SacredLight:
+		sacredLightRatio = 0.5f;
+		break;
+	
+	case SpellType::Plague:
+		plagueDamageMultiplier = 2.0f;
+		break;
+	}
+	
 }
