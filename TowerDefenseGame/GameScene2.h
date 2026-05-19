@@ -5,7 +5,8 @@
 #include "Waypoint.h"
 #include "Demon.h"
 #include "IObserver.h"
-#include <vector>
+#include "SacredLight.h"
+#include "Plague.h"
 
 /*
 Metrics du level 2 (à effacer à la fin)
@@ -45,6 +46,8 @@ private:
     Inputs inputs;
 
     Sprite* map = nullptr;
+    SacredLight sacredLight;
+    Plague plague;
 
     Waypoint* waypoints[NUM_WAYPOINTS];
     Demon* demons[NUM_DEMONS_TOTAL];

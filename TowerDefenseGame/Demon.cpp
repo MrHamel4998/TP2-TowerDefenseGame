@@ -2,6 +2,8 @@
 #include "ContentPipeline.h"
 #include "Tower.h"
 #include "Spell.h"
+#include "SacredLight.h"
+#include "Plague.h"
 
 Demon::Demon()
 {
@@ -33,7 +35,7 @@ void Demon::spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNum
 	this->currentTargetWaypoint = firstWaypoint;
 	this->speed = (0.9f + 0.1f * waveNumber) * 60.0f;
 	isDying = false;
-	damageTimer = 0.0f;
+	plagueTimer = 0.0f;
 	initDamageable(BASE_HEALTH);
 	setHealth(getHealth(), getMaxHealth());
 	activate();
@@ -62,11 +64,11 @@ void Demon::update(float deltaTime)
    updateAnimation(deltaTime);
 
    // DEBUG: Les démons perdent 1 PV par seconde
-   damageTimer += deltaTime;
-   if (damageTimer >= 1)
+   plagueTimer += deltaTime;
+   if (plagueTimer >= 1)
    {
-	   takeDamage(1);
-	   damageTimer = 0.0f;
+		takeDamage(1);
+		plagueTimer = 0.0f;
    }
 
    // Le démon a atteint la fin du chemin : déclencher l'animation de mort
@@ -109,6 +111,13 @@ void Demon::update(float deltaTime)
 	if (distance > 0.0f)
 	{
 		direction /= distance;
+		if (sacredLightTimer > 0.0f) {
+			sacredLightTimer -= deltaTime;
+			if (sacredLightTimer <= 0.0f) {
+				sacredLightRatio = 1.0f; 
+			}
+		}
+
 		float movement = speed * deltaTime * sacredLightRatio;
 		move(direction * movement);
 	}
@@ -126,40 +135,59 @@ void Demon::update(float deltaTime)
 	}
 }
 
-void Demon::onHealthChanged()
-{
-	notifyAllObservers(EventType::DemonDamageTaken);
-	setHealth(getHealth(), getMaxHealth());
-}
-
-void Demon::onDeath()
-{
-	if (isDying)
-		return;
-
-	setActiveAnimation(DEATH, true);
-	isDying = true;
-	notifyAllObservers(EventType::DemonKilled);
-}
-
 void Demon::notify(Subject* subject, EventType eventType)
 {
 	Spell* spell = dynamic_cast<Spell*>(subject);
 
-    if (eventType != EventType::SpellCast || spell == nullptr || !spell->containsTarget(this))
-    {
+	if (eventType != EventType::SpellCast || spell == nullptr || !spell->containsTarget(this))
+	{
 		return;
-    }
-	
+	}
+
 	switch (spell->getSpellType())
 	{
-	case SpellType::SacredLight:
+	case SpellType::SacredLightSpell:
+	{
+		SacredLight* sacredLight = dynamic_cast<SacredLight*>(spell);
+
+		if (sacredLight == nullptr)
+		{
+			return;
+		}
+
+		takeDamage(sacredLight->getRandomDamage());
+
 		sacredLightRatio = 0.5f;
-		break;
-	
-	case SpellType::Plague:
-		plagueDamageMultiplier = 2.0f;
+		sacredLightTimer = 5.0f;
+
 		break;
 	}
-	
+
+	case SpellType::PlagueSpell:
+	{
+		Plague* plague = dynamic_cast<Plague*>(spell);
+
+		if (plague == nullptr)
+		{
+			return;
+		}
+
+		takeDamage(plague->getRandomDamage());
+
+		plagueDamageMultiplier = 2.0f;
+		plagueTimer = 5.0f;
+
+		break;
+	}
+	}
+}
+
+void Demon::onHealthChanged()
+{
+	Subject::notifyAllObservers(EventType::DemonDamageTaken);
+}
+
+void Demon::onDeath()
+{
+	Subject::notifyAllObservers(EventType::DemonKilled);
 }

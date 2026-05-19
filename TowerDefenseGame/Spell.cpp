@@ -1,7 +1,7 @@
 ﻿#include "Spell.h"
 
-Spell::Spell(float lifetime, const Color& color)
-    : lifetime(lifetime), color(color)
+Spell::Spell(const Color& color)
+    : color(color)
 {
 }
 
@@ -57,6 +57,13 @@ void Spell::findTargets(GameObject* entities[], int entityCount)
 
         if (distance <= radius) {
 
+            Damageable* damageable = dynamic_cast<Damageable*>(target);
+
+            if (damageable == nullptr)
+            {
+                continue;
+            }
+
             affectedTargets[affectedCount] = target;
 
             affectedCount++;
@@ -73,4 +80,9 @@ bool Spell::containsTarget(GameObject* target) const
     }
 
     return false;
+}
+
+float Spell::getLifetime() const
+{
+	return this->lifetime;
 }

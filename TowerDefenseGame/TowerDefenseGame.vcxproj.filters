@@ -159,6 +159,18 @@
     <ClCompile Include="KingTower.cpp">
       <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
+    <ClCompile Include="Plague.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SacredLight.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootingTower.cpp">
+      <Filter>Fichiers sources\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene2.cpp">
+      <Filter>Fichiers sources\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -190,9 +202,6 @@
     </ClInclude>
     <ClInclude Include="Damageable.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
-    </ClInclude>
-    <ClInclude Include="EventType.h">
-      <Filter>Fichiers d%27en-tête\PublishSubscribe</Filter>
     </ClInclude>
     <ClInclude Include="Constants.h">
       <Filter>Fichiers d%27en-tête\Utils</Filter>
@@ -247,6 +256,15 @@
     </ClInclude>
     <ClInclude Include="ShootingTower.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="Plague.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="SacredLight.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene2.h">
+      <Filter>Fichiers d%27en-tête\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

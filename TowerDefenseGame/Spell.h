@@ -43,10 +43,10 @@ est "sécurisée" et jamais directement modifiée par une source extérieure com
 indus.
 */
 
-class Spell : public Subject
+class Spell : public GameObject, public Subject
 {
 public:
-    Spell(float lifetime, const Color& color);
+    Spell(const Color& color);
     virtual ~Spell() = default;
 
     void cast(const Vector2f& position, GameObject* gameEntities[], int entityCount);
@@ -58,6 +58,10 @@ public:
     void findTargets(GameObject* entities[], int entityCount);
 
     SpellType getSpellType() const;
+
+public:
+    virtual int getRandomDamage() const = 0;
+    virtual float getLifetime() const = 0;
 
 protected:
 
@@ -72,8 +76,7 @@ protected:
     Vector2f position;
     Color color;
     float radius = 400.0f;
-    float lifetime = 5.0f;
+    float lifetime;
     float timer = 0.0f;
-    bool isActive = false;
 };
 

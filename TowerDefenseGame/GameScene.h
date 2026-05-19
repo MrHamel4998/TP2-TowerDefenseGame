@@ -5,7 +5,8 @@
 #include "Waypoint.h"
 #include "Demon.h"
 #include "IObserver.h"
-#include <vector>
+#include "SacredLight.h"
+#include "Plague.h"
 
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
@@ -53,6 +54,7 @@ private:
 	void draw() override;
 	bool unload() override;
 
+	void handleSpells();
 	void drawWaypoints();
 
 	View view;
@@ -60,9 +62,14 @@ private:
 	Inputs inputs;
 
 	Sprite* map = nullptr;
+	SacredLight sacredLight;
+	Plague plague;
 
 	Waypoint* waypoints[NUM_WAYPOINTS];
 	Demon* demons[NUM_DEMONS_TOTAL];
+
+	GameObject* targets[100]; // CH: À ajuster selon le nombre total de tours + démons que l'on peut avoir en même temps (20 démons + le nombre de tours maximum)
+	int targetCount = 0;
 
 	int currentWaveNumber = 1;
 	float spawnTimer = 0.0f;

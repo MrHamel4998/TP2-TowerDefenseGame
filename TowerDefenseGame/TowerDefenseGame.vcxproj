@@ -71,6 +71,7 @@
     <ClCompile Include="EndScene.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="SacredLight.cpp" />
+    <ClCompile Include="ShootingTower.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TransitionScene.cpp" />
     <ClCompile Include="Spell.cpp" />

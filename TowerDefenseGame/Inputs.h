@@ -18,4 +18,7 @@ struct Inputs
 	Vector2f mousePosition;
 	bool mouseLeftButtonClicked;
 	bool showWaypoints;
+	bool leftMousePressed;
+	bool plagueSelected;
+	bool sacredLightSelected;
 };

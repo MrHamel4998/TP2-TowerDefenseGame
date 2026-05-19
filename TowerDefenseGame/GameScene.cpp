@@ -69,7 +69,24 @@ void GameScene::getInputs()
 			isRunning = false;
 			transitionToScene = Scene::Scenes::Exit;
 		}
+
 		inputs.showWaypoints = Keyboard::isKeyPressed(Keyboard::Key::W);
+
+		// Sélection Sacred Light
+		if (Keyboard::isKeyPressed(Keyboard::Key::V))
+		{
+			inputs.sacredLightSelected = true;
+			inputs.plagueSelected = false;
+		}
+
+		// Sélection Plague
+		if (Keyboard::isKeyPressed(Keyboard::Key::C))
+		{
+			inputs.plagueSelected = true;
+			inputs.sacredLightSelected = false;
+		}
+
+		inputs.leftMousePressed = Mouse::isButtonPressed(Mouse::Button::Left);
 	}
 }
 
@@ -115,6 +132,9 @@ void GameScene::update()
 			spawnTimer = 0.f;
 		}
 	}
+
+	sacredLight.update(deltaTime);
+	plague.update(deltaTime);
 }
 
 void GameScene::draw()
@@ -130,6 +150,10 @@ void GameScene::draw()
 			demons[i]->draw(renderWindow);
 		}
 	}
+
+	handleSpells();
+	sacredLight.draw(renderWindow);
+	plague.draw(renderWindow);
 
 	hud.draw(renderWindow);
 	drawWaypoints();
@@ -209,3 +233,48 @@ void GameScene::drawWaypoints()
 	}
 }
 
+void GameScene::handleSpells()
+{
+	if (!inputs.leftMousePressed)
+	{
+		return;
+	}
+
+	Vector2f mouseWorldPos = renderWindow.mapPixelToCoords(Mouse::getPosition(renderWindow));
+
+	for (Demon* demon : demons)
+	{
+		targets[targetCount] = demon;
+		targetCount++;
+	}
+
+	// CH: Lorsque les tours seront implémentées, il faudra aussi les ajouter à la liste des cibles potentielles pour les sorts.
+	//for (Tower* tower : towers)
+	//{
+	//	targets[targetCount] = tower;
+	//	targetCount++;
+	//}
+
+	// Sacred Light
+	if (inputs.sacredLightSelected && !sacredLight.isActive())
+	{
+		sacredLight.cast(
+			mouseWorldPos,
+			targets,
+			targetCount
+		);
+	}
+
+	// Plague
+	if (inputs.plagueSelected &&
+		!plague.isActive())
+	{
+		plague.cast(
+			mouseWorldPos,
+			targets,
+			targetCount
+		);
+	}
+
+	inputs.leftMousePressed = false;
+}

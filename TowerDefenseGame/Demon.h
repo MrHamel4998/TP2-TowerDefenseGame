@@ -39,8 +39,9 @@ private:
 
     float speed;
 	float sacredLightRatio = 1.0f;
+	float sacredLightTimer = 0.0f;
 	float plagueDamageMultiplier = 1.0f;
-    float damageTimer = 0.0f;
+    float plagueTimer = 0.0f;
 
     Waypoint* currentTargetWaypoint;
 
