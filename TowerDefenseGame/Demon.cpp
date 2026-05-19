@@ -8,22 +8,22 @@
 
 Demon::Demon()
 {
-		setTexture(ContentPipeline::getInstance().getDemonTexture());
-		init();
+	setTexture(ContentPipeline::getInstance().getDemonTexture());
+	init();
 }
 
 bool Demon::init()
 {
-       if (!initAnimationsStructure(ANIMATION_COUNT, Vector2i(RECTANGLE_SIZE_X, RECTANGLE_SIZE_Y))) return false;
-	   setOrigin(Vector2f(RECTANGLE_SIZE_X / 2.0f, RECTANGLE_SIZE_Y / 2.0f));
-	   setCollisionCircleRadius(RECTANGLE_SIZE_Y / 2.0f);
-	   if (!initAnimation(FLY, 5, 0.1f, AnimationType::Circular)) return false;
-	   if (!initAnimation(DEATH, 5, 0.1f, AnimationType::Linear)) return false;
-	   setActiveAnimation(FLY, true);
+    if (!initAnimationsStructure(ANIMATION_COUNT, Vector2i(RECTANGLE_SIZE_X, RECTANGLE_SIZE_Y))) return false;
+	setOrigin(Vector2f(RECTANGLE_SIZE_X / 2.0f, RECTANGLE_SIZE_Y / 2.0f));
+	setCollisionCircleRadius(RECTANGLE_SIZE_Y / 2.0f);
+	if (!initAnimation(FLY, 5, 0.1f, AnimationType::Circular)) return false;
+	if (!initAnimation(DEATH, 5, 0.1f, AnimationType::Linear)) return false;
+	setActiveAnimation(FLY, true);
 	   
-	   getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
+	getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
 	   
-	   return true;
+	return true;
 }
 
 void Demon::spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNumber)
@@ -57,48 +57,56 @@ void Demon::takeDamage(int damage)
 
 void Demon::update(float deltaTime)
 {
-   if (isDying)
-   {
-	   updateAnimation(deltaTime);
-	   if (isCurrentLinearAnimationIsOver())
-	   {
-		   deactivate();
-	   }
-	   return;
-   }
+	if (isDying)
+	{
+		updateAnimation(deltaTime);
+		if (isCurrentLinearAnimationIsOver())
+		{
+			deactivate();
+		}
+		return;
+	}
 
-   if (isDead())
-   {
-	   setActiveAnimation(DEATH, true);
-	   isDying = true;
-	   updateAnimation(deltaTime);
-	   return;
-   }
+	if (isDead())
+	{
+		setActiveAnimation(DEATH, true);
+		isDying = true;
+		updateAnimation(deltaTime);
+		return;
+	}
 
-   updateAnimation(deltaTime);
+	updateAnimation(deltaTime);
+	updateTimers(deltaTime);
+	handleMovement(deltaTime);
+	updateFlip();
+}
 
-   if (sacredLightTimer > 0.0f) {
-	   sacredLightTimer -= deltaTime;
-	   if (sacredLightTimer <= 0.0f) {
-		   sacredLightRatio = 1.0f;
-		   setColor(Color::White);
-	   }
-   }
+void Demon::updateTimers(float deltaTime)
+{
+	if (sacredLightTimer > 0.0f) {
+		sacredLightTimer -= deltaTime;
+		if (sacredLightTimer <= 0.0f) {
+			sacredLightRatio = 1.0f;
+			setColor(Color::White);
+		}
+	}
 
-   if (plagueTimer > 0.0f) {
-	   plagueTimer -= deltaTime;
-	   if (plagueTimer <= 0.0f) {
-		   plagueDamageMultiplier = 1.0f;
-		   setColor(Color::White);
-	   }
-   }
+	if (plagueTimer > 0.0f) {
+		plagueTimer -= deltaTime;
+		if (plagueTimer <= 0.0f) {
+			plagueDamageMultiplier = 1.0f;
+			setColor(Color::White);
+		}
+	}
+}
 
-   // Le démon a atteint la fin du chemin : déclencher l'animation de mort
-   if (currentTargetWaypoint == nullptr)
-   {
-	   takeDamage(getHealth()); // Mettre la santé à 0 pour déclencher l'animation de mort
-	   return;
-   }
+void Demon::handleMovement(float deltaTime)
+{
+	if (currentTargetWaypoint == nullptr)
+	{
+		takeDamage(getHealth()); // Mettre la santé à 0 pour déclencher l'animation de mort
+		return;
+	}
 
 	Vector2f currentPos = getPosition();
 	Vector2f targetPos = currentTargetWaypoint->getPosition();
@@ -107,26 +115,7 @@ void Demon::update(float deltaTime)
 
 	if (distance < 2.0f)
 	{
-		if (currentTargetWaypoint->hasAlternative())
-		{
-			if (rand() % 2 == 0)
-			{
-				currentTargetWaypoint = currentTargetWaypoint->getNextWaypoint();
-			}
-			else
-			{
-				currentTargetWaypoint = currentTargetWaypoint->getAlternativeWaypoint();
-			}
-		}
-		else
-		{
-			currentTargetWaypoint = currentTargetWaypoint->getNextWaypoint();
-		}
-
-		if (currentTargetWaypoint == nullptr)
-		{
-			return;
-		}
+		handleWaypointArrival();
 		return;
 	}
 
@@ -137,17 +126,43 @@ void Demon::update(float deltaTime)
 		float movement = speed * deltaTime * sacredLightRatio;
 		move(direction * movement);
 	}
+}
 
-	// Flip le démon en fonction de la direction du waypoint
-	if (currentTargetWaypoint != nullptr)
+void Demon::handleWaypointArrival()
+{
+	if (currentTargetWaypoint == nullptr) return;
+
+	if (currentTargetWaypoint->hasAlternative())
 	{
-		Vector2f currentPos = getPosition();
-		Vector2f targetPos = currentTargetWaypoint->getPosition();
-
-		if (targetPos.x > currentPos.x)
-			setScale(Vector2f(1.0f, 1.0f));    // Waypoint à droite
+		if (rand() % 2 == 0)
+		{
+			currentTargetWaypoint = currentTargetWaypoint->getNextWaypoint();
+		}
 		else
-			setScale(Vector2f(-1.0f, 1.0f));   // Waypoint à gauche
+		{
+			currentTargetWaypoint = currentTargetWaypoint->getAlternativeWaypoint();
+		}
+	}
+	else
+	{
+		currentTargetWaypoint = currentTargetWaypoint->getNextWaypoint();
+	}
+}
+
+void Demon::updateFlip()
+{
+	if (currentTargetWaypoint == nullptr) return;
+
+	Vector2f currentPos = getPosition();
+	Vector2f targetPos = currentTargetWaypoint->getPosition();
+
+	if (targetPos.x > currentPos.x)
+	{
+		setScale(Vector2f(1.0f, 1.0f));    // Waypoint à droite
+	}
+	else
+	{
+		setScale(Vector2f(-1.0f, 1.0f));   // Waypoint à gauche
 	}
 }
 

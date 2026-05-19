@@ -23,31 +23,36 @@ Metrics du Demon (à effacer à la fin)
 class Demon : public AnimatedObject, public Subject, public Damageable, public IObserver
 {
 public:
-    static constexpr int RECTANGLE_SIZE_X = 100;
-    static constexpr int RECTANGLE_SIZE_Y = 50;
+	static constexpr int RECTANGLE_SIZE_X = 100;
+	static constexpr int RECTANGLE_SIZE_Y = 50;
 
-    enum AnimationIndex { FLY = 0, DEATH = 1, ANIMATION_COUNT = 2 };
+	enum AnimationIndex { FLY = 0, DEATH = 1, ANIMATION_COUNT = 2 };
 
-    Demon();
-    void spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNumber);
-    void update(float deltaTime);
-    bool init();
+	Demon();
+	void spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNumber);
+	void update(float deltaTime);
+	bool init();
 
-    void notify(Subject* subject, EventType eventType) override;
-    void takeDamage(int damage) override;
+	void notify(Subject* subject, EventType eventType) override;
+	void takeDamage(int damage) override;
 private:
-    static const int BASE_HEALTH = 60;
+	static const int BASE_HEALTH = 60;
 
-    float speed;
+	float speed;
 	float sacredLightRatio = 1.0f;
 	float sacredLightTimer = 0.0f;
 	float plagueDamageMultiplier = 1.0f;
-    float plagueTimer = 0.0f;
+	float plagueTimer = 0.0f;
 
-    Waypoint* currentTargetWaypoint;
+	Waypoint* currentTargetWaypoint;
 
-    bool isDying = false;
+	bool isDying = false;
 
-    void onHealthChanged() override;
-    void onDeath() override;
+	void onHealthChanged() override;
+	void onDeath() override;
+
+	void updateTimers(float deltaTime);
+	void handleMovement(float deltaTime);
+	void handleWaypointArrival();
+	void updateFlip();
 };
