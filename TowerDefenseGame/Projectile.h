@@ -27,7 +27,6 @@ public:
 
 	GameObject* getTarget() const;
 	int getDamage() const;
-	float getFireRate() const;
 	bool hasReachedTarget() const;
 	bool consumeImpact();
 
@@ -39,7 +38,6 @@ private:
 	Vector2f velocity;
 
 	float speed = 0.0f;
-	float fireRate = 0.0f;
 	int damage = 0;
 
 	GameObject* target = nullptr;

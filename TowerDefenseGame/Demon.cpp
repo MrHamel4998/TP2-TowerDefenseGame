@@ -1,6 +1,7 @@
 ﻿#include "Demon.h"
 #include "ContentPipeline.h"
 #include "Tower.h"
+#include "Projectile.h"
 #include "Spell.h"
 #include "SacredLight.h"
 #include "Plague.h"
@@ -39,20 +40,13 @@ void Demon::spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNum
 	plagueTimer = 0.0f;
 	initDamageable(BASE_HEALTH);
 	setHealth(getHealth(), getMaxHealth());
+
+	fireRate = BASE_FIRE_RATE * waveNumber;
+	fireRange = BASE_FIRE_RANGE;
+	fireTimer = 0.0f;
+
 	activate();
 	Subject::addObserver(this);
-}
-
-void Demon::takeDamage(int damage)
-{
-	if (damage <= 0 || isDead())
-	{
-		return;
-	}
-
-	damage = static_cast<int>(damage * plagueDamageMultiplier);
-
-	Damageable::takeDamage(damage);
 }
 
 void Demon::update(float deltaTime)
@@ -177,42 +171,107 @@ void Demon::notify(Subject* subject, EventType eventType)
 
 	switch (spell->getSpellType())
 	{
-	case SpellType::SacredLightSpell:
-	{
-		SacredLight* sacredLight = dynamic_cast<SacredLight*>(spell);
-
-		if (sacredLight == nullptr)
+		case SpellType::SacredLightSpell:
 		{
-			return;
+			SacredLight* sacredLight = dynamic_cast<SacredLight*>(spell);
+
+			if (sacredLight == nullptr)
+			{
+				return;
+			}
+
+			takeDamage(sacredLight->getRandomDamage());
+			setColor(sacredLight->getEffectColor());
+
+			sacredLightRatio = 0.5f;
+			sacredLightTimer = sacredLight->getLifetime();
+
+			break;
 		}
 
-		takeDamage(sacredLight->getRandomDamage());
-		setColor(sacredLight->getEffectColor());
+		case SpellType::PlagueSpell:
+		{
+			Plague* plague = dynamic_cast<Plague*>(spell);
 
-		sacredLightRatio = 0.5f;
-		sacredLightTimer = sacredLight->getLifetime();
+			if (plague == nullptr)
+			{
+				return;
+			}
 
-		break;
+			takeDamage(plague->getRandomDamage());
+			setColor(plague->getEffectColor());
+
+			plagueDamageMultiplier = 2.0f;
+			plagueTimer = plague->getLifetime();
+
+			break;
+		}
+	}
+}
+
+void Demon::shoot(float deltaTime, Tower* towers[], int towerCount, Projectile* projectiles[], int projectileCount, int waveNumber)
+{
+	if (isDying || isDead())
+	{
+		return;
 	}
 
-	case SpellType::PlagueSpell:
+	fireTimer += deltaTime;
+	if (fireTimer < fireRate)
 	{
-		Plague* plague = dynamic_cast<Plague*>(spell);
+		return;
+	}
 
-		if (plague == nullptr)
+	Tower* targetTower = nullptr;
+	float closestDistanceSquared = fireRange * fireRange;
+	Vector2f demonPosition = getPosition();
+
+	for (int i = 0; i < towerCount; i++)
+	{
+		Tower* tower = towers[i];
+		if (tower == nullptr || !tower->isActive())
 		{
-			return;
+			continue;
 		}
 
-		takeDamage(plague->getRandomDamage());
-		setColor(plague->getEffectColor());
-
-		plagueDamageMultiplier = 2.0f;
-		plagueTimer = plague->getLifetime();
-
-		break;
+		Vector2f offset = tower->getPosition() - demonPosition;
+		float distanceSquared = offset.x * offset.x + offset.y * offset.y;
+		if (distanceSquared <= closestDistanceSquared)
+		{
+			closestDistanceSquared = distanceSquared;
+			targetTower = tower;
+		}
 	}
+
+	if (targetTower == nullptr)
+	{
+		return;
 	}
+
+	Projectile* projectile = nullptr;
+	for (int i = 0; i < projectileCount; i++)
+	{
+		if (projectiles[i] == nullptr)
+		{
+			projectiles[i] = new Projectile();
+			projectile = projectiles[i];
+			break;
+		}
+
+		if (!projectiles[i]->isActive())
+		{
+			projectile = projectiles[i];
+			break;
+		}
+	}
+
+	if (projectile == nullptr)
+	{
+		return;
+	}
+
+	projectile->launch(projectileType, demonPosition, targetTower, waveNumber);
+	fireTimer = 0.0f;
 }
 
 void Demon::onHealthChanged()

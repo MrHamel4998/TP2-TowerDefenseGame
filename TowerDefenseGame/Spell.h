@@ -62,7 +62,6 @@ public:
 
     SpellType getSpellType() const;
 
-public:
     virtual int getRandomDamage() const = 0;
     virtual float getLifetime() const = 0;
 	virtual Color getEffectColor() const = 0;

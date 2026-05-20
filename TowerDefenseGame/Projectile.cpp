@@ -55,11 +55,6 @@ int Projectile::getDamage() const
 	return damage;
 }
 
-float Projectile::getFireRate() const
-{
-	return fireRate;
-}
-
 bool Projectile::hasReachedTarget() const
 {
 	return reachedTarget;
@@ -85,25 +80,21 @@ void Projectile::configureStats(ProjectileType type, int waveNumber)
 	case Arrow:
 		setTexture(content.getArrowTexture());
 		speed = 15.0f * 60.0f;
-		fireRate = 0.8f;
 		damage = getRandomDamage(1, 4);
 		break;
 	case Blast:
 		setTexture(content.getBlastTexture());
 		speed = 8.0f * 60.0f;
-		fireRate = 1.5f;
 		damage = getRandomDamage(1, 12);
 		break;
 	case Fireball:
 		setTexture(content.getFireballTexture());
 		speed = 10.0f * 60.0f;
-		fireRate = 1.05f - 0.05f * waveNumber;
 		damage = getRandomDamage(1, 10);
 		break;
 	default:
 		setTexture(content.getArrowTexture());
 		speed = 15.0f * 60.0f;
-		fireRate = 0.8f;
 		damage = getRandomDamage(1, 4);
 		break;
 	}

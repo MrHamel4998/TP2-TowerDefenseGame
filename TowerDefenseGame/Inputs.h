@@ -6,6 +6,7 @@ struct Inputs
 	Inputs()
 	{
 		reset();
+		plagueSelected = true; // juste pour le test, à enlever lorsque la mécanique du HUD de sélection des sorts sera implémentée
 	}
 
 	void reset()

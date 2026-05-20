@@ -7,6 +7,8 @@
 #include "IObserver.h"
 #include "SacredLight.h"
 #include "Plague.h"
+#include "Tower.h"
+#include "Projectile.h"
 
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
@@ -45,6 +47,7 @@ public:
 
 private:
 	static const int NUM_WAYPOINTS = 12;
+	static const int NUM_TOWERS_EMPLACEMENT = 8;
 	static const int NUM_DEMONS_TOTAL = 20;
 	static const int DEMON_TO_SPAWN = 50;
 	static constexpr Vector2f DEMON_SPAWN_POSITION = Vector2f(610, -100);
@@ -67,9 +70,13 @@ private:
 
 	Waypoint* waypoints[NUM_WAYPOINTS];
 	Demon* demons[NUM_DEMONS_TOTAL];
+	Tower* towers[NUM_TOWERS_EMPLACEMENT];
 
 	GameObject* targets[100]; // CH: À ajuster selon le nombre total de tours + démons que l'on peut avoir en même temps (20 démons + le nombre de tours maximum)
 	int targetCount = 0;
+
+	static const int NUM_PROJECTILES = 50;
+	Projectile* projectiles[NUM_PROJECTILES];
 
 	int currentWaveNumber = 1;
 	float spawnTimer = 0.0f;

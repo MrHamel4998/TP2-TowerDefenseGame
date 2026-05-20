@@ -51,9 +51,17 @@ bool GameScene::init()
 		demons[i] = new Demon();
 	}
 
+	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+	{
+		towers[i] = nullptr;
+	}
+
 	Subject::addObserver(this);
 	sacredLight.init();
 	plague.init();
+
+
+	for (int i = 0; i < NUM_PROJECTILES; i++) projectiles[i] = nullptr;
 
 	isRunning = true;
 	demonsKilled = 0;
@@ -101,6 +109,15 @@ void GameScene::update()
 		if (demons[i] != nullptr && demons[i]->isActive())
 		{
 			demons[i]->update(deltaTime);
+			demons[i]->shoot(deltaTime, towers, NUM_TOWERS_EMPLACEMENT, projectiles, NUM_PROJECTILES, currentWaveNumber);
+		}
+	}
+
+	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+	{
+		if (towers[i] != nullptr && towers[i]->isActive())
+		{
+			towers[i]->update(deltaTime);
 		}
 	}
 
@@ -139,6 +156,19 @@ void GameScene::update()
 
 	sacredLight.update(deltaTime);
 	plague.update(deltaTime);
+
+	for (int i = 0; i < NUM_PROJECTILES; i++)
+	{
+		if (projectiles[i] != nullptr && projectiles[i]->isActive())
+		{
+			projectiles[i]->update(deltaTime);
+
+			if (projectiles[i]->hasReachedTarget())
+			{
+				projectiles[i]->consumeImpact();
+			}
+		}
+	}
 }
 
 void GameScene::draw()
@@ -152,6 +182,14 @@ void GameScene::draw()
 		if (demons[i] != nullptr && demons[i]->isActive())
 		{
 			demons[i]->draw(renderWindow);
+		}
+	}
+
+	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+	{
+		if (towers[i] != nullptr && towers[i]->isActive())
+		{
+			towers[i]->draw(renderWindow);
 		}
 	}
 
@@ -179,6 +217,13 @@ bool GameScene::unload()
 		if (demons[i] != nullptr)
 		{
 			delete demons[i];
+		}
+	}
+	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+	{
+		if (towers[i] != nullptr)
+		{
+			delete towers[i];
 		}
 	}
 
@@ -209,10 +254,6 @@ void GameScene::notify(Subject* subject, EventType eventType)
 	else if (eventType == EventType::TowerDeactivated)
 	{
 		// CH: Quand une tour est détruite (Désactivée), on peut réinitialiser l'emplacement, etc.
-	}
-	else if (eventType == EventType::SpellCast)
-	{
-		// CH: Les démons et tours réagissent aux sorts
 	}
 	else if (eventType == EventType::WaveFinished)
 	{
@@ -257,17 +298,19 @@ void GameScene::handleSpells()
 		}
 	}
 
-	// CH: Lorsque les tours seront implémentées, il faudra aussi les ajouter à la liste des cibles potentielles pour les sorts.
-	//for (Tower* tower : towers)
-	//{
-	//	targets[targetCount] = tower;
-	//	targetCount++;
-	//}
+	for (Tower* tower : towers)
+	{
+		if (tower != nullptr && tower->isActive())
+		{
+			if (targetCount >= 100) break;
+			targets[targetCount] = tower;
+			targetCount++;
+		}
+	}
 
 	// Sacred Light
 	if (inputs.sacredLightSelected && !sacredLight.isActive())
 	{
-		std::cout << "Casting Sacred Light at position: " << mouseWorldPos.x << ", " << mouseWorldPos.y << std::endl;
 		sacredLight.cast(
 			mouseWorldPos,
 			targets,
@@ -278,7 +321,6 @@ void GameScene::handleSpells()
 	// Plague
 	if (inputs.plagueSelected && !plague.isActive())
 	{
-		std::cout << "Casting Plague at position: " << mouseWorldPos.x << ", " << mouseWorldPos.y << std::endl;
 		plague.cast(
 			mouseWorldPos,
 			targets,

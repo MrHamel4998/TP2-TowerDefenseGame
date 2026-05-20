@@ -6,6 +6,8 @@
 #include "Damageable.h"
 #include "IObserver.h"
 using namespace sf;
+class Tower;
+class Projectile;
 /*
 Metrics du Demon (à effacer à la fin)
 - Rectangle d'animation: 100 X 50
@@ -34,7 +36,7 @@ public:
 	bool init();
 
 	void notify(Subject* subject, EventType eventType) override;
-	void takeDamage(int damage) override;
+	void shoot(float deltaTime, Tower* towers[], int towerCount, Projectile* projectiles[], int projectileCount, int waveNumber);
 private:
 	static const int BASE_HEALTH = 60;
 
@@ -55,4 +57,12 @@ private:
 	void handleMovement(float deltaTime);
 	void handleWaypointArrival();
 	void updateFlip();
+
+	static constexpr float BASE_FIRE_RATE = 1.05f - 0.05f; // (1.05 - 0.05 * numéro de vague)
+	static constexpr float BASE_FIRE_RANGE = 250.0f;
+
+	float fireRate = BASE_FIRE_RATE;
+	float fireRange = BASE_FIRE_RANGE;
+	float fireTimer = 0.0f;
+	ProjectileType projectileType = ProjectileType::Fireball;
 };
