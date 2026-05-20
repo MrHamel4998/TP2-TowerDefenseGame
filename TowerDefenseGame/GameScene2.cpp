@@ -72,7 +72,19 @@ bool GameScene2::init()
         demons[i] = new Demon();
     }
 
+    for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+    {
+        towers[i] = nullptr;
+    }
+
+    for (int i = 0; i < NUM_PROJECTILES; i++) 
+    {
+        projectiles[i] = nullptr;
+    }
+
     Subject::addObserver(this);
+    sacredLight.init();
+    plague.init();
 
     isRunning = true;
     demonsKilled = 0;
@@ -91,6 +103,20 @@ void GameScene2::getInputs()
             transitionToScene = Scene::Scenes::Exit;
         }
         inputs.showWaypoints = Keyboard::isKeyPressed(Keyboard::Key::W);
+
+        // Selection des sorts
+        if (Keyboard::isKeyPressed(Keyboard::Key::V))
+        {
+            inputs.sacredLightSelected = true;
+            inputs.plagueSelected = false;
+        }
+        if (Keyboard::isKeyPressed(Keyboard::Key::C))
+        {
+            inputs.plagueSelected = true;
+            inputs.sacredLightSelected = false;
+        }
+
+        inputs.leftMousePressed = Mouse::isButtonPressed(Mouse::Button::Left);
     }
 }
 
@@ -101,6 +127,15 @@ void GameScene2::update()
         if (demons[i] != nullptr && demons[i]->isActive())
         {
             demons[i]->update(deltaTime);
+            demons[i]->shoot(deltaTime, towers, NUM_TOWERS_EMPLACEMENT, projectiles, NUM_PROJECTILES, currentWaveNumber);
+        }
+    }
+
+    for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+    {
+        if (towers[i] != nullptr && towers[i]->isActive())
+        {
+            towers[i]->update(deltaTime);
         }
     }
 
@@ -125,13 +160,29 @@ void GameScene2::update()
                 demons[freeSlot] = new Demon();
             }
             demons[freeSlot]->spawn(DEMON_SPAWN_POSITION, waypoints[0], currentWaveNumber);
-            spawnTimer = 0.f;
-            nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * (3.0f - 1.0f);
+            spawnTimer = 0.0f;
+            nextSpawnTime = 1.0f + static_cast<float>(rand()) / RAND_MAX * (3.0f - 1.0f);
             demonsSpawned++;
         }
         else
         {
             spawnTimer = 0.f;
+        }
+
+        sacredLight.update(deltaTime);
+        plague.update(deltaTime);
+
+        for (int i = 0; i < NUM_PROJECTILES; i++)
+        {
+            if (projectiles[i] != nullptr && projectiles[i]->isActive())
+            {
+                projectiles[i]->update(deltaTime);
+
+                if (projectiles[i]->hasReachedTarget())
+                {
+                    projectiles[i]->consumeImpact();
+                }
+            }
         }
     }
 }
@@ -148,6 +199,18 @@ void GameScene2::draw()
             demons[i]->draw(renderWindow);
         }
     }
+
+    for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+    {
+        if (towers[i] != nullptr && towers[i]->isActive())
+        {
+            towers[i]->draw(renderWindow);
+        }
+    }
+
+    handleSpells();
+    sacredLight.draw(renderWindow);
+    plague.draw(renderWindow);
 
     hud.draw(renderWindow);
     drawWaypoints();
@@ -167,11 +230,28 @@ bool GameScene2::unload()
             delete waypoints[i];
         }
     }
+
     for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
     {
         if (demons[i] != nullptr)
         {
             delete demons[i];
+        }
+    }
+
+    for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+    {
+        if (towers[i] != nullptr)
+        {
+            delete towers[i];
+        }
+    }
+
+    for (int i = 0; i < NUM_PROJECTILES; i++)
+    {
+        if (projectiles[i] != nullptr)
+        {
+            delete projectiles[i];
         }
     }
 
@@ -202,10 +282,6 @@ void GameScene2::notify(Subject* subject, EventType eventType)
     {
         // TODO
     }
-    else if (eventType == EventType::SpellCast)
-    {
-        // TODO
-    }
     else if (eventType == EventType::WaveFinished)
     {
         // TODO
@@ -215,7 +291,9 @@ void GameScene2::notify(Subject* subject, EventType eventType)
 void GameScene2::drawWaypoints()
 {
     if (!inputs.showWaypoints)
+    {
         return;
+    }
     if (inputs.showWaypoints)
     {
         for (int i = 0; i < NUM_WAYPOINTS - 1; i++)
@@ -229,4 +307,57 @@ void GameScene2::drawWaypoints()
             }
         }
     }
+}
+
+void GameScene2::handleSpells()
+{
+    if (!inputs.leftMousePressed)
+    {
+        return;
+    }
+
+    Vector2f mouseWorldPos = renderWindow.mapPixelToCoords(Mouse::getPosition(renderWindow));
+
+    targetCount = 0;
+    for (Demon* demon : demons)
+    {
+        if (demon != nullptr && demon->isActive())
+        {
+            if (targetCount >= 100) break;
+            targets[targetCount] = demon;
+            targetCount++;
+        }
+    }
+
+    for (Tower* tower : towers)
+    {
+        if (tower != nullptr && tower->isActive())
+        {
+            if (targetCount >= 100) break;
+            targets[targetCount] = tower;
+            targetCount++;
+        }
+    }
+
+    // Sacred Light
+    if (inputs.sacredLightSelected && !sacredLight.isActive())
+    {
+        sacredLight.cast(
+            mouseWorldPos,
+            targets,
+            targetCount
+        );
+    }
+
+    // Plague
+    if (inputs.plagueSelected && !plague.isActive())
+    {
+        plague.cast(
+            mouseWorldPos,
+            targets,
+            targetCount
+        );
+    }
+
+    inputs.leftMousePressed = false;
 }

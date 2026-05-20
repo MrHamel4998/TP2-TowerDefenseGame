@@ -72,7 +72,7 @@ private:
 	Demon* demons[NUM_DEMONS_TOTAL];
 	Tower* towers[NUM_TOWERS_EMPLACEMENT];
 
-	GameObject* targets[100]; // CH: À ajuster selon le nombre total de tours + démons que l'on peut avoir en même temps (20 démons + le nombre de tours maximum)
+	GameObject* targets[NUM_DEMONS_TOTAL + NUM_TOWERS_EMPLACEMENT];
 	int targetCount = 0;
 
 	static const int NUM_PROJECTILES = 50;

@@ -56,12 +56,14 @@ bool GameScene::init()
 		towers[i] = nullptr;
 	}
 
+	for (int i = 0; i < NUM_PROJECTILES; i++) 
+	{
+		projectiles[i] = nullptr;
+	}
+
 	Subject::addObserver(this);
 	sacredLight.init();
 	plague.init();
-
-
-	for (int i = 0; i < NUM_PROJECTILES; i++) projectiles[i] = nullptr;
 
 	isRunning = true;
 	demonsKilled = 0;
@@ -143,8 +145,8 @@ void GameScene::update()
 				demons[freeSlot] = new Demon();
 			}
 			demons[freeSlot]->spawn(DEMON_SPAWN_POSITION, waypoints[0], currentWaveNumber);
-			spawnTimer = 0.f;
-			nextSpawnTime = 1.f + static_cast<float>(rand()) / RAND_MAX * (3.0f - 1.0f);
+			spawnTimer = 0.0f;
+			nextSpawnTime = 1.0f + static_cast<float>(rand()) / RAND_MAX * (3.0f - 1.0f);
 			demonsSpawned++;
 		}
 		// Sinon, on réinitialise le timer pour réessayer au prochain intervalle
@@ -212,6 +214,7 @@ bool GameScene::unload()
 	{
 		delete waypoints[i];
 	}
+
 	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
 	{
 		if (demons[i] != nullptr)
@@ -219,11 +222,20 @@ bool GameScene::unload()
 			delete demons[i];
 		}
 	}
+
 	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
 	{
 		if (towers[i] != nullptr)
 		{
 			delete towers[i];
+		}
+	}
+
+	for (int i = 0; i < NUM_PROJECTILES; i++)
+	{
+		if (projectiles[i] != nullptr)
+		{
+			delete projectiles[i];
 		}
 	}
 
@@ -265,7 +277,9 @@ void GameScene::notify(Subject* subject, EventType eventType)
 void GameScene::drawWaypoints()
 {
 	if (!inputs.showWaypoints)
+	{
 		return;
+	}
 	if (inputs.showWaypoints)
 	{
 		for (int i = 0; i < NUM_WAYPOINTS - 1; i++)
