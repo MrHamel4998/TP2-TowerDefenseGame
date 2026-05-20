@@ -58,15 +58,16 @@ public:
 
     void update(float deltaTime);
 
-    void findTargets(GameObject* entities[], int entityCount);
+	void findTargets(GameObject* entities[], int entityCount);
 
-    SpellType getSpellType() const;
+	SpellType getSpellType() const;
 
-    virtual int getRandomDamage() const = 0;
-    virtual float getLifetime() const = 0;
+	virtual int getRandomDamage() const = 0;
+	virtual float getLifetime() const = 0;
 	virtual Color getEffectColor() const = 0;
 
 protected:
+	void updateRuneRotation(GameObject& runeSprite, float deltaTime) const;
 
 	static const int MAX_TARGETS = 20;
 	SpellType spellType;
@@ -81,5 +82,7 @@ protected:
     float radius = 400.0f;
     float lifetime;
     float timer = 0.0f;
+
+    float getRemainingLifetimeRatio() const;
 };
 

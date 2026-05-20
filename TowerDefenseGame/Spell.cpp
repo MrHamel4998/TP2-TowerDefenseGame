@@ -53,6 +53,33 @@ void Spell::update(float deltaTime)
     }
 }
 
+float Spell::getRemainingLifetimeRatio() const
+{
+    if (lifetime <= 0.0f)
+    {
+        return 0.0f;
+    }
+
+    float ratio = timer / lifetime;
+    if (ratio < 0.0f)
+    {
+        ratio = 0.0f;
+    }
+    if (ratio > 1.0f)
+    {
+        ratio = 1.0f;
+    }
+
+    return ratio;
+}
+
+void Spell::updateRuneRotation(GameObject& runeSprite, float deltaTime) const
+{
+    float remainingLifetimeRatio = getRemainingLifetimeRatio();
+    float rotationSpeed = 180.0f + (1.0f - remainingLifetimeRatio) * 540.0f;
+    runeSprite.rotate(sf::degrees(rotationSpeed * deltaTime));
+}
+
 void Spell::notifyCast()
 {
     notifyAllObservers(EventType::SpellCast);

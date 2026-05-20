@@ -36,7 +36,7 @@ void SacredLight::update(float deltaTime)
 		return;
 	}
 
-	runeSprite.rotate(sf::degrees(180.0f * deltaTime / getLifetime()));
+	updateRuneRotation(runeSprite, deltaTime);
 }
 
 void SacredLight::draw(RenderWindow& renderWindow) const

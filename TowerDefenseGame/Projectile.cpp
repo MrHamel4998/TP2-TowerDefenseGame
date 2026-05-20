@@ -1,7 +1,6 @@
 ﻿#include "Projectile.h"
 #include "ContentPipeline.h"
-#include <cmath>
-#include <cstdlib>
+#include <iostream>
 
 Projectile::Projectile()
 {

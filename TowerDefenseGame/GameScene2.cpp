@@ -81,6 +81,14 @@ bool GameScene2::init()
     {
         projectiles[i] = nullptr;
     }
+    
+    // Tour de test
+    towers[0] = Tower::create(TowersType::ARCHER);
+    if (towers[0] != nullptr)
+    {
+        towers[0]->setPosition(Vector2f(660.f, 520.f));
+        towers[0]->activate();
+    }
 
     Subject::addObserver(this);
     sacredLight.init();
@@ -168,20 +176,28 @@ void GameScene2::update()
         {
             spawnTimer = 0.f;
         }
+    }
 
-        sacredLight.update(deltaTime);
-        plague.update(deltaTime);
+    sacredLight.update(deltaTime);
+    plague.update(deltaTime);
 
-        for (int i = 0; i < NUM_PROJECTILES; i++)
+    for (int i = 0; i < NUM_PROJECTILES; i++)
+    {
+        if (projectiles[i] != nullptr && projectiles[i]->isActive())
         {
-            if (projectiles[i] != nullptr && projectiles[i]->isActive())
-            {
-                projectiles[i]->update(deltaTime);
+            projectiles[i]->update(deltaTime);
 
-                if (projectiles[i]->hasReachedTarget())
+            if (projectiles[i]->hasReachedTarget())
+            {
+                if (Tower* targetTower = dynamic_cast<Tower*>(projectiles[i]->getTarget()))
                 {
-                    projectiles[i]->consumeImpact();
+                    if (targetTower->isActive())
+                    {
+                        targetTower->takeDamage(projectiles[i]->getDamage());
+                    }
                 }
+
+                projectiles[i]->consumeImpact();
             }
         }
     }
@@ -205,6 +221,14 @@ void GameScene2::draw()
         if (towers[i] != nullptr && towers[i]->isActive())
         {
             towers[i]->draw(renderWindow);
+        }
+    }
+
+    for (int i = 0; i < NUM_PROJECTILES; i++)
+    {
+        if (projectiles[i] != nullptr && projectiles[i]->isActive())
+        {
+            projectiles[i]->draw(renderWindow);
         }
     }
 

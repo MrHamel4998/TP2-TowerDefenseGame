@@ -4,6 +4,7 @@
 #include "MageTower.h"
 #include "KingTower.h"
 #include "Spell.h"
+#include <iostream>
 
 
 Tower::Tower()
@@ -47,6 +48,12 @@ int Tower::getLifePoints() const
 
 void Tower::setLifePoints(const int desiredLifePoints)
 {
+	if (getMaxHealth() <= 0)
+	{
+		initDamageable(desiredLifePoints);
+		return;
+	}
+
 	Damageable::setCurrentHealth(desiredLifePoints);
 }
 
@@ -57,6 +64,9 @@ void Tower::heal(const int amount)
 
 void Tower::takeDamage(const int amount)
 {
+	std::cout << "Tower took " << amount << " damage." << std::endl;
+	std::cout << "Tower health before damage: " << getHealth() << std::endl;
+	std::cout << "Tower health after damage: " << std::max(getHealth() - amount, 0) << std::endl;
 	Damageable::takeDamage(amount);
 }
 
@@ -67,7 +77,7 @@ bool Tower::isDead() const
 
 void Tower::onHealthChanged()
 {
-	setHealth(getHealth(), getMaxHealth());
+	GameObject::setHealth(getHealth(), getMaxHealth());
 }
 
 void Tower::onDeath()

@@ -15,6 +15,7 @@ bool ArcherTower::init()
 	setFireRate(0.0f);
 
 	GameObject::getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
+	GameObject::setHealth(getHealth(), getMaxHealth());
 
 	return true;
 }

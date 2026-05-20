@@ -41,7 +41,8 @@ void Demon::spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNum
 	initDamageable(BASE_HEALTH);
 	setHealth(getHealth(), getMaxHealth());
 
-	fireRate = BASE_FIRE_RATE * waveNumber;
+	fireRate = BASE_FIRE_RATE - FIRE_RATE_REDUCTION_PER_WAVE * waveNumber;
+	if (fireRate < 0.1f) fireRate = 0.1f;
 	fireRange = BASE_FIRE_RANGE;
 	fireTimer = 0.0f;
 

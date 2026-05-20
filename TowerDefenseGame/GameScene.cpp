@@ -61,6 +61,15 @@ bool GameScene::init()
 		projectiles[i] = nullptr;
 	}
 
+	// Tour de test
+	towers[0] = Tower::create(TowersType::ARCHER);
+	if (towers[0] != nullptr)
+	{
+		towers[0]->init();
+		towers[0]->setPosition(Vector2f(660.f, 520.f));
+		towers[0]->activate();
+	}
+
 	Subject::addObserver(this);
 	sacredLight.init();
 	plague.init();
@@ -167,6 +176,14 @@ void GameScene::update()
 
 			if (projectiles[i]->hasReachedTarget())
 			{
+				if (Tower* targetTower = dynamic_cast<Tower*>(projectiles[i]->getTarget()))
+				{
+					if (targetTower->isActive())
+					{
+						targetTower->takeDamage(projectiles[i]->getDamage());
+					}
+				}
+
 				projectiles[i]->consumeImpact();
 			}
 		}
@@ -192,6 +209,14 @@ void GameScene::draw()
 		if (towers[i] != nullptr && towers[i]->isActive())
 		{
 			towers[i]->draw(renderWindow);
+		}
+	}
+	
+	for (int i = 0; i < NUM_PROJECTILES; i++)
+	{
+		if (projectiles[i] != nullptr && projectiles[i]->isActive())
+		{
+			projectiles[i]->draw(renderWindow);
 		}
 	}
 

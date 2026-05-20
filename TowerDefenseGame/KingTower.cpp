@@ -14,6 +14,7 @@ bool KingTower::init()
 	setCollisionCircleRadius(50);
 
 	GameObject::getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
+	GameObject::setHealth(getHealth(), getMaxHealth());
 
 	return true;
 }

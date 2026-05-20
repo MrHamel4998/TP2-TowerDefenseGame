@@ -58,7 +58,8 @@ private:
 	void handleWaypointArrival();
 	void updateFlip();
 
-	static constexpr float BASE_FIRE_RATE = 1.05f - 0.05f; // (1.05 - 0.05 * numéro de vague)
+	static constexpr float BASE_FIRE_RATE = 1.05f;
+	static constexpr float FIRE_RATE_REDUCTION_PER_WAVE = 0.05f;
 	static constexpr float BASE_FIRE_RANGE = 250.0f;
 
 	float fireRate = BASE_FIRE_RATE;

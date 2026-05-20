@@ -22,6 +22,7 @@ bool MageTower::init()
 	setActiveAnimation(0);
 
 	GameObject::getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
+	GameObject::setHealth(getHealth(), getMaxHealth());
 
 	return true;
 }
