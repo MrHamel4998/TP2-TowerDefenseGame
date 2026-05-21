@@ -5,7 +5,6 @@
 #include "Subject.h"
 #include "IObserver.h"
 #include "TowersType.h"
-#include "TowerEmplacement.h"
 #include "Constants.h"
 
 /*

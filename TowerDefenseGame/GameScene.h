@@ -7,6 +7,7 @@
 #include "IObserver.h"
 #include "SacredLight.h"
 #include "Plague.h"
+#include "TowerEmplacement.h"
 #include "Tower.h"
 #include "Projectile.h"
 
@@ -48,6 +49,7 @@ public:
 private:
 	static const int NUM_WAYPOINTS = 12;
 	static const int NUM_TOWERS_EMPLACEMENT = 8;
+	static const int NUM_TOWERS = NUM_TOWERS_EMPLACEMENT;
 	static const int NUM_DEMONS_TOTAL = 20;
 	static const int DEMON_TO_SPAWN = 50;
 	static constexpr Vector2f DEMON_SPAWN_POSITION = Vector2f(610, -100);
@@ -70,7 +72,8 @@ private:
 
 	Waypoint* waypoints[NUM_WAYPOINTS];
 	Demon* demons[NUM_DEMONS_TOTAL];
-	Tower* towers[NUM_TOWERS_EMPLACEMENT];
+	Tower* towers[NUM_TOWERS];
+	TowerEmplacement* towersEmplacement[NUM_TOWERS_EMPLACEMENT];
 
 	GameObject* targets[NUM_DEMONS_TOTAL + NUM_TOWERS_EMPLACEMENT];
 	int targetCount = 0;

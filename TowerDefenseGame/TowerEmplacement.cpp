@@ -1,21 +1,42 @@
 ﻿#include "TowerEmplacement.h"
 #include "Subject.h"
 #include "Constants.h"
+#include "ContentPipeline.h"
 
 TowerEmplacement::TowerEmplacement()
 {
 }
 
+bool TowerEmplacement::init()
+{
+	setTexture(ContentPipeline::getInstance().getTowerEmplacementTexture());
+	return true;
+}
+
 void TowerEmplacement::notify(Subject* subject, EventType eventType)
 {
-	if (eventType == EventType::TowerDeactivated)
+	if (eventType == EventType::TowerDeactivated && subject == dynamic_cast<Subject*>(tower))
 	{
-		// CH: La tour a été détruite, on peut mettre une autre tour à cet emplacement
-		// Réinitialiser l'emplacement
+		tower = nullptr;
+		activate();
 	}
-	else if (eventType == EventType::TowerActivated)
+}
+
+bool TowerEmplacement::isOccupied() const
+{
+	return tower != nullptr;
+}
+
+void TowerEmplacement::placeTower(Tower* tower)
+{
+	if (!isOccupied())
 	{
-		// CH: Une tour a été activée sur cet emplacement
-		// Mettre l'emplacement comme occupé
+		this->tower = tower;
+		deactivate();
 	}
+}
+
+Tower* TowerEmplacement::getTower() const
+{
+	return tower;
 }

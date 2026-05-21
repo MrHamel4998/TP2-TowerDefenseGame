@@ -41,6 +41,12 @@ bool GameScene::init()
 	waypoints[10] = new Waypoint(Vector2f(968, 850));
 	waypoints[11] = new Waypoint(Vector2f(1110, 682));
 
+	Vector2f emplacementPositions[NUM_TOWERS_EMPLACEMENT] = {
+	Vector2f(470, 170), Vector2f(770, 250), Vector2f(440, 370),
+	Vector2f(650, 520), Vector2f(120, 650), Vector2f(470, 700),
+	Vector2f(850, 710), Vector2f(660, 950)
+	};
+
 	for (int i = 0; i < NUM_WAYPOINTS - 1; i++)
 	{
 		waypoints[i]->setNextWaypoint(waypoints[i + 1]);
@@ -61,14 +67,19 @@ bool GameScene::init()
 		projectiles[i] = nullptr;
 	}
 
-	// Tour de test
-	towers[0] = Tower::create(TowersType::ARCHER);
-	if (towers[0] != nullptr)
+	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
 	{
-		towers[0]->init();
-		towers[0]->setPosition(Vector2f(660.f, 520.f));
-		towers[0]->activate();
+		towersEmplacement[i] = new TowerEmplacement();
+		towersEmplacement[i]->init();
+		towersEmplacement[i]->setPosition(emplacementPositions[i]);
+		towersEmplacement[i]->activate();
+		Subject::addObserver(towersEmplacement[i]);
 	}
+
+	towers[0] = Tower::create(TowersType::KING);
+	towers[0]->setPosition(Vector2f(1138, 600));
+	towers[0]->activate();
+
 
 	Subject::addObserver(this);
 	sacredLight.init();
@@ -206,6 +217,12 @@ void GameScene::draw()
 
 	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
 	{
+		if (towersEmplacement[i] != nullptr && towersEmplacement[i]->isActive())
+			towersEmplacement[i]->draw(renderWindow);
+	}
+
+	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+	{
 		if (towers[i] != nullptr && towers[i]->isActive())
 		{
 			towers[i]->draw(renderWindow);
@@ -262,6 +279,12 @@ bool GameScene::unload()
 		{
 			delete projectiles[i];
 		}
+	}
+
+	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+	{
+		if (towersEmplacement[i] != nullptr)
+			delete towersEmplacement[i];
 	}
 
 	return true;
