@@ -22,4 +22,6 @@ struct Inputs
 	bool leftMousePressed;
 	bool plagueSelected;
 	bool sacredLightSelected;
+	bool mageTowerSelected;
+	bool archerTowerSelected;
 };

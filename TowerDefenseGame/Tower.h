@@ -45,5 +45,6 @@ private:
 	void onDeath() override;
 
 	TowersType type;
-	Sound* towerSound = nullptr;
+	Sound* towerDeathSound = nullptr;
+	Sound* towerBuilding = nullptr;
 };

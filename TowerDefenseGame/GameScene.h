@@ -48,6 +48,7 @@ public:
 
 private:
 	static const int NUM_WAYPOINTS = 12;
+	static const int NUM_TOWERS_TYPE = 2;
 	static const int NUM_TOWERS_EMPLACEMENT = 8;
 	static const int NUM_TOWERS = NUM_TOWERS_EMPLACEMENT;
 	static const int NUM_DEMONS_TOTAL = 20;
@@ -61,6 +62,7 @@ private:
 
 	void handleSpells();
 	void drawWaypoints();
+	void handleBuilding();
 
 	View view;
 	Hud hud;
@@ -72,7 +74,7 @@ private:
 
 	Waypoint* waypoints[NUM_WAYPOINTS];
 	Demon* demons[NUM_DEMONS_TOTAL];
-	Tower* towers[NUM_TOWERS];
+	Tower* towers[NUM_TOWERS * NUM_TOWERS_TYPE];
 	TowerEmplacement* towersEmplacement[NUM_TOWERS_EMPLACEMENT];
 
 	GameObject* targets[NUM_DEMONS_TOTAL + NUM_TOWERS_EMPLACEMENT];
