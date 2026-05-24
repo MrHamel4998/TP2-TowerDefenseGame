@@ -1,7 +1,5 @@
 ﻿#include "Tower.h"
 #include "ContentPipeline.h" 
-#include "ArcherTower.h"
-#include "MageTower.h"
 #include "KingTower.h"
 #include "Spell.h"
 #include <iostream>
@@ -15,20 +13,9 @@ Tower::~Tower()
 {
 }
 
-Tower* Tower::create(const TowersType type)
+Tower* Tower::createKingTower()
 {
-	switch (type)
-	{
-		case TowersType::ARCHER:
-			return new ArcherTower();
-
-		case TowersType::MAGE:
-			return new MageTower();
-
-		case TowersType::KING:
-			return new KingTower();
-	}
-	return nullptr;
+	return new KingTower();
 }
 
 TowersType Tower::getType() const
@@ -84,6 +71,7 @@ void Tower::onDeath()
 {
 	notifyAllObservers(EventType::TowerDeactivated);
 	deactivate();
+
 }
 
 void Tower::notify(Subject* subject, EventType eventType)

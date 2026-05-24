@@ -10,6 +10,7 @@
 #include "TowerEmplacement.h"
 #include "Tower.h"
 #include "Projectile.h"
+#include "ShootingTower.h"
 
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
@@ -74,7 +75,8 @@ private:
 
 	Waypoint* waypoints[NUM_WAYPOINTS];
 	Demon* demons[NUM_DEMONS_TOTAL];
-	Tower* towers[NUM_TOWERS * NUM_TOWERS_TYPE];
+	Tower* kingTower;
+	ShootingTower* towers[NUM_TOWERS * NUM_TOWERS_TYPE];
 	TowerEmplacement* towersEmplacement[NUM_TOWERS_EMPLACEMENT];
 
 	GameObject* targets[NUM_DEMONS_TOTAL + NUM_TOWERS_EMPLACEMENT];

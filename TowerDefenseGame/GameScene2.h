@@ -9,6 +9,8 @@
 #include "Plague.h"
 #include "Tower.h"
 #include "Projectile.h"
+#include "TowerEmplacement.h"
+#include "ShootingTower.h"
 
 /*
 Metrics du level 2 (à effacer à la fin)
@@ -33,6 +35,8 @@ public:
 private:
     static const int NUM_WAYPOINTS = 14;
     static const int NUM_TOWERS_EMPLACEMENT = 9;
+    static const int NUM_TOWERS_TYPE = 2;
+    static const int NUM_TOWERS = NUM_TOWERS_EMPLACEMENT;
     static const int NUM_DEMONS_TOTAL = 20;
     static const int DEMON_TO_SPAWN = 50;
     static constexpr Vector2f DEMON_SPAWN_POSITION = Vector2f(-100, 410);
@@ -42,6 +46,7 @@ private:
     void draw() override;
     bool unload() override;
 
+    void handleBuilding();
     void handleSpells();
     void drawWaypoints();
 
@@ -55,7 +60,9 @@ private:
 
     Waypoint* waypoints[NUM_WAYPOINTS];
     Demon* demons[NUM_DEMONS_TOTAL];
-    Tower* towers[NUM_TOWERS_EMPLACEMENT];
+    Tower* kingTower;
+    ShootingTower* towers[NUM_TOWERS * NUM_TOWERS_TYPE];
+    TowerEmplacement* towersEmplacement[NUM_TOWERS_EMPLACEMENT];
 
     GameObject* targets[NUM_DEMONS_TOTAL + NUM_TOWERS_EMPLACEMENT];
     int targetCount = 0;

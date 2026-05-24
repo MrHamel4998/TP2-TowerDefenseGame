@@ -72,22 +72,44 @@ bool GameScene2::init()
         demons[i] = new Demon();
     }
 
-    for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
-    {
-        towers[i] = nullptr;
-    }
-
     for (int i = 0; i < NUM_PROJECTILES; i++) 
     {
         projectiles[i] = nullptr;
     }
     
-    // Tour de test
-    towers[0] = Tower::create(TowersType::ARCHER);
-    if (towers[0] != nullptr)
+    Vector2f emplacementPositions[NUM_TOWERS_EMPLACEMENT] = {
+        Vector2f(110, 620), Vector2f(228, 320), Vector2f(444, 780), Vector2f(362, 530), 
+        Vector2f(610, 222), Vector2f(998, 270), Vector2f(630, 460), Vector2f(935, 520), 
+        Vector2f(798, 760)
+    };
+
+    for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
     {
-        towers[0]->setPosition(Vector2f(660.f, 520.f));
-        towers[0]->activate();
+        towersEmplacement[i] = new TowerEmplacement();
+        towersEmplacement[i]->init();
+        towersEmplacement[i]->setPosition(emplacementPositions[i]);
+        towersEmplacement[i]->activate();
+        Subject::addObserver(towersEmplacement[i]);
+    }
+
+    int towerIndex = 0;
+
+    kingTower = Tower::createKingTower();
+    kingTower->setPosition(Vector2f(1138, 600));
+    kingTower->activate();
+
+    //Création des tours d'archers
+    for (int i = 0; i < NUM_TOWERS; i++)
+    {
+        towers[towerIndex] = ShootingTower::create(TowersType::ARCHER);
+        towerIndex++;
+    }
+
+    //Création des tours de mage
+    for (int i = 0; i < NUM_TOWERS; i++)
+    {
+        towers[towerIndex] = ShootingTower::create(TowersType::MAGE);
+        towerIndex++;
     }
 
     Subject::addObserver(this);
@@ -112,16 +134,44 @@ void GameScene2::getInputs()
         }
         inputs.showWaypoints = Keyboard::isKeyPressed(Keyboard::Key::W);
 
-        // Selection des sorts
+        // Sélection Sacred Light
         if (Keyboard::isKeyPressed(Keyboard::Key::V))
         {
             inputs.sacredLightSelected = true;
             inputs.plagueSelected = false;
+            inputs.archerTowerSelected = false;
+            inputs.mageTowerSelected = false;
+            std::cout << "Sacred Light selected" << std::endl;
         }
+
+        // Sélection Plague
         if (Keyboard::isKeyPressed(Keyboard::Key::C))
         {
             inputs.plagueSelected = true;
             inputs.sacredLightSelected = false;
+            inputs.mageTowerSelected = false;
+            inputs.archerTowerSelected = false;
+            std::cout << "Plague selected" << std::endl;
+        }
+
+        // Sélection Tour de Mage
+        if (Keyboard::isKeyPressed(Keyboard::Key::X))
+        {
+            inputs.sacredLightSelected = false;
+            inputs.plagueSelected = false;
+            inputs.archerTowerSelected = false;
+            inputs.mageTowerSelected = true;
+            std::cout << "Mage Tower selected" << std::endl;
+        }
+
+        // Sélection Tour d'Archer
+        if (Keyboard::isKeyPressed(Keyboard::Key::Z))
+        {
+            inputs.sacredLightSelected = false;
+            inputs.plagueSelected = false;
+            inputs.archerTowerSelected = true;
+            inputs.mageTowerSelected = false;
+            std::cout << "Archer Tower selected" << std::endl;
         }
 
         inputs.leftMousePressed = Mouse::isButtonPressed(Mouse::Button::Left);
@@ -135,15 +185,15 @@ void GameScene2::update()
         if (demons[i] != nullptr && demons[i]->isActive())
         {
             demons[i]->update(deltaTime);
-            demons[i]->shoot(deltaTime, towers, NUM_TOWERS_EMPLACEMENT, projectiles, NUM_PROJECTILES, currentWaveNumber);
+            demons[i]->shoot(deltaTime, towers, kingTower, NUM_TOWERS * NUM_TOWERS_TYPE, projectiles, NUM_PROJECTILES, currentWaveNumber);
         }
     }
 
-    for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+    for (int i = 0; i < NUM_TOWERS * NUM_TOWERS_TYPE; i++)
     {
         if (towers[i] != nullptr && towers[i]->isActive())
         {
-            towers[i]->update(deltaTime);
+            towers[i]->shoot(deltaTime, demons, NUM_DEMONS_TOTAL, projectiles, NUM_PROJECTILES, currentWaveNumber);
         }
     }
 
@@ -178,6 +228,7 @@ void GameScene2::update()
         }
     }
 
+    handleBuilding();
     sacredLight.update(deltaTime);
     plague.update(deltaTime);
 
@@ -217,6 +268,12 @@ void GameScene2::draw()
     }
 
     for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+    {
+        if (towersEmplacement[i] != nullptr && towersEmplacement[i]->isActive())
+            towersEmplacement[i]->draw(renderWindow);
+    }
+
+    for (int i = 0; i < (NUM_TOWERS * NUM_TOWERS_TYPE); i++)
     {
         if (towers[i] != nullptr && towers[i]->isActive())
         {
@@ -263,12 +320,18 @@ bool GameScene2::unload()
         }
     }
 
-    for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+    for (int i = 0; i < (NUM_TOWERS * NUM_TOWERS_TYPE); i++)
     {
         if (towers[i] != nullptr)
         {
             delete towers[i];
         }
+    }
+
+    for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+    {
+        if (towersEmplacement[i] != nullptr)
+            delete towersEmplacement[i];
     }
 
     for (int i = 0; i < NUM_PROJECTILES; i++)
@@ -384,4 +447,48 @@ void GameScene2::handleSpells()
     }
 
     inputs.leftMousePressed = false;
+}
+
+void GameScene2::handleBuilding()
+{
+    if (!inputs.leftMousePressed) return;
+    if (!inputs.archerTowerSelected && !inputs.mageTowerSelected) return;
+
+    Vector2f mouseWorldPos = renderWindow.mapPixelToCoords(Mouse::getPosition(renderWindow));
+
+    //Recherche de l'emplacement cliqué
+    TowerEmplacement* selectedEmplacement = nullptr;
+    for (TowerEmplacement* towerEmplacement : towersEmplacement)
+    {
+        if (!towerEmplacement->isOccupied())
+        {
+            float dist = (mouseWorldPos - towerEmplacement->getPosition()).length();
+            if (dist < 50.f)
+            {
+                selectedEmplacement = towerEmplacement;
+                break;
+            }
+        }
+    }
+
+    if (selectedEmplacement == nullptr) return;
+
+    //Recherche d'une tour inactive du bon type
+    TowersType desiredType = inputs.archerTowerSelected ? TowersType::ARCHER : TowersType::MAGE;
+    Tower* newTower = nullptr;
+    for (Tower* tower : towers)
+    {
+        if (tower != nullptr && !tower->isActive() && tower->getType() == desiredType)
+        {
+            newTower = tower;
+            break;
+        }
+    }
+
+    //Place la tour
+    if (newTower == nullptr) return;
+    newTower->setPosition(selectedEmplacement->getPosition());
+    newTower->setLifePoints(250);
+    newTower->activate();
+    selectedEmplacement->placeTower(newTower);
 }

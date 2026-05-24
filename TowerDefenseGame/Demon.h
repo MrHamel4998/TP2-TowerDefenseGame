@@ -5,6 +5,7 @@
 #include "Subject.h"
 #include "Damageable.h"
 #include "IObserver.h"
+#include "ShootingTower.h"
 using namespace sf;
 class Tower;
 class Projectile;
@@ -36,7 +37,7 @@ public:
 	bool init();
 
 	void notify(Subject* subject, EventType eventType) override;
-	void shoot(float deltaTime, Tower* towers[], int towerCount, Projectile* projectiles[], int projectileCount, int waveNumber);
+	void shoot(float deltaTime, ShootingTower* towers[], Tower* kingTower, int towerCount, Projectile* projectiles[], int projectileCount, int waveNumber);
 private:
 	static const int BASE_HEALTH = 60;
 

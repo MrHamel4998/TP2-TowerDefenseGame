@@ -13,6 +13,7 @@ bool MageTower::init()
 	setLifePoints(250);
 	setAttackDamage(25);
 	setFireRate(1.5f);
+	setProjectileType(ProjectileType::Blast);
 	
 	if (!initAnimationsStructure(ANIMATION_COUNT, Vector2i(RECTANGLE_SIZE_X, RECTANGLE_SIZE_Y))) return false;
 	GameObject::setOrigin(Vector2f(RECTANGLE_SIZE_X / 2.0f, RECTANGLE_SIZE_Y / 2.0f));
@@ -23,6 +24,7 @@ bool MageTower::init()
 
 	GameObject::getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
 	GameObject::setHealth(getHealth(), getMaxHealth());
+
 
 	return true;
 }

@@ -41,12 +41,6 @@ bool GameScene::init()
 	waypoints[10] = new Waypoint(Vector2f(968, 850));
 	waypoints[11] = new Waypoint(Vector2f(1110, 682));
 
-	Vector2f emplacementPositions[NUM_TOWERS_EMPLACEMENT] = {
-	Vector2f(470, 170), Vector2f(770, 250), Vector2f(440, 370),
-	Vector2f(650, 520), Vector2f(120, 650), Vector2f(470, 700),
-	Vector2f(850, 710), Vector2f(660, 950)
-	};
-
 	for (int i = 0; i < NUM_WAYPOINTS - 1; i++)
 	{
 		waypoints[i]->setNextWaypoint(waypoints[i + 1]);
@@ -67,6 +61,12 @@ bool GameScene::init()
 		projectiles[i] = nullptr;
 	}
 
+	Vector2f emplacementPositions[NUM_TOWERS_EMPLACEMENT] = {
+	Vector2f(470, 170), Vector2f(770, 250), Vector2f(440, 370),
+	Vector2f(650, 520), Vector2f(120, 650), Vector2f(470, 700),
+	Vector2f(850, 710), Vector2f(660, 950)
+	};
+
 	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
 	{
 		towersEmplacement[i] = new TowerEmplacement();
@@ -78,22 +78,21 @@ bool GameScene::init()
 
 	int towerIndex = 0;
 
-	towers[towerIndex] = Tower::create(TowersType::KING);
-	towers[towerIndex]->setPosition(Vector2f(1138, 600));
-	towers[towerIndex]->activate();
-	towerIndex++;
+	kingTower = Tower::createKingTower();
+	kingTower->setPosition(Vector2f(1138, 600));
+	kingTower->activate();
 
 	//Création des tours d'archers
 	for (int i = 0; i < NUM_TOWERS; i++)
 	{
-		towers[towerIndex] = Tower::create(TowersType::ARCHER);
+		towers[towerIndex] = ShootingTower::create(TowersType::ARCHER);
 		towerIndex++;
 	}
 
 	//Création des tours de mage
 	for (int i = 0; i < NUM_TOWERS; i++)
 	{
-		towers[towerIndex] = Tower::create(TowersType::MAGE);
+		towers[towerIndex] = ShootingTower::create(TowersType::MAGE);
 		towerIndex++;
 	}
 
@@ -172,15 +171,20 @@ void GameScene::update()
 		if (demons[i] != nullptr && demons[i]->isActive())
 		{
 			demons[i]->update(deltaTime);
-			demons[i]->shoot(deltaTime, towers, NUM_TOWERS_EMPLACEMENT, projectiles, NUM_PROJECTILES, currentWaveNumber);
+			demons[i]->shoot(deltaTime, towers, kingTower, NUM_TOWERS * NUM_TOWERS_TYPE, projectiles, NUM_PROJECTILES, currentWaveNumber);
 		}
 	}
 
-	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+	if (kingTower != nullptr && kingTower->isActive())
+	{
+		kingTower->update(deltaTime);
+	}
+
+	for (int i = 0; i < NUM_TOWERS * NUM_TOWERS_TYPE; i++)
 	{
 		if (towers[i] != nullptr && towers[i]->isActive())
 		{
-			towers[i]->update(deltaTime);
+			towers[i]->shoot(deltaTime, demons, NUM_DEMONS_TOTAL, projectiles, NUM_PROJECTILES, currentWaveNumber);
 		}
 	}
 
@@ -257,6 +261,11 @@ void GameScene::draw()
 		}
 	}
 
+	if (kingTower != nullptr && kingTower->isActive())
+	{
+		kingTower->draw(renderWindow);
+	}
+
 	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
 	{
 		if (towersEmplacement[i] != nullptr && towersEmplacement[i]->isActive())
@@ -298,6 +307,11 @@ bool GameScene::unload()
 		delete waypoints[i];
 	}
 
+	if (kingTower != nullptr)
+	{
+		delete kingTower;
+	}
+
 	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
 	{
 		if (demons[i] != nullptr)
@@ -306,19 +320,19 @@ bool GameScene::unload()
 		}
 	}
 
-	for (int i = 0; i < (NUM_TOWERS * NUM_TOWERS_TYPE); i++)
-	{
-		if (towers[i] != nullptr)
-		{
-			delete towers[i];
-		}
-	}
-
 	for (int i = 0; i < NUM_PROJECTILES; i++)
 	{
 		if (projectiles[i] != nullptr)
 		{
 			delete projectiles[i];
+		}
+	}
+
+	for (int i = 0; i < (NUM_TOWERS * NUM_TOWERS_TYPE); i++)
+	{
+		if (towers[i] != nullptr)
+		{
+			delete towers[i];
 		}
 	}
 
@@ -473,6 +487,7 @@ void GameScene::handleBuilding()
 	//Place la tour
 	if (newTower == nullptr) return;
 	newTower->setPosition(selectedEmplacement->getPosition());
+	newTower->setLifePoints(250);
 	newTower->activate();
 	selectedEmplacement->placeTower(newTower);
 }

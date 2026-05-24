@@ -28,7 +28,7 @@ public:
 	virtual bool init() = 0;
 	virtual void update(const float deltaTime) = 0;
 
-	static Tower* create(const TowersType type);
+	static Tower* createKingTower();
 
 	TowersType getType() const;
 	void setType(const TowersType type);

@@ -13,6 +13,7 @@ bool ArcherTower::init()
 	setLifePoints(250);
 	setAttackDamage(10);
 	setFireRate(0.0f);
+	setProjectileType(ProjectileType::Arrow);
 
 	GameObject::getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
 	GameObject::setHealth(getHealth(), getMaxHealth());

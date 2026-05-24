@@ -1,11 +1,11 @@
 ﻿#include "Demon.h"
 #include "ContentPipeline.h"
-#include "Tower.h"
 #include "Projectile.h"
 #include "Spell.h"
 #include "SacredLight.h"
 #include "Plague.h"
 #include <iostream>
+#include "ShootingTower.h"
 
 Demon::Demon()
 {
@@ -210,7 +210,7 @@ void Demon::notify(Subject* subject, EventType eventType)
 	}
 }
 
-void Demon::shoot(float deltaTime, Tower* towers[], int towerCount, Projectile* projectiles[], int projectileCount, int waveNumber)
+void Demon::shoot(float deltaTime, ShootingTower* towers[], Tower* kingTower, int towerCount, Projectile* projectiles[], int projectileCount, int waveNumber)
 {
 	if (isDying || isDead())
 	{
@@ -227,9 +227,19 @@ void Demon::shoot(float deltaTime, Tower* towers[], int towerCount, Projectile* 
 	float closestDistanceSquared = fireRange * fireRange;
 	Vector2f demonPosition = getPosition();
 
-	for (int i = 0; i < towerCount; i++)
+	for (int i = 0; i < towerCount + 1; i++)
 	{
-		Tower* tower = towers[i];
+		Tower* tower;
+
+		if (i == towerCount + 1)
+		{
+			tower = kingTower;
+		}
+		else
+		{
+			tower = towers[i];
+		}
+
 		if (tower == nullptr || !tower->isActive())
 		{
 			continue;
