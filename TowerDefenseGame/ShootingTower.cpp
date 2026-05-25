@@ -58,6 +58,11 @@ void ShootingTower::setProjectileType(const ProjectileType type)
 	projectileType = type;
 }
 
+bool ShootingTower::getShootingStatus()
+{
+	return isShooting;
+}
+
 void ShootingTower::notify(Subject* subject, EventType eventType)
 {
     Spell* spell = dynamic_cast<Spell*>(subject);
@@ -113,8 +118,9 @@ void ShootingTower::shoot(float deltaTime, Demon* demons[], int demonCount, Proj
 	}
 
 	fireRateTimer += deltaTime;
-	if (fireRateTimer < fireRate)
+	if (fireRateTimer < fireRate / fireRateMultiplier)
 	{
+		isShooting = false;
 		return;
 	}
 
@@ -168,4 +174,6 @@ void ShootingTower::shoot(float deltaTime, Demon* demons[], int demonCount, Proj
 
 	projectile->launch(projectileType, getPosition(), targetDemon, waveNumber);
 	fireRateTimer = 0.0f;
+	isShooting = true;
+	onShoot();
 }

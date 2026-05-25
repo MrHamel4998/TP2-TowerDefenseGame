@@ -95,7 +95,7 @@ bool GameScene2::init()
     int towerIndex = 0;
 
     kingTower = Tower::createKingTower();
-    kingTower->setPosition(Vector2f(1138, 600));
+    kingTower->setPosition(Vector2f(1138, 564));
     kingTower->activate();
 
     //Création des tours d'archers
@@ -189,6 +189,11 @@ void GameScene2::update()
         }
     }
 
+    if (kingTower != nullptr && kingTower->isActive())
+    {
+        kingTower->update(deltaTime);
+    }
+
     for (int i = 0; i < NUM_TOWERS * NUM_TOWERS_TYPE; i++)
     {
         if (towers[i] != nullptr && towers[i]->isActive())
@@ -265,6 +270,12 @@ void GameScene2::draw()
         {
             demons[i]->draw(renderWindow);
         }
+    }
+
+
+    if (kingTower != nullptr && kingTower->isActive())
+    {
+        kingTower->draw(renderWindow);
     }
 
     for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)

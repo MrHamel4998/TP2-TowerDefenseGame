@@ -82,7 +82,7 @@ private:
 	GameObject* targets[NUM_DEMONS_TOTAL + NUM_TOWERS_EMPLACEMENT];
 	int targetCount = 0;
 
-	static const int NUM_PROJECTILES = 50;
+	static const int NUM_PROJECTILES = 300;
 	Projectile* projectiles[NUM_PROJECTILES];
 
 	int currentWaveNumber = 1;

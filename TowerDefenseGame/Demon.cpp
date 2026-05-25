@@ -231,7 +231,7 @@ void Demon::shoot(float deltaTime, ShootingTower* towers[], Tower* kingTower, in
 	{
 		Tower* tower;
 
-		if (i == towerCount + 1)
+		if (i == towerCount)
 		{
 			tower = kingTower;
 		}

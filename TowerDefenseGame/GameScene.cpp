@@ -184,6 +184,7 @@ void GameScene::update()
 	{
 		if (towers[i] != nullptr && towers[i]->isActive())
 		{
+			towers[i]->update(deltaTime);
 			towers[i]->shoot(deltaTime, demons, NUM_DEMONS_TOTAL, projectiles, NUM_PROJECTILES, currentWaveNumber);
 		}
 	}
@@ -238,6 +239,14 @@ void GameScene::update()
 					if (targetTower->isActive())
 					{
 						targetTower->takeDamage(projectiles[i]->getDamage());
+					}
+				}
+
+				else if (Demon* targetDemon = dynamic_cast<Demon*>(projectiles[i]->getTarget()))
+				{
+					if (targetDemon->isActive())
+					{
+						targetDemon->takeDamage(projectiles[i]->getDamage());
 					}
 				}
 
