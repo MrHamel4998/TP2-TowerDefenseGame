@@ -67,6 +67,8 @@ int Game::run()
 			break;
 		}
 
+		Scene::Scenes ranScene = sceneSelector;
+
 		if (activeScene->init()) //Si l'initilisation s'est bien passé, on entre dans ce bloc
 		{
 			//Run est la boucle de jeu de la scène
@@ -95,6 +97,11 @@ int Game::run()
 
 		if (sceneSelector == Scene::Scenes::Transition)
 		{
+
+			if (ranScene != Scene::Scenes::Title)
+			{
+				nextWave();
+			}
 			transitionLevel = currentWave - 1;
 		}
 
@@ -126,6 +133,11 @@ int Game::getCurrentWave() const
 	return currentWave;
 }
 
+int Game::getMaxWaves() const
+{
+	return shortMode ? 2 : 10;
+}
+
 bool Game::isVictory() const 
 { 
 	return victory;
@@ -149,4 +161,12 @@ void Game::setGameOver(bool value)
 void Game::nextWave() 
 { 
 	currentWave++; 
+}
+
+void Game::reset()
+{
+	shortMode = false;
+	victory = false;
+	gameOver = false;
+	currentWave = 1;
 }

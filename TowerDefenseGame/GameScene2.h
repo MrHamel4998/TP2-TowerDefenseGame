@@ -40,7 +40,7 @@ private:
     static const int NUM_TOWERS_TYPE = 2;
     static const int NUM_TOWERS = NUM_TOWERS_EMPLACEMENT;
     static const int NUM_DEMONS_TOTAL = 20;
-    static const int DEMON_TO_SPAWN = 50;
+    static const int DEMON_TO_SPAWN = 5;
     static constexpr Vector2f DEMON_SPAWN_POSITION = Vector2f(-100, 410);
 
     void getInputs() override;
@@ -73,6 +73,7 @@ private:
     static const int NUM_PROJECTILES = 50;
     Projectile* projectiles[NUM_PROJECTILES];
 
+    int scorePoints = 0;
     int currentWaveNumber = 2;
     float spawnTimer = 0.0f;
     float nextSpawnTime = 0.0f;

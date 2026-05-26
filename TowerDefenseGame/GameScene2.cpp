@@ -124,7 +124,7 @@ bool GameScene2::init()
     demonsKilled = 0;
     levelWon = false;
     gameOver = false;
-    currentWaveNumber = (game != nullptr) ? game->getCurrentWave() : 2;
+    currentWaveNumber = (game != nullptr) ? game->getCurrentWave() : 1;
 
     return true;
 }
@@ -152,6 +152,30 @@ void GameScene2::getInputs()
 
             switch (keyPressed->scancode)
             {
+            case Keyboard::Scan::Enter:
+                inputs.enterPressed = true;
+                if (levelWon)
+                {
+                    // Si dernière vague, aller directement à l'écran de fin (victoire)
+                    if (game != nullptr && game->getCurrentWave() >= game->getMaxWaves())
+                    {
+                        if (game != nullptr) game->setVictory(true);
+                        isRunning = false;
+                        transitionToScene = Scene::Scenes::End;
+                    }
+                    else
+                    {
+                        isRunning = false;
+                        transitionToScene = Scene::Scenes::Transition;
+                    }
+                }
+                else if (gameOver)
+                {
+                    isRunning = false;
+                    transitionToScene = Scene::Scenes::End;
+                }
+                break;
+
             case Keyboard::Scan::Z:
 
                 inputs.archerTowerSelected = true;
@@ -262,6 +286,14 @@ void GameScene2::update()
                         targetTower->takeDamage(projectiles[i]->getDamage());
                     }
                 }
+                else if (Demon* targetDemon = dynamic_cast<Demon*>(projectiles[i]->getTarget()))
+                {
+                    if (targetDemon->isActive())
+                    {
+                        targetDemon->takeDamage(projectiles[i]->getDamage());
+                        scorePoints += projectiles[i]->getDamage();
+                    }
+                }
 
                 projectiles[i]->consumeImpact();
             }
@@ -340,6 +372,12 @@ bool GameScene2::unload()
         {
             delete waypoints[i];
         }
+    }
+
+    if (kingTower != nullptr)
+    {
+        delete kingTower;
+        kingTower = nullptr;
     }
 
     for (int i = 0; i < NUM_DEMONS_TOTAL; i++)

@@ -7,6 +7,7 @@ class Game
 public:
 	Game();
 	int run();
+	void reset();
 
 	bool isShortMode() const;
 	void setShortMode(bool value);
@@ -19,6 +20,7 @@ public:
 
 	int getCurrentWave() const;
 	void nextWave();
+	int getMaxWaves() const;
 
 private:
 	RenderWindow renderWindow;

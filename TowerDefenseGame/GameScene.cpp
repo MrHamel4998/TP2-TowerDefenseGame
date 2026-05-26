@@ -130,13 +130,34 @@ void GameScene::getInputs()
 		if (const Event::KeyPressed* keyPressed =
 			event->getIf<Event::KeyPressed>())
 		{
-			inputs.archerTowerSelected = false;
-			inputs.mageTowerSelected = false;
-			inputs.sacredLightSelected = false;
-			inputs.plagueSelected = false;
+			inputs.reset();
 
 			switch (keyPressed->scancode)
 			{
+			case Keyboard::Scan::Enter:
+				inputs.enterPressed = true;
+				if (levelWon)
+				{
+					// Si dernière vague, aller directement à l'écran de fin (victoire)
+					if (game != nullptr && game->getCurrentWave() >= game->getMaxWaves())
+					{
+						if (game != nullptr) game->setVictory(true);
+						isRunning = false;
+						transitionToScene = Scene::Scenes::End;
+					}
+					else
+					{
+						isRunning = false;
+						transitionToScene = Scene::Scenes::Transition;
+					}
+				}
+				else if (gameOver)
+				{
+					isRunning = false;
+					transitionToScene = Scene::Scenes::End;
+				}
+				break;
+
 			case Keyboard::Scan::Z:
 
 				inputs.archerTowerSelected = true;
@@ -155,6 +176,18 @@ void GameScene::getInputs()
 			case Keyboard::Scan::V:
 
 				inputs.sacredLightSelected = true;
+				break;
+
+			case Keyboard::Scan::Escape:
+				isRunning = false;
+				transitionToScene = Scene::Scenes::Exit;
+				break;
+
+			case Keyboard::Scan::P:
+				inputs.pausePressed = true;
+				break;
+
+			default:
 				break;
 			}
 		}
@@ -346,6 +379,7 @@ bool GameScene::unload()
 	if (kingTower != nullptr)
 	{
 		delete kingTower;
+		kingTower = nullptr;
 	}
 
 	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)

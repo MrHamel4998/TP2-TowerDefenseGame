@@ -24,6 +24,8 @@ Scene::Scenes TitleScene::run()
 
 bool TitleScene::init()
 {
+	if (game != nullptr) game->reset();
+
 	if (!themeSong.openFromFile("Ressources\\Sounds\\Music\\TitleTheme.ogg")) return false;
 
 	titleScreen = new Sprite(ContentPipeline::getInstance().getTitleScreenTexture());
@@ -67,14 +69,16 @@ void TitleScene::getInputs()
 					{
 						game->setShortMode(true);
 					}
+					isRunning = false;
+					transitionToScene = Scene::Scenes::Transition;
 					break;
 				case Keyboard::Scan::Escape:
 					inputs.escapePressed = true;
 					isRunning = false;
 					transitionToScene = Scene::Scenes::Exit;
 					break;
-				default:
-					break;
+			default:
+				break;
 			}
 		}
 	}

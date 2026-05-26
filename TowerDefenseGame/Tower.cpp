@@ -2,8 +2,6 @@
 #include "ContentPipeline.h" 
 #include "KingTower.h"
 #include "Spell.h"
-#include <iostream>
-
 
 Tower::Tower()
 {
@@ -51,9 +49,6 @@ void Tower::heal(const int amount)
 
 void Tower::takeDamage(const int amount)
 {
-	std::cout << "Tower took " << amount << " damage." << std::endl;
-	std::cout << "Tower health before damage: " << getHealth() << std::endl;
-	std::cout << "Tower health after damage: " << std::max(getHealth() - amount, 0) << std::endl;
 	Damageable::takeDamage(amount);
 }
 
