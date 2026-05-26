@@ -50,6 +50,7 @@ private:
 	Waypoint* currentTargetWaypoint;
 
 	bool isDying = false;
+	bool reachedKingTower = false;
 
 	void onHealthChanged() override;
 	void onDeath() override;

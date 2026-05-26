@@ -1,7 +1,8 @@
 ﻿#include "TitleScene.h"
+#include "Game.h"
 #include "ContentPipeline.h"
 
-TitleScene::TitleScene(RenderWindow& renderWindow) : Scene(renderWindow)
+TitleScene::TitleScene(RenderWindow& renderWindow, Game* game) : Scene(renderWindow), game(game)
 {
 	view = renderWindow.getDefaultView();
 }
@@ -41,13 +42,40 @@ bool TitleScene::init()
 
 void TitleScene::getInputs()
 {
+	inputs.reset();
 	while (const optional event = renderWindow.pollEvent())
 	{
 		//x sur la fenêtre
 		if (event->is<Event::Closed>())
-		{			
+		{
+			inputs.escapePressed = true;
 			isRunning = false;
 			transitionToScene = Scene::Scenes::Exit;
+		}
+		else if (const Event::KeyPressed* keyPressed = event->getIf<Event::KeyPressed>())
+		{
+			switch (keyPressed->scancode)
+			{
+				case Keyboard::Scan::Enter:
+					inputs.enterPressed = true;
+					isRunning = false;
+					transitionToScene = Scene::Scenes::Transition;
+					break;
+				case Keyboard::Scan::S:
+					inputs.sPressed = true;
+					if (game != nullptr)
+					{
+						game->setShortMode(true);
+					}
+					break;
+				case Keyboard::Scan::Escape:
+					inputs.escapePressed = true;
+					isRunning = false;
+					transitionToScene = Scene::Scenes::Exit;
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }

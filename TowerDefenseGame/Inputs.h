@@ -6,7 +6,6 @@ struct Inputs
 	Inputs()
 	{
 		reset();
-		plagueSelected = true; // juste pour le test, à enlever lorsque la mécanique du HUD de sélection des sorts sera implémentée
 	}
 
 	void reset()
@@ -14,6 +13,15 @@ struct Inputs
 		mousePosition = Vector2f(0.0f, 0.0f);
 		mouseLeftButtonClicked = false;
 		showWaypoints = false;
+		leftMousePressed = false;
+		plagueSelected = false;
+		sacredLightSelected = false;
+		mageTowerSelected = false;
+		archerTowerSelected = false;
+		pausePressed = false;
+		enterPressed = false;
+		escapePressed = false;
+		sPressed = false;
 	}
 
 	Vector2f mousePosition;
@@ -24,4 +32,8 @@ struct Inputs
 	bool sacredLightSelected;
 	bool mageTowerSelected;
 	bool archerTowerSelected;
+	bool pausePressed;
+	bool enterPressed;
+	bool escapePressed;
+	bool sPressed;
 };

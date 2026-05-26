@@ -8,8 +8,23 @@ public:
 	Game();
 	int run();
 
+	bool isShortMode() const;
+	void setShortMode(bool value);
+
+	bool isVictory() const;
+	void setVictory(bool value);
+
+	bool isGameOver() const;
+	void setGameOver(bool value);
+
+	int getCurrentWave() const;
+	void nextWave();
+
 private:
 	RenderWindow renderWindow;
-
 	Image icon;
+	bool shortMode = false;
+	bool victory = false;
+	bool gameOver = false;
+	int currentWave = 1;
 };

@@ -12,6 +12,8 @@
 #include "Projectile.h"
 #include "ShootingTower.h"
 
+class Game;
+
 /*
 Metrics de sceneGame OU du level 1 (à effacer à la fin)
 - Position de la tour du roi: 1138, 600
@@ -38,11 +40,11 @@ Metrics du level 2 (à effacer à la fin)
 - Le reste est identique à la scène 1
 */
 
-class GameScene : public Scene, IObserver
+class GameScene : public Scene, public IObserver
 {
 public:
 
-	GameScene(RenderWindow& renderWindow);
+	GameScene(RenderWindow& renderWindow, Game* game = nullptr);
 	Scenes run() override;
 	bool init() override;
 	void notify(Subject* subject, EventType eventType) override;
@@ -53,7 +55,7 @@ private:
 	static const int NUM_TOWERS_EMPLACEMENT = 8;
 	static const int NUM_TOWERS = NUM_TOWERS_EMPLACEMENT;
 	static const int NUM_DEMONS_TOTAL = 20;
-	static const int DEMON_TO_SPAWN = 50;
+	static const int DEMON_TO_SPAWN = 5;
 	static constexpr Vector2f DEMON_SPAWN_POSITION = Vector2f(610, -100);
 
 	void getInputs() override;
@@ -67,6 +69,7 @@ private:
 
 	View view;
 	Hud hud;
+	Game* game;
 	Inputs inputs;
 
 	Sprite* map = nullptr;
@@ -90,5 +93,8 @@ private:
 	float nextSpawnTime = 0.0f;
 	int demonsSpawned = 0;
 	int demonsKilled = 0;
+
+	bool levelWon = false;
+	bool gameOver = false;
 };
 

@@ -1,8 +1,10 @@
 #include "GameScene2.h"
 #include "ContentPipeline.h"
+#include "Game.h"
 #include <iostream>
 
-GameScene2::GameScene2(RenderWindow& renderWindow) : Scene(renderWindow)
+GameScene2::GameScene2(RenderWindow& renderWindow, class Game* game) 
+    : Scene(renderWindow), game(game)
 {
     view = renderWindow.getDefaultView();
 }
@@ -24,6 +26,8 @@ Scene::Scenes GameScene2::run()
 
 bool GameScene2::init()
 {
+    inputs.reset();
+
     map = new Sprite(ContentPipeline::getInstance().getMapTexture(Maps::Map2));
 
     hud.hudInit(ContentPipeline::getInstance().getHudmaskTexture(), ContentPipeline::getInstance().getComiciFont());
@@ -118,6 +122,9 @@ bool GameScene2::init()
 
     isRunning = true;
     demonsKilled = 0;
+    levelWon = false;
+    gameOver = false;
+    currentWaveNumber = (game != nullptr) ? game->getCurrentWave() : 2;
 
     return true;
 }
@@ -132,46 +139,39 @@ void GameScene2::getInputs()
             isRunning = false;
             transitionToScene = Scene::Scenes::Exit;
         }
+
         inputs.showWaypoints = Keyboard::isKeyPressed(Keyboard::Key::W);
 
-        // Sélection Sacred Light
-        if (Keyboard::isKeyPressed(Keyboard::Key::V))
+        if (const Event::KeyPressed* keyPressed =
+            event->getIf<Event::KeyPressed>())
         {
-            inputs.sacredLightSelected = true;
-            inputs.plagueSelected = false;
             inputs.archerTowerSelected = false;
             inputs.mageTowerSelected = false;
-            std::cout << "Sacred Light selected" << std::endl;
-        }
-
-        // Sélection Plague
-        if (Keyboard::isKeyPressed(Keyboard::Key::C))
-        {
-            inputs.plagueSelected = true;
-            inputs.sacredLightSelected = false;
-            inputs.mageTowerSelected = false;
-            inputs.archerTowerSelected = false;
-            std::cout << "Plague selected" << std::endl;
-        }
-
-        // Sélection Tour de Mage
-        if (Keyboard::isKeyPressed(Keyboard::Key::X))
-        {
             inputs.sacredLightSelected = false;
             inputs.plagueSelected = false;
-            inputs.archerTowerSelected = false;
-            inputs.mageTowerSelected = true;
-            std::cout << "Mage Tower selected" << std::endl;
-        }
 
-        // Sélection Tour d'Archer
-        if (Keyboard::isKeyPressed(Keyboard::Key::Z))
-        {
-            inputs.sacredLightSelected = false;
-            inputs.plagueSelected = false;
-            inputs.archerTowerSelected = true;
-            inputs.mageTowerSelected = false;
-            std::cout << "Archer Tower selected" << std::endl;
+            switch (keyPressed->scancode)
+            {
+            case Keyboard::Scan::Z:
+
+                inputs.archerTowerSelected = true;
+                break;
+
+            case Keyboard::Scan::X:
+
+                inputs.mageTowerSelected = true;
+                break;
+
+            case Keyboard::Scan::C:
+
+                inputs.plagueSelected = true;
+                break;
+
+            case Keyboard::Scan::V:
+
+                inputs.sacredLightSelected = true;
+                break;
+            }
         }
 
         inputs.leftMousePressed = Mouse::isButtonPressed(Mouse::Button::Left);
@@ -192,6 +192,16 @@ void GameScene2::update()
     if (kingTower != nullptr && kingTower->isActive())
     {
         kingTower->update(deltaTime);
+        if (kingTower->isDead())
+        {
+            gameOver = true;
+            if (game != nullptr)
+            {
+                game->setVictory(false);
+                game->setGameOver(true);
+            }
+            return;
+        }
     }
 
     for (int i = 0; i < NUM_TOWERS * NUM_TOWERS_TYPE; i++)
@@ -278,6 +288,14 @@ void GameScene2::draw()
         kingTower->draw(renderWindow);
     }
 
+    for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
+    {
+        if (demons[i] != nullptr && demons[i]->isActive())
+        {
+            demons[i]->draw(renderWindow);
+        }
+    }
+
     for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
     {
         if (towersEmplacement[i] != nullptr && towersEmplacement[i]->isActive())
@@ -306,6 +324,7 @@ void GameScene2::draw()
 
     hud.draw(renderWindow);
     drawWaypoints();
+
     renderWindow.display();
 }
 
@@ -364,8 +383,7 @@ void GameScene2::notify(Subject* subject, EventType eventType)
 
         if (demonsKilled >= DEMON_TO_SPAWN)
         {
-            isRunning = false;
-            transitionToScene = Scene::Scenes::End;
+            levelWon = true;
         }
     }
     else if (eventType == EventType::DemonDamageTaken)
@@ -378,11 +396,19 @@ void GameScene2::notify(Subject* subject, EventType eventType)
     }
     else if (eventType == EventType::TowerDeactivated)
     {
-        // TODO
+        if (subject == kingTower)
+        {
+            gameOver = true;
+            if (game != nullptr)
+            {
+                game->setVictory(false);
+                game->setGameOver(true);
+            }
+        }
     }
     else if (eventType == EventType::WaveFinished)
     {
-        // TODO
+        levelWon = true;
     }
 }
 

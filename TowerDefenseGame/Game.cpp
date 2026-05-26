@@ -30,10 +30,11 @@ int Game::run()
 {
 	if (!ContentPipeline::getInstance().loadContent()) return EXIT_FAILURE;
 	//Un enum et un pointeur de scene pour faire la manipulation de scène
-	Scene::Scenes sceneSelector = Scene::Scenes::Level1;
+	Scene::Scenes sceneSelector = Scene::Scenes::Title;
 	Scene* activeScene = nullptr; //Pointeur de la super-classe, peut pointer sur n'importe quelle scène
 
-	//Les variables de passage d'information entre scènes devraient être déclarés ici
+	int transitionLevel = 0; // 0 = vers Level1, 1 = vers Level2, etc.
+	int maxWaves = shortMode ? 2 : 10; // 2 vagues en mode court, sinon 10 vagues
 
 	while (true)
 	{
@@ -43,33 +44,29 @@ int Game::run()
 			return EXIT_SUCCESS;
 		if (sceneSelector == Scene::Scenes::Fail)
 			return EXIT_FAILURE;
-		
+
 
 		//Vous allez ajouter d'autre scènes, alors elles devront
 		//être ajoutées ici
 		switch (sceneSelector)
 		{
 		case Scene::Scenes::Title:
-			//Les deux attributs sont récessaire et passés par référence
-			activeScene = new TitleScene(renderWindow);
+			activeScene = new TitleScene(renderWindow, this);
 			break;
 		case Scene::Scenes::Transition:
-			//Les deux attributs sont récessaire et passés par référence
-			activeScene = new TransitionScene(renderWindow);
+			activeScene = new TransitionScene(renderWindow, this, transitionLevel);
 			break;
 		case Scene::Scenes::Level1:
-			//Les deux attributs sont récessaire et passés par référence
-			activeScene = new GameScene(renderWindow);
+			activeScene = new GameScene(renderWindow, this);
 			break;
 		case Scene::Scenes::Level2:
-			//Les deux attributs sont récessaire et passés par référence
-			activeScene = new GameScene2(renderWindow);
+			activeScene = new GameScene2(renderWindow, this);
 			break;
 		case Scene::Scenes::End:
-			activeScene = new EndScene(renderWindow);
+			activeScene = new EndScene(renderWindow, victory);
 			break;
 		}
-		
+
 		if (activeScene->init()) //Si l'initilisation s'est bien passé, on entre dans ce bloc
 		{
 			//Run est la boucle de jeu de la scène
@@ -77,7 +74,6 @@ int Game::run()
 			//Laquelle on transition
 			sceneSelector = activeScene->run();
 
-			//À la fin d'une scène, s'il y a des sauvegardes à faire
 			//C'est possible de les faire là.
 			/*SceneGame* tempScene = dynamic_cast<SceneGame*>(activeScene);
 			if (tempScene != nullptr)//Donc si le cast a réussi.
@@ -92,8 +88,65 @@ int Game::run()
 			//de ne pas avoir de leak (malgré l'échec)
 		}		
 
-		//Nécessaire tout ce qui est crée avec new doit être effacé.
 		delete activeScene;
 		activeScene = nullptr;
+
+		maxWaves = shortMode ? 2 : 10;
+
+		if (sceneSelector == Scene::Scenes::Transition)
+		{
+			transitionLevel = currentWave - 1;
+		}
+
+		if (currentWave > maxWaves)
+		{
+			setVictory(true);
+			sceneSelector = Scene::Scenes::End;
+		}
+
+		if (isGameOver() && sceneSelector == Scene::Scenes::Transition)
+		{
+			sceneSelector = Scene::Scenes::End;
+		}
 	}
+}
+
+bool Game::isShortMode() const 
+{ 
+	return shortMode;
+}
+
+void Game::setShortMode(bool value) 
+{ 
+	shortMode = value; 
+}
+
+int Game::getCurrentWave() const 
+{ 
+	return currentWave;
+}
+
+bool Game::isVictory() const 
+{ 
+	return victory;
+}
+
+void Game::setVictory(bool value) 
+{ 
+	victory = value; 
+}
+
+bool Game::isGameOver() const 
+{ 
+	return gameOver;
+}
+
+void Game::setGameOver(bool value) 
+{ 
+	gameOver = value; 
+}
+
+void Game::nextWave() 
+{ 
+	currentWave++; 
 }

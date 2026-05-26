@@ -12,6 +12,8 @@
 #include "TowerEmplacement.h"
 #include "ShootingTower.h"
 
+class Game;
+
 /*
 Metrics du level 2 (à effacer à la fin)
 - Position de la tour du roi: 1138, 564
@@ -27,7 +29,7 @@ class GameScene2 : public Scene, public IObserver
 {
 public:
 
-    GameScene2(RenderWindow& renderWindow);
+    GameScene2(RenderWindow& renderWindow, Game* game = nullptr);
     Scenes run() override;
     bool init() override;
     void notify(Subject* subject, EventType eventType) override;
@@ -51,6 +53,7 @@ private:
     void drawWaypoints();
 
     View view;
+	Game* game;
     Hud hud;
     Inputs inputs;
 
@@ -75,4 +78,7 @@ private:
     float nextSpawnTime = 0.0f;
     int demonsSpawned = 0;
     int demonsKilled = 0;
+
+    bool levelWon = false;
+    bool gameOver = false;
 };

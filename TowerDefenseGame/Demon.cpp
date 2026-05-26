@@ -37,6 +37,7 @@ void Demon::spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNum
 	this->currentTargetWaypoint = firstWaypoint;
 	this->speed = (0.9f + 0.1f * waveNumber) * 60.0f;
 	isDying = false;
+	reachedKingTower = false;
 	plagueTimer = 0.0f;
 	initDamageable(BASE_HEALTH);
 	setHealth(getHealth(), getMaxHealth());
@@ -97,9 +98,8 @@ void Demon::updateTimers(float deltaTime)
 
 void Demon::handleMovement(float deltaTime)
 {
-	if (currentTargetWaypoint == nullptr)
+	if (reachedKingTower || currentTargetWaypoint == nullptr)
 	{
-		takeDamage(getHealth()); // Mettre la santé à 0 pour déclencher l'animation de mort
 		return;
 	}
 
@@ -127,21 +127,25 @@ void Demon::handleWaypointArrival()
 {
 	if (currentTargetWaypoint == nullptr) return;
 
+	Waypoint* nextWaypoint = nullptr;
+
 	if (currentTargetWaypoint->hasAlternative())
 	{
-		if (rand() % 2 == 0)
-		{
-			currentTargetWaypoint = currentTargetWaypoint->getNextWaypoint();
-		}
-		else
-		{
-			currentTargetWaypoint = currentTargetWaypoint->getAlternativeWaypoint();
-		}
+		nextWaypoint = (rand() % 2 == 0) ? currentTargetWaypoint->getNextWaypoint() : currentTargetWaypoint->getAlternativeWaypoint();
 	}
 	else
 	{
-		currentTargetWaypoint = currentTargetWaypoint->getNextWaypoint();
+		nextWaypoint = currentTargetWaypoint->getNextWaypoint();
 	}
+
+	if (nextWaypoint == nullptr)
+	{
+		reachedKingTower = true;
+		currentTargetWaypoint = nullptr;
+		return;
+	}
+
+	currentTargetWaypoint = nextWaypoint;
 }
 
 void Demon::updateFlip()

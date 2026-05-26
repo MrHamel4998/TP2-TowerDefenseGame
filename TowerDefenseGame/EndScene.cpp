@@ -1,7 +1,8 @@
 ﻿#include "EndScene.h"
 #include "ContentPipeline.h"
 
-EndScene::EndScene(RenderWindow& renderWindow) : Scene(renderWindow)
+EndScene::EndScene(RenderWindow& renderWindow, bool isVictory) 
+	: Scene(renderWindow), isVictory(isVictory)
 {
 	view = renderWindow.getDefaultView();
 }
@@ -23,6 +24,9 @@ Scene::Scenes EndScene::run()
 
 bool EndScene::init()
 {
+	isRunning = true;
+	transitionToScene = Scene::Scenes::Title;
+
 	//--Image et musique-------------------------------------------------------------------------//
 	if (isVictory)
 	{
@@ -91,6 +95,22 @@ void EndScene::getInputs()
 		{
 			isRunning = false;
 			transitionToScene = Scene::Scenes::Exit;
+		}
+		else if (const Event::KeyPressed* keyPressed = event->getIf<Event::KeyPressed>())
+		{
+			switch (keyPressed->scancode)
+			{
+				case Keyboard::Scan::Enter:
+					isRunning = false;
+					transitionToScene = Scene::Scenes::Title;
+					break;
+				case Keyboard::Scan::Escape:
+					isRunning = false;
+					transitionToScene = Scene::Scenes::Exit;
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }
