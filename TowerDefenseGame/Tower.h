@@ -20,7 +20,7 @@ Metrics des tours (à effacer à la fin)
 - L'image 0 est l'image idle. Quand on initie le tir, on passe tout de suite à l'image 1.
 */
 
-class Tower : public GameObject, public Damageable, public Subject, public IObserver
+class Tower : virtual public GameObject, public Damageable, public Subject, public IObserver
 {
 public:
 	Tower();

@@ -37,6 +37,7 @@ void MageTower::onShoot()
 void MageTower::update(const float deltatime)
 {
 	updateAnimation(deltatime);
+
 	if (isCurrentLinearAnimationIsOver())
 	{
 		setIdleImage(0, 0);

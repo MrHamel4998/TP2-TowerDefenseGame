@@ -165,6 +165,14 @@ void GameScene::getInputs()
 
 void GameScene::update()
 {
+	manaTimer += deltaTime;
+
+	if (manaTimer >= 0.2f)
+	{
+		manaAmount++;
+	}
+
+
 	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
 	{
 		if (demons[i] != nullptr && demons[i]->isActive())
@@ -256,6 +264,7 @@ void GameScene::update()
 					if (targetDemon->isActive())
 					{
 						targetDemon->takeDamage(projectiles[i]->getDamage());
+						scorePoints += projectiles[i]->getDamage();
 					}
 				}
 
@@ -378,15 +387,12 @@ void GameScene::notify(Subject* subject, EventType eventType)
 	{
 		demonsKilled++;
 
+		manaAmount += 25;
+
 		if (demonsKilled >= DEMON_TO_SPAWN)
 		{
 			levelWon = true;
 		}
-	}
-	else if (eventType == EventType::DemonDamageTaken)
-	{
-		// CH: Mettre à jour les points, le mana, etc.
-		// On peut call le hud ou la gameScene
 	}
 	else if (eventType == EventType::TowerActivated)
 	{

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "GameObject.h"
 
-class AnimatedObject :public GameObject
+class AnimatedObject : virtual public GameObject
 {
 public:
 	enum AnimationType {Linear, Circular, Pendulum};
