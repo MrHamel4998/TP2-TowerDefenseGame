@@ -1,5 +1,6 @@
 #include "MageTower.h"
 #include "ContentPipeline.h"
+#include "Constants.h"
 
 MageTower::MageTower()
 {
@@ -25,7 +26,6 @@ bool MageTower::init()
 	GameObject::getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
 	GameObject::setHealth(getHealth(), getMaxHealth());
 
-
 	return true;
 }
 
@@ -42,4 +42,6 @@ void MageTower::update(const float deltatime)
 	{
 		setIdleImage(0, 0);
 	}
+
+	updateSpellEffects(deltatime);
 }

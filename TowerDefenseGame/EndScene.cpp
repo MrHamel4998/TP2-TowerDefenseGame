@@ -58,7 +58,7 @@ bool EndScene::init()
 	for (int i = 1; i < INSTRUCTIONS_NUMBER; i++) instructions[i] = new Text(*instructions[0]);
 
 	instructions[0]->setString("Score - 0 (Wave - 1)");
-	instructions[1]->setString("HighScore - 0 (Wave - 1");
+	instructions[1]->setString("HighScore - 0 (Wave - X)");
 	instructions[2]->setString("Press Enter to go back to title screen");
 	instructions[3]->setString("Press Escape to exit");
 

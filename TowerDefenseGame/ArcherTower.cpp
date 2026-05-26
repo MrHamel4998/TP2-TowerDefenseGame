@@ -1,5 +1,6 @@
 #include "ArcherTower.h"
 #include "ContentPipeline.h"
+#include "Constants.h"
 
 ArcherTower::ArcherTower()
 {
@@ -23,5 +24,5 @@ bool ArcherTower::init()
 
 void ArcherTower::update(const float deltaTime)
 {
-
+	updateSpellEffects(deltaTime);
 }

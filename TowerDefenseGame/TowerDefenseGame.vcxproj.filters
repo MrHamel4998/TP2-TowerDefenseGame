@@ -242,9 +242,6 @@
     <ClInclude Include="HealthBar.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="TowersType.h">
-      <Filter>Fichiers d%27en-tête\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="KingTower.h">
       <Filter>Fichiers d%27en-tête\Actors</Filter>
     </ClInclude>

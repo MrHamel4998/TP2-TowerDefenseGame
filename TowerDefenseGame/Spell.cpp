@@ -1,4 +1,5 @@
 ﻿#include "Spell.h"
+#include "IObserver.h"
 #include <iostream>
 
 Spell::Spell()
@@ -82,7 +83,16 @@ void Spell::updateRuneRotation(GameObject& runeSprite, float deltaTime) const
 
 void Spell::notifyCast()
 {
-    notifyAllObservers(EventType::SpellCast);
+    for (int i = 0; i < affectedCount; i++)
+    {
+        GameObject* target = affectedTargets[i];
+        if (target == nullptr) continue;
+        IObserver* observer = dynamic_cast<IObserver*>(target);
+        if (observer != nullptr)
+        {
+            observer->notify(this, EventType::SpellCast);
+        }
+    }
 }
 
 void Spell::findTargets(GameObject* entities[], int entityCount)

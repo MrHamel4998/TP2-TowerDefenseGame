@@ -32,8 +32,7 @@ private:
     bool isShooting = false;
 
     float fireRateMultiplier = 1.f;
+    float fireRateEffectTimer = 0.f;
 
-    bool doubleDamage = false;
-    float doubleDamageTimer = 0.f;
     ProjectileType projectileType;
 };

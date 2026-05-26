@@ -1,6 +1,7 @@
 #include "GameScene2.h"
 #include "ContentPipeline.h"
 #include "Game.h"
+#include "Constants.h"
 #include <iostream>
 
 GameScene2::GameScene2(RenderWindow& renderWindow, class Game* game) 
@@ -145,6 +146,22 @@ void GameScene2::getInputs()
         if (const Event::KeyPressed* keyPressed =
             event->getIf<Event::KeyPressed>())
         {
+            if (isPaused)
+            {
+                if (keyPressed->scancode == Keyboard::Scan::P)
+                {
+                    isPaused = false;
+                    inputs.pausePressed = false;
+                }
+                else if (keyPressed->scancode == Keyboard::Scan::Escape)
+                {
+                    isRunning = false;
+                    transitionToScene = Scene::Scenes::Exit;
+                }
+
+                continue;
+            }
+
             inputs.archerTowerSelected = false;
             inputs.mageTowerSelected = false;
             inputs.sacredLightSelected = false;
@@ -156,7 +173,6 @@ void GameScene2::getInputs()
                 inputs.enterPressed = true;
                 if (levelWon)
                 {
-                    // Si dernière vague, aller directement à l'écran de fin (victoire)
                     if (game != nullptr && game->getCurrentWave() >= game->getMaxWaves())
                     {
                         if (game != nullptr) game->setVictory(true);
@@ -195,6 +211,11 @@ void GameScene2::getInputs()
 
                 inputs.sacredLightSelected = true;
                 break;
+
+            case Keyboard::Scan::P:
+                isPaused = !isPaused;
+                inputs.pausePressed = isPaused;
+                break;
             }
         }
 
@@ -204,6 +225,11 @@ void GameScene2::getInputs()
 
 void GameScene2::update()
 {
+    if (inputs.pausePressed)
+    {
+        return;
+    }
+
     for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
     {
         if (demons[i] != nullptr && demons[i]->isActive())

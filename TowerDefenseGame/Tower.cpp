@@ -1,4 +1,5 @@
 ﻿#include "Tower.h"
+#include <cmath>
 #include "ContentPipeline.h" 
 #include "KingTower.h"
 #include "Spell.h"
@@ -49,7 +50,13 @@ void Tower::heal(const int amount)
 
 void Tower::takeDamage(const int amount)
 {
-	Damageable::takeDamage(amount);
+	int effective = amount;
+	if (damageTakenMultiplier != 1.0f && amount > 0)
+	{
+		effective = static_cast<int>(round(amount * damageTakenMultiplier));
+		if (effective <= 0) effective = 1;
+	}
+	Damageable::takeDamage(effective);
 }
 
 bool Tower::isDead() const
@@ -64,12 +71,41 @@ void Tower::onHealthChanged()
 
 void Tower::onDeath()
 {
+	Subject::removeObserver(this);
+
+	damageTakenMultiplier = 1.0f;
+	plagueTimer = 0.0f;
+	colorEffectTimer = 0.0f;
+	GameObject::setColor(Color::White);
+
 	notifyAllObservers(EventType::TowerDeactivated);
 	deactivate();
-
 }
 
 void Tower::notify(Subject* subject, EventType eventType)
 {
 
+}
+
+void Tower::updateSpellEffects(float deltaTime)
+{
+	if (colorEffectTimer > 0.0f)
+	{
+		colorEffectTimer -= deltaTime;
+		if (colorEffectTimer <= 0.0f)
+		{
+			GameObject::setColor(Color::White);
+			colorEffectTimer = 0.0f;
+		}
+	}
+
+	if (plagueTimer > 0.0f)
+	{
+		plagueTimer -= deltaTime;
+		if (plagueTimer <= 0.0f)
+		{
+			damageTakenMultiplier = 1.0f;
+			plagueTimer = 0.0f;
+		}
+	}
 }

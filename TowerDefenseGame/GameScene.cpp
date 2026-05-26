@@ -1,6 +1,7 @@
 ﻿#include "GameScene.h"
 #include "ContentPipeline.h"
 #include "Game.h"
+#include "Constants.h"
 #include <iostream>
 
 GameScene::GameScene(RenderWindow& renderWindow, class Game* game) 
@@ -127,9 +128,23 @@ void GameScene::getInputs()
 
 		inputs.showWaypoints = Keyboard::isKeyPressed(Keyboard::Key::W);
 
-		if (const Event::KeyPressed* keyPressed =
-			event->getIf<Event::KeyPressed>())
+		if (const Event::KeyPressed* keyPressed = event->getIf<Event::KeyPressed>())
 		{
+			if (isPaused)
+			{
+				if (keyPressed->scancode == Keyboard::Scan::P)
+				{
+					isPaused = false;
+					inputs.pausePressed = false;
+				}
+				else if (keyPressed->scancode == Keyboard::Scan::Escape)
+				{
+					isRunning = false;
+					transitionToScene = Scene::Scenes::Exit;
+				}
+				continue;
+			}
+
 			inputs.reset();
 
 			switch (keyPressed->scancode)
@@ -138,7 +153,6 @@ void GameScene::getInputs()
 				inputs.enterPressed = true;
 				if (levelWon)
 				{
-					// Si dernière vague, aller directement à l'écran de fin (victoire)
 					if (game != nullptr && game->getCurrentWave() >= game->getMaxWaves())
 					{
 						if (game != nullptr) game->setVictory(true);
@@ -184,7 +198,8 @@ void GameScene::getInputs()
 				break;
 
 			case Keyboard::Scan::P:
-				inputs.pausePressed = true;
+				isPaused = !isPaused;
+				inputs.pausePressed = isPaused;
 				break;
 
 			default:
@@ -198,13 +213,18 @@ void GameScene::getInputs()
 
 void GameScene::update()
 {
+
+	if (inputs.pausePressed)
+	{
+		return;
+	}
+
 	manaTimer += deltaTime;
 
 	if (manaTimer >= 0.2f)
 	{
 		manaAmount++;
 	}
-
 
 	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
 	{
@@ -560,7 +580,6 @@ void GameScene::handleBuilding()
 	//Place la tour
 	if (newTower == nullptr) return;
 	newTower->setPosition(selectedEmplacement->getPosition());
-	newTower->setLifePoints(250);
 	newTower->activate();
 	selectedEmplacement->placeTower(newTower);
 }

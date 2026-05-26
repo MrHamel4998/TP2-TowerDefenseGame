@@ -5,6 +5,7 @@
 #include "ArcherTower.h"
 #include "MageTower.h"
 #include "Demon.h"
+#include "Constants.h"
 
 ShootingTower::ShootingTower()
 {
@@ -84,9 +85,11 @@ void ShootingTower::notify(Subject* subject, EventType eventType)
             }
 
             fireRateMultiplier = 2.0f;
-            fireRateTimer = 5.0f;
+            fireRateEffectTimer = sacredLight->getLifetime();
 
             heal(sacredLight->getRandomHeal());
+            GameObject::setColor(sacredLight->getEffectColor());
+            colorEffectTimer = sacredLight->getLifetime();
 
             break;
         }
@@ -102,8 +105,12 @@ void ShootingTower::notify(Subject* subject, EventType eventType)
 
             takeDamage(plague->getRandomDamage());
 
-            doubleDamage = true;
-            doubleDamageTimer = 5.0f;
+            // Double les dégâts reçus pendant la durée du sort
+            damageTakenMultiplier = 2.0f;
+            plagueTimer = plague->getLifetime();
+
+            GameObject::setColor(plague->getEffectColor());
+            colorEffectTimer = plague->getLifetime();
 
             break;
         }
@@ -115,6 +122,18 @@ void ShootingTower::shoot(float deltaTime, Demon* demons[], int demonCount, Proj
 	if (isDead())
 	{
 		return;
+	}
+
+	updateSpellEffects(deltaTime);
+
+	if (fireRateEffectTimer > 0.0f)
+	{
+		fireRateEffectTimer -= deltaTime;
+		if (fireRateEffectTimer <= 0.0f)
+		{
+			fireRateMultiplier = 1.0f;
+			fireRateEffectTimer = 0.0f;
+		}
 	}
 
 	fireRateTimer += deltaTime;

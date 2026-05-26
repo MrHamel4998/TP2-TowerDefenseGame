@@ -43,7 +43,6 @@
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="ShootingTower.h" />
     <ClInclude Include="TitleScene.h" />
-    <ClInclude Include="TowersType.h" />
     <ClInclude Include="TransitionScene.h" />
     <ClInclude Include="Spell.h" />
     <ClInclude Include="Subject.h" />

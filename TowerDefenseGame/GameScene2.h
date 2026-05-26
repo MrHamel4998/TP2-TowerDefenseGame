@@ -82,4 +82,5 @@ private:
 
     bool levelWon = false;
     bool gameOver = false;
+    bool isPaused = false;
 };

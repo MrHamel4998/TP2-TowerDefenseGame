@@ -8,3 +8,4 @@ enum ProjectileType { Arrow, Blast, Fireball };
 enum SpellType { SacredLightSpell, PlagueSpell };
 enum Maps { Map1, Map2, Map3 };
 enum EventType { DemonKilled, DemonDamageTaken, TowerActivated, TowerDeactivated, SpellCast, WaveFinished };
+enum TowersType { MAGE, ARCHER, KING };

@@ -4,7 +4,6 @@
 #include "Damageable.h"
 #include "Subject.h"
 #include "IObserver.h"
-#include "TowersType.h"
 #include "Constants.h"
 
 /*
@@ -35,10 +34,17 @@ public:
 	int getLifePoints() const;
 	void setLifePoints(const int desiredLifePoints);
 	void heal(const int amount);
-	void takeDamage(const int amount);
+	virtual void takeDamage(const int amount);
 	bool isDead() const;
 
 	void notify(Subject* subject, EventType eventType) override;
+
+protected:
+	float damageTakenMultiplier = 1.0f;
+	float plagueTimer = 0.0f;
+	float colorEffectTimer = 0.0f;
+
+	void updateSpellEffects(float deltaTime);
 
 private:
 	void onHealthChanged() override;

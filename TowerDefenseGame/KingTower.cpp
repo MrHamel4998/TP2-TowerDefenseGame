@@ -1,5 +1,6 @@
 #include "KingTower.h"
 #include "ContentPipeline.h"
+#include "Constants.h"
 
 KingTower::KingTower()
 {
