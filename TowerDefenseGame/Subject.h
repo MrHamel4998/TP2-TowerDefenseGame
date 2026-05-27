@@ -4,7 +4,6 @@
 
 class IObserver;
 
-// Universel; à récupérer tel quel.
 class Subject
 {
 public:

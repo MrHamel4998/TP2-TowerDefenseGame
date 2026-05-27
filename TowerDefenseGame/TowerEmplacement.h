@@ -18,4 +18,3 @@ public:
 private:
 	Tower* tower = nullptr;
 };
-
