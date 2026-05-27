@@ -32,7 +32,11 @@ public:
 	TowersType getType() const;
 	void setType(const TowersType type);
 	void setAttackSound(const SoundBuffer& sound);
+	void setDeathSound(const SoundBuffer& sound);
+	void setBuildingSound(const SoundBuffer& sound);
 	void getAttackSound();
+	void getDeathSound();
+	void getBuildingSound();
 	int getLifePoints() const;
 	void setLifePoints(const int desiredLifePoints);
 	void setPrice(const int desiredPrice);

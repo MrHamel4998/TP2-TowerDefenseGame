@@ -140,6 +140,8 @@ bool GameScene::init()
 	for (int i = 0; i < NUM_TOWERS; i++)
 	{
 		towers[towerIndex] = ShootingTower::create(TowersType::ARCHER);
+		towers[towerIndex]->setDeathSound(ContentPipeline::getInstance().getBuildingCrumblingSoundBuffer());
+		towers[towerIndex]->setBuildingSound(ContentPipeline::getInstance().getPlaceTowerSoundBuffer());
 		towerIndex++;
 	}
 
@@ -147,6 +149,8 @@ bool GameScene::init()
 	for (int i = 0; i < NUM_TOWERS; i++)
 	{
 		towers[towerIndex] = ShootingTower::create(TowersType::MAGE);
+		towers[towerIndex]->setDeathSound(ContentPipeline::getInstance().getBuildingCrumblingSoundBuffer());
+		towers[towerIndex]->setBuildingSound(ContentPipeline::getInstance().getPlaceTowerSoundBuffer());
 		towerIndex++;
 	}
 	if (towerIndex > NUM_TOWERS * NUM_TOWERS_TYPE)
@@ -479,6 +483,7 @@ void GameScene::notify(Subject* subject, EventType eventType)
 	static constexpr int MANA_KILL_REWARD = 25;
 	if (eventType == EventType::DemonKilled)
 	{
+
 		if (levelWon || gameOver)
 		{
 			return;

@@ -62,6 +62,7 @@ private:
 	void handleWaypointArrival();
 	void updateFlip();
 	Sound* attackSound = nullptr;
+	Sound* deathSound = nullptr;
 
 	static constexpr float BASE_FIRE_RATE = 1.05f;
 	static constexpr float FIRE_RATE_REDUCTION_PER_WAVE = 0.05f;

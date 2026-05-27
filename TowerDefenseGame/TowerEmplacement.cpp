@@ -18,6 +18,7 @@ void TowerEmplacement::notify(Subject* subject, EventType eventType)
 	if (eventType == EventType::TowerDeactivated && subject == dynamic_cast<Subject*>(tower))
 	{
 		tower = nullptr;
+		tower->getDeathSound();
 		activate();
 	}
 }
@@ -32,6 +33,7 @@ void TowerEmplacement::placeTower(Tower* tower)
 	if (!isOccupied())
 	{
 		this->tower = tower;
+		tower->getBuildingSound();
 		deactivate();
 		tower->notifyAllObservers(EventType::TowerActivated);
 	}

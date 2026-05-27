@@ -7,12 +7,19 @@ Projectile::Projectile()
 	deactivate();
 }
 
+Projectile::~Projectile()
+{
+	if (hitSound != nullptr) delete hitSound;
+}
+
 void Projectile::launch(ProjectileType type, const Vector2f& startPosition, GameObject* target, int waveNumber)
 {
 	this->target = target;
 	this->type = type;
 	reachedTarget = false;
 
+	setHitSound(ContentPipeline::getInstance().getHitSoundBuffer());
+	hitSound->setVolume(25);
 	configureStats(type, waveNumber);
 	setPosition(startPosition);
 	activate();
@@ -32,6 +39,7 @@ void Projectile::update(float deltaTime)
 	if (distance <= 1 || isCircleColliding(*target))
 	{
 		reachedTarget = true;
+		hitSound->play();
 		deactivate();
 		return;
 	}
@@ -42,6 +50,12 @@ void Projectile::update(float deltaTime)
 		move(direction * speed * deltaTime);
 		setRotation(degrees(atan2(direction.y, direction.x) * 180.0f / 3.14159265f));
 	}
+}
+
+void Projectile::setHitSound(const SoundBuffer& soundBuffer)
+{
+	hitSound = new Sound(soundBuffer);
+	hitSound->setVolume(25);
 }
 
 GameObject* Projectile::getTarget() const

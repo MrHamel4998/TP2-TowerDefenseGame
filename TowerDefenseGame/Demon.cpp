@@ -16,6 +16,7 @@ Demon::Demon()
 Demon::~Demon()
 {
 	if (attackSound != nullptr) delete attackSound;
+	if (deathSound != nullptr) delete deathSound;
 }
 
 void Demon::getAttacksound()
@@ -35,6 +36,8 @@ bool Demon::init()
 	getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
 
 	attackSound = new Sound(ContentPipeline::getInstance().getDemonAttackSoundBuffer());
+	attackSound->setVolume(25);
+	deathSound = new Sound(ContentPipeline::getInstance().getDiesSoundBuffer());
 	   
 	return true;
 }
@@ -298,6 +301,7 @@ void Demon::shoot(float deltaTime, ShootingTower* towers[], Tower* kingTower, in
 	}
 
 	projectile->launch(projectileType, demonPosition, targetTower, waveNumber);
+	getAttacksound();
 	fireTimer = 0.0f;
 }
 
@@ -310,4 +314,5 @@ void Demon::onHealthChanged()
 void Demon::onDeath()
 {
 	Subject::notifyAllObservers(EventType::DemonKilled);
+	deathSound->play();
 }

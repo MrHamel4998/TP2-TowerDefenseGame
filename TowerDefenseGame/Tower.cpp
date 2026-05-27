@@ -26,11 +26,32 @@ TowersType Tower::getType() const
 void Tower::setAttackSound(const SoundBuffer& sound)
 {
 	attackSound = new Sound(sound);
+	attackSound->setVolume(50);
 }
 
 void Tower::getAttackSound()
 {
 	attackSound->play();
+}
+
+void Tower::getDeathSound()
+{
+	towerDeathSound->play();
+}
+
+void Tower::getBuildingSound()
+{
+	towerBuilding->play();
+}
+
+void Tower::setDeathSound(const SoundBuffer& sound)
+{
+	towerDeathSound = new Sound(sound);
+}
+
+void Tower::setBuildingSound(const SoundBuffer& sound)
+{
+	towerBuilding = new Sound(sound);
 }
 
 void Tower::setType(const TowersType type)
@@ -99,6 +120,7 @@ void Tower::onDeath()
 	colorEffectTimer = 0.0f;
 	GameObject::setColor(Color::White);
 
+	towerDeathSound->play();
 	notifyAllObservers(EventType::TowerDeactivated);
 	deactivate();
 }

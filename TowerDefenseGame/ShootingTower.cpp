@@ -195,4 +195,5 @@ void ShootingTower::shoot(float deltaTime, Demon* demons[], int demonCount, Proj
 	fireRateTimer = 0.0f;
 	isShooting = true;
 	onShoot();
+	getAttackSound();
 }
