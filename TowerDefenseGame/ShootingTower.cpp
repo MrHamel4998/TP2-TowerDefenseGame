@@ -59,7 +59,7 @@ void ShootingTower::setProjectileType(const ProjectileType type)
 	projectileType = type;
 }
 
-bool ShootingTower::getShootingStatus()
+bool ShootingTower::getShootingStatus() const
 {
 	return isShooting;
 }

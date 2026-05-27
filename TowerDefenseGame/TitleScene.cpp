@@ -50,7 +50,6 @@ void TitleScene::getInputs()
 		//x sur la fenêtre
 		if (event->is<Event::Closed>())
 		{
-			inputs.escapePressed = true;
 			isRunning = false;
 			transitionToScene = Scene::Scenes::Exit;
 		}
@@ -63,17 +62,15 @@ void TitleScene::getInputs()
 					isRunning = false;
 					transitionToScene = Scene::Scenes::Transition;
 					break;
-				case Keyboard::Scan::S:
-					inputs.sPressed = true;
-					if (game != nullptr)
-					{
-						game->setShortMode(true);
-					}
-					isRunning = false;
-					transitionToScene = Scene::Scenes::Transition;
-					break;
+			case Keyboard::Scan::S:
+				if (game != nullptr)
+				{
+					game->setShortMode(true);
+				}
+				isRunning = false;
+				transitionToScene = Scene::Scenes::Transition;
+				break;
 				case Keyboard::Scan::Escape:
-					inputs.escapePressed = true;
 					isRunning = false;
 					transitionToScene = Scene::Scenes::Exit;
 					break;

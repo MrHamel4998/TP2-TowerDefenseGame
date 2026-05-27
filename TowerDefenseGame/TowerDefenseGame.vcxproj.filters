@@ -168,8 +168,11 @@
     <ClCompile Include="ShootingTower.cpp">
       <Filter>Fichiers sources\Actors</Filter>
     </ClCompile>
-    <ClCompile Include="GameScene2.cpp">
-      <Filter>Fichiers sources\Scenes</Filter>
+    <ClCompile Include="Level1.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Level2.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -260,8 +263,11 @@
     <ClInclude Include="SacredLight.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="GameScene2.h">
-      <Filter>Fichiers d%27en-tête\Scenes</Filter>
+    <ClInclude Include="Level1.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Level2.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,10 +2,9 @@
 #include "ContentPipeline.h"
 #include "TitleScene.h"
 #include "TransitionScene.h"
-#include "GameScene.h"
-#include "GameScene2.h"
+#include "Level1.h"
+#include "Level2.h"
 #include "EndScene.h"
-
 
 Game::Game()
 {
@@ -57,10 +56,10 @@ int Game::run()
 			activeScene = new TransitionScene(renderWindow, this, transitionLevel);
 			break;
 		case Scene::Scenes::Level1:
-			activeScene = new GameScene(renderWindow, this);
+			activeScene = new Level1(renderWindow, this);
 			break;
 		case Scene::Scenes::Level2:
-			activeScene = new GameScene2(renderWindow, this);
+			activeScene = new Level2(renderWindow, this);
 			break;
 		case Scene::Scenes::End:
 			activeScene = new EndScene(renderWindow, this, victory);

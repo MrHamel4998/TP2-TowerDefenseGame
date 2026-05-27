@@ -21,8 +21,6 @@ private:
 	static const int INSTRUCTIONS_NUMBER = 6;
 	static const float TEXT_POSITION_X;// = 1250;
 
-	bool endGame = false;
-
 	Text* specialStateText;
 
 	Text* manaText;

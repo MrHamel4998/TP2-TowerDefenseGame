@@ -2,12 +2,68 @@
 #include "ContentPipeline.h"
 #include "Game.h"
 #include "Constants.h"
-#include <iostream>
 
 GameScene::GameScene(RenderWindow& renderWindow, class Game* game) 
 	: Scene(renderWindow), game(game)
 {
 	view = renderWindow.getDefaultView();
+}
+
+void GameScene::updateProjectiles()
+{
+	for (int i = 0; i < NUM_PROJECTILES; i++)
+	{
+		Projectile* projectile = projectiles[i];
+		if (projectile != nullptr && projectile->isActive())
+		{
+			projectile->update(deltaTime);
+
+			if (projectile->hasReachedTarget())
+			{
+				if (Tower* targetTower = dynamic_cast<Tower*>(projectile->getTarget()))
+				{
+					if (targetTower->isActive())
+					{
+						targetTower->takeDamage(projectile->getDamage());
+					}
+				}
+				else if (Demon* targetDemon = dynamic_cast<Demon*>(projectile->getTarget()))
+				{
+					if (targetDemon->isActive())
+					{
+						targetDemon->takeDamage(projectile->getDamage());
+						if (game != nullptr) game->addScore(projectile->getDamage());
+					}
+				}
+
+				projectile->consumeImpact();
+			}
+		}
+	}
+}
+
+void GameScene::drawDemons()
+{
+	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
+	{
+		Demon* demon = demons[i];
+		if (demon != nullptr && demon->isActive())
+		{
+			demon->draw(renderWindow);
+		}
+	}
+}
+
+void GameScene::drawProjectiles()
+{
+	for (int i = 0; i < NUM_PROJECTILES; i++)
+	{
+		Projectile* projectile = projectiles[i];
+		if (projectile != nullptr && projectile->isActive())
+		{
+			projectile->draw(renderWindow);
+		}
+	}
 }
 
 Scene::Scenes GameScene::run()
@@ -29,34 +85,25 @@ bool GameScene::init()
 {
 	inputs.reset();
 
-	map = new Sprite(ContentPipeline::getInstance().getMapTexture(Maps::Map1));
+	map = new Sprite(ContentPipeline::getInstance().getMapTexture(getMapId()));
 
 	hud.hudInit(ContentPipeline::getInstance().getHudmaskTexture(), ContentPipeline::getInstance().getComiciFont());
 
-	waypoints[0] = new Waypoint(Vector2f(610, 8));
-	waypoints[1] = new Waypoint(Vector2f(630, 222));
-	waypoints[2] = new Waypoint(Vector2f(595, 444));
-	waypoints[3] = new Waypoint(Vector2f(478, 514));
-	waypoints[4] = new Waypoint(Vector2f(320, 558));
-	waypoints[5] = new Waypoint(Vector2f(260, 620));
-	waypoints[6] = new Waypoint(Vector2f(280, 720));
-	waypoints[7] = new Waypoint(Vector2f(348, 812));
-	waypoints[8] = new Waypoint(Vector2f(526, 862));
-	waypoints[9] = new Waypoint(Vector2f(720, 830));
-	waypoints[10] = new Waypoint(Vector2f(968, 850));
-	waypoints[11] = new Waypoint(Vector2f(1110, 682));
-
-	for (int i = 0; i < NUM_WAYPOINTS - 1; i++)
+	const Vector2f* waypointPositions = getWaypointPositions();
+	waypointCount = getWaypointPositionsCount();
+	for (int i = 0; i < waypointCount; i++)
 	{
-		waypoints[i]->setNextWaypoint(waypoints[i + 1]);
+		waypoints[i] = new Waypoint(waypointPositions[i]);
 	}
+
+	configureWaypoints();
 
 	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
 	{
 		demons[i] = new Demon();
 	}
 
-	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+	for (int i = 0; i < towerEmplacementCount; i++)
 	{
 		towers[i] = nullptr;
 	}
@@ -66,13 +113,10 @@ bool GameScene::init()
 		projectiles[i] = nullptr;
 	}
 
-	Vector2f emplacementPositions[NUM_TOWERS_EMPLACEMENT] = {
-	Vector2f(470, 170), Vector2f(770, 250), Vector2f(440, 370),
-	Vector2f(650, 520), Vector2f(120, 650), Vector2f(470, 700),
-	Vector2f(850, 710), Vector2f(660, 950)
-	};
+	const Vector2f* emplacementPositions = getTowerEmplacementPositions();
+	towerEmplacementCount = getTowerEmplacementPositionsCount();
 
-	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+	for (int i = 0; i < towerEmplacementCount; i++)
 	{
 		towersEmplacement[i] = new TowerEmplacement();
 		towersEmplacement[i]->init();
@@ -84,7 +128,7 @@ bool GameScene::init()
 	int towerIndex = 0;
 
 	kingTower = Tower::createKingTower();
-	kingTower->setPosition(Vector2f(1138, 600));
+	kingTower->setPosition(getKingTowerPosition());
 	kingTower->activate();
 
 	//Création des tours d'archers
@@ -100,6 +144,11 @@ bool GameScene::init()
 		towers[towerIndex] = ShootingTower::create(TowersType::MAGE);
 		towerIndex++;
 	}
+	if (towerIndex > NUM_TOWERS * NUM_TOWERS_TYPE)
+	{
+		towerIndex = NUM_TOWERS * NUM_TOWERS_TYPE;
+	}
+	totalTowersCount = towerIndex;
 
 
 	Subject::addObserver(this);
@@ -213,18 +262,30 @@ void GameScene::getInputs()
 
 void GameScene::update()
 {
+	static constexpr float MANA_REGEN_INTERVAL = 0.2f;
+	static constexpr float MIN_SPAWN_INTERVAL = 1.0f;
+	static constexpr float MAX_SPAWN_INTERVAL = 3.0f;
 
 	if (inputs.pausePressed)
 	{
+		hud.setSpecialStateText("Pause");
+		hud.update(manaAmount, (
+			game != nullptr) ? game->getScore() : 0, demonsKilled, currentWaveNumber,
+			(game != nullptr) ? game->getScore() : 0,
+			inputs.archerTowerSelected, inputs.mageTowerSelected,
+			inputs.sacredLightSelected, inputs.plagueSelected, isPaused);
 		return;
 	}
 
-	manaTimer += deltaTime;
-
-	if (manaTimer >= 0.2f)
+	if (!levelWon && !gameOver)
 	{
-		manaAmount++;
-		manaTimer = 0.0f;
+		manaTimer += deltaTime;
+
+		if (manaTimer >= MANA_REGEN_INTERVAL)
+		{
+			manaAmount++;
+			manaTimer = 0.0f;
+		}
 	}
 
 	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
@@ -281,9 +342,9 @@ void GameScene::update()
 			{
 				demons[freeSlot] = new Demon();
 			}
-			demons[freeSlot]->spawn(DEMON_SPAWN_POSITION, waypoints[0], currentWaveNumber);
+			demons[freeSlot]->spawn(getDemonSpawnPosition(), waypoints[0], currentWaveNumber);
 			spawnTimer = 0.0f;
-			nextSpawnTime = 1.0f + static_cast<float>(rand()) / RAND_MAX * (3.0f - 1.0f);
+			nextSpawnTime = MIN_SPAWN_INTERVAL + static_cast<float>(rand()) / RAND_MAX * (MAX_SPAWN_INTERVAL - MIN_SPAWN_INTERVAL);
 			demonsSpawned++;
 		}
 		// Sinon, on réinitialise le timer pour réessayer au prochain intervalle
@@ -297,45 +358,12 @@ void GameScene::update()
 	sacredLight.update(deltaTime);
 	plague.update(deltaTime);
 
-	for (int i = 0; i < NUM_PROJECTILES; i++)
-	{
-		if (projectiles[i] != nullptr && projectiles[i]->isActive())
-		{
-			projectiles[i]->update(deltaTime);
-
-			if (projectiles[i]->hasReachedTarget())
-			{
-				if (Tower* targetTower = dynamic_cast<Tower*>(projectiles[i]->getTarget()))
-				{
-					if (targetTower->isActive())
-					{
-						targetTower->takeDamage(projectiles[i]->getDamage());
-					}
-				}
-
-				else if (Demon* targetDemon = dynamic_cast<Demon*>(projectiles[i]->getTarget()))
-				{
-					if (targetDemon->isActive())
-					{
-						targetDemon->takeDamage(projectiles[i]->getDamage());
-						if (game != nullptr) game->addScore(projectiles[i]->getDamage());
-					}
-				}
-
-				projectiles[i]->consumeImpact();
-			}
-		}
-	}
+	updateProjectiles();
 
 	if (levelWon)
 	{
-		hud.setSpecialStateText("Vague Terminée - Appuyez sur Enter");
+		hud.setSpecialStateText("- Vague Terminée - \n Appuyez sur Enter");
 	}
-	if (isPaused)
-	{
-		hud.setSpecialStateText("Pause");
-	}
-
 	hud.update(manaAmount, (game != nullptr) ? game->getScore() : 0, demonsKilled, currentWaveNumber, (game != nullptr) ? game->getScore() : 0,
 		inputs.archerTowerSelected, inputs.mageTowerSelected,
 		inputs.sacredLightSelected, inputs.plagueSelected, isPaused);
@@ -347,28 +375,14 @@ void GameScene::draw()
 	renderWindow.clear();
 	renderWindow.draw(*map);
 
-	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
-	{
-		if (demons[i] != nullptr && demons[i]->isActive())
-		{
-			demons[i]->draw(renderWindow);
-		}
-	}
+	drawDemons();
 
 	if (kingTower != nullptr && kingTower->isActive())
 	{
 		kingTower->draw(renderWindow);
 	}
 
-	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
-	{
-		if (demons[i] != nullptr && demons[i]->isActive())
-		{
-			demons[i]->draw(renderWindow);
-		}
-	}
-
-	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+	for (int i = 0; i < towerEmplacementCount; i++)
 	{
 		if (towersEmplacement[i] != nullptr && towersEmplacement[i]->isActive())
 		{
@@ -376,7 +390,7 @@ void GameScene::draw()
 		}
 	}
 
-	for (int i = 0; i < (NUM_TOWERS * NUM_TOWERS_TYPE); i++)
+	for (int i = 0; i < totalTowersCount; i++)
 	{
 		if (towers[i] != nullptr && towers[i]->isActive())
 		{
@@ -384,13 +398,7 @@ void GameScene::draw()
 		}
 	}
 	
-	for (int i = 0; i < NUM_PROJECTILES; i++)
-	{
-		if (projectiles[i] != nullptr && projectiles[i]->isActive())
-		{
-			projectiles[i]->draw(renderWindow);
-		}
-	}
+	drawProjectiles();
 	handleSpells();
 	sacredLight.draw(renderWindow);
 	plague.draw(renderWindow);
@@ -407,7 +415,7 @@ bool GameScene::unload()
 
 	if (map != nullptr) delete map;
 
-	for (int i = 0; i < NUM_WAYPOINTS; i++)
+	for (int i = 0; i < waypointCount; i++)
 	{
 		delete waypoints[i];
 	}
@@ -442,7 +450,7 @@ bool GameScene::unload()
 		}
 	}
 
-	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
+	for (int i = 0; i < towerEmplacementCount; i++)
 	{
 		if (towersEmplacement[i] != nullptr)
 			delete towersEmplacement[i];
@@ -453,11 +461,16 @@ bool GameScene::unload()
 
 void GameScene::notify(Subject* subject, EventType eventType)
 {
+	static constexpr int MANA_KILL_REWARD = 25;
 	if (eventType == EventType::DemonKilled)
 	{
+		if (levelWon || gameOver)
+		{
+			return;
+		}
 		demonsKilled++;
 
-		manaAmount += 25;
+		manaAmount += MANA_KILL_REWARD;
 
 		if (demonsKilled >= DEMON_TO_SPAWN)
 		{
@@ -504,18 +517,25 @@ void GameScene::drawWaypoints()
 	}
 	if (inputs.showWaypoints)
 	{
-		for (int i = 0; i < NUM_WAYPOINTS - 1; i++)
+		for (int i = 0; i < waypointCount - 1; i++)
 		{
-			CircleShape waypointShape(10.0f);
-			waypointShape.setFillColor(Color::Red);
-			waypointShape.setPosition(waypoints[i]->getNextWaypoint()->getPosition());
-			renderWindow.draw(waypointShape);
+			Waypoint* waypoint = waypoints[i];
+			if (waypoint != nullptr && waypoint->getNextWaypoint() != nullptr)
+			{
+				CircleShape waypointShape(10.0f);
+				waypointShape.setFillColor(Color::Red);
+				waypointShape.setPosition(waypoint->getNextWaypoint()->getPosition());
+				renderWindow.draw(waypointShape);
+			}
 		}
 	}
 }
 
 void GameScene::handleSpells()
 {
+	static constexpr int MAX_TARGETS = 100;
+	static constexpr int SACRED_LIGHT_MANA_COST = 60;
+	static constexpr int PLAGUE_MANA_COST = 20;
 	if (!inputs.leftMousePressed)
 	{
 		return;
@@ -528,42 +548,43 @@ void GameScene::handleSpells()
 	{
 		if (demon != nullptr && demon->isActive())
 		{
-			if (targetCount >= 100) break;
+			if (targetCount >= MAX_TARGETS) break;
 			targets[targetCount] = demon;
 			targetCount++;
 		}
 	}
 
-	for (Tower* tower : towers)
+	for (int i = 0; i < totalTowersCount; i++)
 	{
+		Tower* tower = towers[i];
 		if (tower != nullptr && tower->isActive())
 		{
-			if (targetCount >= 100) break;
+			if (targetCount >= MAX_TARGETS) break;
 			targets[targetCount] = tower;
 			targetCount++;
 		}
 	}
 
 	// Sacred Light
-	if (inputs.sacredLightSelected && !sacredLight.isActive() && manaAmount >= 60)
+	if (inputs.sacredLightSelected && !sacredLight.isActive() && manaAmount >= SACRED_LIGHT_MANA_COST)
 	{
 		sacredLight.cast(
 			mouseWorldPos,
 			targets,
 			targetCount
 		);
-		manaAmount -= 60;
+		manaAmount -= SACRED_LIGHT_MANA_COST;
 	}
 
 	// Plague
-	if (inputs.plagueSelected && !plague.isActive() && manaAmount >= 20)
+	if (inputs.plagueSelected && !plague.isActive() && manaAmount >= PLAGUE_MANA_COST)
 	{
 		plague.cast(
 			mouseWorldPos,
 			targets,
 			targetCount
 		);
-		manaAmount -= 20;
+		manaAmount -= PLAGUE_MANA_COST;
 	}
 
 	inputs.leftMousePressed = false;
@@ -571,6 +592,7 @@ void GameScene::handleSpells()
 
 void GameScene::handleBuilding()
 {
+	static constexpr float PLACEMENT_RADIUS = 50.f;
 	if (!inputs.leftMousePressed) return;
 	if (!inputs.archerTowerSelected && !inputs.mageTowerSelected) return;
 
@@ -578,12 +600,13 @@ void GameScene::handleBuilding()
 
 	//Recherche de l'emplacement cliqué
 	TowerEmplacement* selectedEmplacement = nullptr;
-	for (TowerEmplacement* towerEmplacement : towersEmplacement)
+	for (int i = 0; i < towerEmplacementCount; i++)
 	{
-		if (!towerEmplacement->isOccupied())
+		TowerEmplacement* towerEmplacement = towersEmplacement[i];
+		if (towerEmplacement != nullptr && !towerEmplacement->isOccupied())
 		{
 			float dist = (mouseWorldPos - towerEmplacement->getPosition()).length();
-			if (dist < 50.f)
+			if (dist < PLACEMENT_RADIUS)
 			{
 				selectedEmplacement = towerEmplacement;
 				break;
@@ -596,8 +619,9 @@ void GameScene::handleBuilding()
 	//Recherche d'une tour inactive du bon type
 	TowersType desiredType = inputs.archerTowerSelected ? TowersType::ARCHER : TowersType::MAGE;
 	Tower* newTower = nullptr;
-	for (Tower* tower : towers)
+	for (int i = 0; i < totalTowersCount; i++)
 	{
+		Tower* tower = towers[i];
 		if (tower != nullptr && !tower->isActive() && tower->getType() == desiredType)
 		{
 			newTower = tower;

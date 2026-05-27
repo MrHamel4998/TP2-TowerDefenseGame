@@ -62,7 +62,7 @@ bool EndScene::init()
 	// Fait avec l'aide de ChatGPT
 	int finalScore = (game != nullptr) ? game->getScore() : 0;
 	instructions[0]->setString("Score - " + std::to_string(finalScore) + " (Wave - " + std::to_string((game != nullptr) ? game->getCurrentWave() : 1) + ")");
-	instructions[1]->setString("HighScore - " + std::to_string(finalScore) + " (Wave - X)");
+	instructions[1]->setString("High Score - " + std::to_string(finalScore) + " (Wave - " + std::to_string((game != nullptr) ? game->getCurrentWave() : 1) + ")");
 	instructions[2]->setString("Press Enter to go back to title screen");
 	instructions[3]->setString("Press Escape to exit");
 

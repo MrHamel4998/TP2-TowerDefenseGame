@@ -11,7 +11,6 @@ struct Inputs
 	void reset()
 	{
 		mousePosition = Vector2f(0.0f, 0.0f);
-		mouseLeftButtonClicked = false;
 		showWaypoints = false;
 		leftMousePressed = false;
 		plagueSelected = false;
@@ -20,12 +19,9 @@ struct Inputs
 		archerTowerSelected = false;
 		pausePressed = false;
 		enterPressed = false;
-		escapePressed = false;
-		sPressed = false;
 	}
 
 	Vector2f mousePosition;
-	bool mouseLeftButtonClicked;
 	bool showWaypoints;
 	bool leftMousePressed;
 	bool plagueSelected;
@@ -34,6 +30,4 @@ struct Inputs
 	bool archerTowerSelected;
 	bool pausePressed;
 	bool enterPressed;
-	bool escapePressed;
-	bool sPressed;
 };

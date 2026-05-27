@@ -17,7 +17,7 @@ public:
     void setAttackDamage(const int damage);
     void setFireRate(const float rate);
     void setRange(const float range);
-    bool getShootingStatus();
+    bool getShootingStatus() const;
     void setProjectileType(const ProjectileType type);
     void notify(Subject* subject, EventType eventType) override;
     void shoot(float deltaTime, Demon* demons[], int towerCount, Projectile* projectiles[], int projectileCount, int waveNumber);
