@@ -63,7 +63,7 @@ int Game::run()
 			activeScene = new GameScene2(renderWindow, this);
 			break;
 		case Scene::Scenes::End:
-			activeScene = new EndScene(renderWindow, victory);
+			activeScene = new EndScene(renderWindow, this, victory);
 			break;
 		}
 
@@ -163,10 +163,26 @@ void Game::nextWave()
 	currentWave++; 
 }
 
+int Game::getScore() const
+{
+	return score;
+}
+
+void Game::addScore(int value)
+{
+	score += value;
+}
+
+void Game::setScore(int value)
+{
+	score = value;
+}
+
 void Game::reset()
 {
 	shortMode = false;
 	victory = false;
 	gameOver = false;
 	currentWave = 1;
+	score = 0;
 }

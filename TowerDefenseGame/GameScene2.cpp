@@ -162,10 +162,7 @@ void GameScene2::getInputs()
                 continue;
             }
 
-            inputs.archerTowerSelected = false;
-            inputs.mageTowerSelected = false;
-            inputs.sacredLightSelected = false;
-            inputs.plagueSelected = false;
+            inputs.reset();
 
             switch (keyPressed->scancode)
             {
@@ -325,18 +322,13 @@ void GameScene2::update()
                     if (targetDemon->isActive())
                     {
                         targetDemon->takeDamage(projectiles[i]->getDamage());
-                        scorePoints += projectiles[i]->getDamage();
+                        if (game != nullptr) game->addScore(projectiles[i]->getDamage());
                     }
                 }
 
                 projectiles[i]->consumeImpact();
             }
         }
-    }
-
-    if (scorePoints > highScore)
-    {
-        highScore = scorePoints;
     }
 
     if (levelWon)
@@ -348,7 +340,7 @@ void GameScene2::update()
         hud.setSpecialStateText("Pause");
     }
 
-    hud.update(manaAmount, scorePoints, demonsKilled, currentWaveNumber, highScore,
+    hud.update(manaAmount, (game != nullptr) ? game->getScore() : 0, demonsKilled, currentWaveNumber, (game != nullptr) ? game->getScore() : 0,
         inputs.archerTowerSelected, inputs.mageTowerSelected,
         inputs.sacredLightSelected, inputs.plagueSelected, isPaused);
 }
@@ -484,7 +476,15 @@ void GameScene2::notify(Subject* subject, EventType eventType)
     }
     else if (eventType == EventType::TowerActivated)
     {
-        // TODO
+        Tower* tower = dynamic_cast<Tower*>(subject);
+        if (tower != nullptr)
+        {
+            int cost = tower->getPrice();
+            if (manaAmount >= cost)
+            {
+                manaAmount -= cost;
+            }
+        }
     }
     else if (eventType == EventType::TowerDeactivated)
     {
@@ -585,23 +585,6 @@ void GameScene2::handleBuilding()
     if (!inputs.leftMousePressed) return;
     if (!inputs.archerTowerSelected && !inputs.mageTowerSelected) return;
 
-    if (inputs.archerTowerSelected && manaAmount < 70)
-    {
-        return;
-    }
-    else if (inputs.archerTowerSelected && manaAmount >= 70)
-    {
-        manaAmount -= 70;
-    }
-    if (inputs.mageTowerSelected && manaAmount < 100)
-    {
-        return;
-    }
-    else if (inputs.mageTowerSelected && manaAmount >= 100)
-    {
-        manaAmount -= 100;
-    }
-
     Vector2f mouseWorldPos = renderWindow.mapPixelToCoords(Mouse::getPosition(renderWindow));
 
     //Recherche de l'emplacement cliqué
@@ -633,10 +616,10 @@ void GameScene2::handleBuilding()
         }
     }
 
-    //Place la tour
     if (newTower == nullptr) return;
+    if (manaAmount < newTower->getPrice()) return;
+
     newTower->setPosition(selectedEmplacement->getPosition());
-    newTower->setLifePoints(250);
     newTower->activate();
     selectedEmplacement->placeTower(newTower);
 }

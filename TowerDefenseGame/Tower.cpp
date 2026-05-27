@@ -54,6 +54,16 @@ void Tower::setLifePoints(const int desiredLifePoints)
 	Damageable::setCurrentHealth(desiredLifePoints);
 }
 
+void Tower::setPrice(const int desiredPrice)
+{
+	price = desiredPrice;
+}
+
+int Tower::getPrice() const
+{
+	return price;
+}
+
 void Tower::heal(const int amount)
 {
 	Damageable::heal(amount);

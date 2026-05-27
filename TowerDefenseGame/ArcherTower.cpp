@@ -15,6 +15,7 @@ bool ArcherTower::init()
 	setAttackDamage(10);
 	setFireRate(0.8f);
 	setProjectileType(ProjectileType::Arrow);
+	setPrice(PRICE);
 
 	GameObject::getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
 	GameObject::setHealth(getHealth(), getMaxHealth());
@@ -27,4 +28,9 @@ bool ArcherTower::init()
 void ArcherTower::update(const float deltaTime)
 {
 	updateSpellEffects(deltaTime);
+}
+
+int ArcherTower::getPrice() const
+{
+	return PRICE;
 }

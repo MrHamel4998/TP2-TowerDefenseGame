@@ -35,11 +35,13 @@ public:
 	void getAttackSound();
 	int getLifePoints() const;
 	void setLifePoints(const int desiredLifePoints);
+	void setPrice(const int desiredPrice);
 	void heal(const int amount);
 	virtual void takeDamage(const int amount);
 	bool isDead() const;
 
 	void notify(Subject* subject, EventType eventType) override;
+	virtual int getPrice() const;
 
 
 	float damageTakenMultiplier = 1.0f;
@@ -52,6 +54,7 @@ private:
 	void onHealthChanged() override;
 	void onDeath() override;
 
+	int price = 0;
 	TowersType type;
 	Sound* attackSound = nullptr;
 	Sound* towerDeathSound = nullptr;

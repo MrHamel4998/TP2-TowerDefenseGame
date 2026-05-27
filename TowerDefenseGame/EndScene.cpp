@@ -1,8 +1,10 @@
 ﻿#include "EndScene.h"
 #include "ContentPipeline.h"
+#include "Game.h"
+#include <string>
 
-EndScene::EndScene(RenderWindow& renderWindow, bool isVictory) 
-	: Scene(renderWindow), isVictory(isVictory)
+EndScene::EndScene(RenderWindow& renderWindow, Game* game, bool isVictory) 
+	: Scene(renderWindow), game(game), isVictory(isVictory)
 {
 	view = renderWindow.getDefaultView();
 }
@@ -57,8 +59,10 @@ bool EndScene::init()
 	//Utilisation du constructeur de copie
 	for (int i = 1; i < INSTRUCTIONS_NUMBER; i++) instructions[i] = new Text(*instructions[0]);
 
-	instructions[0]->setString("Score - 0 (Wave - 1)");
-	instructions[1]->setString("HighScore - 0 (Wave - X)");
+	// Fait avec l'aide de ChatGPT
+	int finalScore = (game != nullptr) ? game->getScore() : 0;
+	instructions[0]->setString("Score - " + std::to_string(finalScore) + " (Wave - " + std::to_string((game != nullptr) ? game->getCurrentWave() : 1) + ")");
+	instructions[1]->setString("HighScore - " + std::to_string(finalScore) + " (Wave - X)");
 	instructions[2]->setString("Press Enter to go back to title screen");
 	instructions[3]->setString("Press Escape to exit");
 

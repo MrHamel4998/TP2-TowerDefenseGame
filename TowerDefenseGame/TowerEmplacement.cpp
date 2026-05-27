@@ -33,6 +33,7 @@ void TowerEmplacement::placeTower(Tower* tower)
 	{
 		this->tower = tower;
 		deactivate();
+		tower->notifyAllObservers(EventType::TowerActivated);
 	}
 }
 
