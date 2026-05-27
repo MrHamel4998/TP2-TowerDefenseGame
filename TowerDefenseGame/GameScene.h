@@ -66,6 +66,7 @@ private:
 	void handleSpells();
 	void drawWaypoints();
 	void handleBuilding();
+	static int getHighScore();
 
 	View view;
 	Hud hud;

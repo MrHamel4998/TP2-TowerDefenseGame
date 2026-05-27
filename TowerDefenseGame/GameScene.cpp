@@ -332,9 +332,18 @@ void GameScene::update()
 		highScore = scorePoints;
 	}
 
+	if (levelWon)
+	{
+		hud.setSpecialStateText("Appuyez sur Enter");
+	}
+	if (isPaused)
+	{
+		hud.setSpecialStateText("Pause");
+	}
+
 	hud.update(manaAmount, scorePoints, demonsKilled, currentWaveNumber, highScore,
 		inputs.archerTowerSelected, inputs.mageTowerSelected,
-		inputs.sacredLightSelected, inputs.plagueSelected);
+		inputs.sacredLightSelected, inputs.plagueSelected, isPaused);
 }
 
 void GameScene::draw()
@@ -367,7 +376,9 @@ void GameScene::draw()
 	for (int i = 0; i < NUM_TOWERS_EMPLACEMENT; i++)
 	{
 		if (towersEmplacement[i] != nullptr && towersEmplacement[i]->isActive())
+		{
 			towersEmplacement[i]->draw(renderWindow);
+		}
 	}
 
 	for (int i = 0; i < (NUM_TOWERS * NUM_TOWERS_TYPE); i++)
