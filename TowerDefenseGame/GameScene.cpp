@@ -224,6 +224,7 @@ void GameScene::update()
 	if (manaTimer >= 0.2f)
 	{
 		manaAmount++;
+		manaTimer = 0.0f;
 	}
 
 	for (int i = 0; i < NUM_DEMONS_TOTAL; i++)
@@ -325,6 +326,15 @@ void GameScene::update()
 			}
 		}
 	}
+
+	if (scorePoints > highScore)
+	{
+		highScore = scorePoints;
+	}
+
+	hud.update(manaAmount, scorePoints, demonsKilled, currentWaveNumber, highScore,
+		inputs.archerTowerSelected, inputs.mageTowerSelected,
+		inputs.sacredLightSelected, inputs.plagueSelected);
 }
 
 void GameScene::draw()
@@ -519,23 +529,25 @@ void GameScene::handleSpells()
 	}
 
 	// Sacred Light
-	if (inputs.sacredLightSelected && !sacredLight.isActive())
+	if (inputs.sacredLightSelected && !sacredLight.isActive() && manaAmount >= 60)
 	{
 		sacredLight.cast(
 			mouseWorldPos,
 			targets,
 			targetCount
 		);
+		manaAmount -= 60;
 	}
 
 	// Plague
-	if (inputs.plagueSelected && !plague.isActive())
+	if (inputs.plagueSelected && !plague.isActive() && manaAmount >= 20)
 	{
 		plague.cast(
 			mouseWorldPos,
 			targets,
 			targetCount
 		);
+		manaAmount -= 20;
 	}
 
 	inputs.leftMousePressed = false;
@@ -545,6 +557,23 @@ void GameScene::handleBuilding()
 {
 	if (!inputs.leftMousePressed) return;
 	if (!inputs.archerTowerSelected && !inputs.mageTowerSelected) return;
+
+	if (inputs.archerTowerSelected && manaAmount < 70)
+	{
+		return;
+	}
+	else if (inputs.archerTowerSelected && manaAmount >= 70)
+	{
+		manaAmount -= 70;
+	}
+	if (inputs.mageTowerSelected && manaAmount < 100)
+	{
+		return;
+	}
+	else if (inputs.mageTowerSelected && manaAmount >= 100)
+	{
+		manaAmount -= 100;
+	}
 
 	Vector2f mouseWorldPos = renderWindow.mapPixelToCoords(Mouse::getPosition(renderWindow));
 

@@ -13,6 +13,7 @@ public:
 	~Hud();
 	void hudInit(const Texture& hudMaskTexture, const Font& font);
 	void draw(sf::RenderWindow& renderWindow);
+	void update(int mana, int score, int kills, int wave, int highScore, bool archerSelected, bool mageSelected, bool sacredLightSelected, bool plagueSelected);
 
 
 private:

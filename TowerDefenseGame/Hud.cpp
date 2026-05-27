@@ -74,3 +74,21 @@ void Hud::draw(sf::RenderWindow& renderWindow)
 	for (int i = 0; i < INSTRUCTIONS_NUMBER; i++)
 		renderWindow.draw(*instructionTexts[i]);
 }
+
+void Hud::update(int mana, int score, int kills, int wave, int highScore, bool archerSelected, bool mageSelected, bool sacredLightSelected, bool plagueSelected)
+{
+	manaText->setString("Mana - " + std::to_string(mana));
+	scoreText->setString("Score - " + std::to_string(score));
+	killsText->setString("Kills - " + std::to_string(kills));
+	waveText->setString("Wave - " + std::to_string(wave));
+	highScoreText->setString("HighScore - " + std::to_string(highScore));
+
+	// Highlight de la sélection active
+	Color gold = Color(212, 175, 55, 255);
+	Color white = Color::White;
+
+	instructionTexts[1]->setFillColor(archerSelected ? gold : white);
+	instructionTexts[2]->setFillColor(mageSelected ? gold : white);
+	instructionTexts[3]->setFillColor(plagueSelected ? gold : white);
+	instructionTexts[4]->setFillColor(sacredLightSelected ? gold : white);
+}

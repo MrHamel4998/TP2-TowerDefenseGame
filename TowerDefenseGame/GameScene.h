@@ -92,6 +92,7 @@ private:
 	float manaTimer = 0;
 	int manaAmount = 500;
 	int scorePoints = 0;
+	int highScore = 0;
 	int currentWaveNumber = 1;
 	float spawnTimer = 0.0f;
 	float nextSpawnTime = 0.0f;
