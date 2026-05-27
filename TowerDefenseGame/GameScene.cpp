@@ -85,6 +85,11 @@ bool GameScene::init()
 {
 	inputs.reset();
 
+	if (!music.openFromFile(std::filesystem::path(MUSIC_PATH_ARRAY[rand() % NBR_MUSIC])))
+	{
+		return false;
+	}
+
 	map = new Sprite(ContentPipeline::getInstance().getMapTexture(getMapId()));
 
 	hud.hudInit(ContentPipeline::getInstance().getHudmaskTexture(), ContentPipeline::getInstance().getComiciFont());
@@ -154,6 +159,8 @@ bool GameScene::init()
 	Subject::addObserver(this);
 	sacredLight.init();
 	plague.init();
+	music.setLooping(true);
+	music.play();
 
 	isRunning = true;
 	demonsKilled = 0;
@@ -383,12 +390,12 @@ void GameScene::draw()
 	renderWindow.clear();
 	renderWindow.draw(*map);
 
-	drawDemons();
-
 	if (kingTower != nullptr && kingTower->isActive())
 	{
 		kingTower->draw(renderWindow);
 	}
+
+	drawDemons();
 
 	for (int i = 0; i < towerEmplacementCount; i++)
 	{

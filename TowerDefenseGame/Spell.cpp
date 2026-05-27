@@ -33,7 +33,6 @@ void Spell::cast(const Vector2f& position, GameObject* gameEntities[], int entit
 
 	findTargets(gameEntities, entityCount);
 
-	// Enregistrer les observateurs cibles et notifier
 	notifyCast();
 }
 
