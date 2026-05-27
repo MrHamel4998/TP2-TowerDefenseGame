@@ -36,4 +36,3 @@ private:
 	bool wasIdle = true;
 	bool currentLinearAnimationIsOver = false;
 };
-

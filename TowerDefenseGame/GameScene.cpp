@@ -136,7 +136,6 @@ bool GameScene::init()
 	kingTower->setPosition(getKingTowerPosition());
 	kingTower->activate();
 
-	//Création des tours d'archers
 	for (int i = 0; i < NUM_TOWERS; i++)
 	{
 		towers[towerIndex] = ShootingTower::create(TowersType::ARCHER);
@@ -145,7 +144,6 @@ bool GameScene::init()
 		towerIndex++;
 	}
 
-	//Création des tours de mage
 	for (int i = 0; i < NUM_TOWERS; i++)
 	{
 		towers[towerIndex] = ShootingTower::create(TowersType::MAGE);
@@ -165,6 +163,7 @@ bool GameScene::init()
 	plague.init();
 	music.setLooping(true);
 	music.play();
+	music.setVolume(75.f);
 
 	isRunning = true;
 	demonsKilled = 0;
@@ -196,6 +195,7 @@ void GameScene::getInputs()
 				{
 					isPaused = false;
 					inputs.pausePressed = false;
+					music.play();
 				}
 				else if (keyPressed->scancode == Keyboard::Scan::Escape)
 				{
@@ -260,6 +260,8 @@ void GameScene::getInputs()
 			case Keyboard::Scan::P:
 				isPaused = !isPaused;
 				inputs.pausePressed = isPaused;
+
+				music.pause();
 				break;
 
 			default:
@@ -618,7 +620,6 @@ void GameScene::handleBuilding()
 
 	Vector2f mouseWorldPos = renderWindow.mapPixelToCoords(Mouse::getPosition(renderWindow));
 
-	//Recherche de l'emplacement cliqué
 	TowerEmplacement* selectedEmplacement = nullptr;
 	for (int i = 0; i < towerEmplacementCount; i++)
 	{
@@ -636,7 +637,6 @@ void GameScene::handleBuilding()
 
 	if (selectedEmplacement == nullptr) return;
 
-	//Recherche d'une tour inactive du bon type
 	TowersType desiredType = inputs.archerTowerSelected ? TowersType::ARCHER : TowersType::MAGE;
 	Tower* newTower = nullptr;
 	for (int i = 0; i < totalTowersCount; i++)

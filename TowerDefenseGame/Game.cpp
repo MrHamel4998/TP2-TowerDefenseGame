@@ -28,7 +28,6 @@ Game::Game()
 int Game::run()
 {
 	if (!ContentPipeline::getInstance().loadContent()) return EXIT_FAILURE;
-	//Un enum et un pointeur de scene pour faire la manipulation de scène
 	Scene::Scenes sceneSelector = Scene::Scenes::Title;
 	Scene* activeScene = nullptr; //Pointeur de la super-classe, peut pointer sur n'importe quelle scène
 
@@ -37,16 +36,11 @@ int Game::run()
 
 	while (true)
 	{
-		//Seules conditions de sortie de toute l'app, une pour les sorties normales, une pour les erreurs
-		//On est au seul point de sortie
 		if (sceneSelector == Scene::Scenes::Exit)
 			return EXIT_SUCCESS;
 		if (sceneSelector == Scene::Scenes::Fail)
 			return EXIT_FAILURE;
 
-
-		//Vous allez ajouter d'autre scènes, alors elles devront
-		//être ajoutées ici
 		switch (sceneSelector)
 		{
 		case Scene::Scenes::Title:
@@ -68,25 +62,13 @@ int Game::run()
 
 		Scene::Scenes ranScene = sceneSelector;
 
-		if (activeScene->init()) //Si l'initilisation s'est bien passé, on entre dans ce bloc
+		if (activeScene->init())
 		{
-			//Run est la boucle de jeu de la scène
-			//À la fin de cette méthode, elle retourne la scène
-			//Laquelle on transition
-			sceneSelector = activeScene->run();
-
-			//C'est possible de les faire là.
-			/*SceneGame* tempScene = dynamic_cast<SceneGame*>(activeScene);
-			if (tempScene != nullptr)//Donc si le cast a réussi.
-			{
-
-			}*/			
+			sceneSelector = activeScene->run();	
 		}
-		else //Si l'initialisation rate (exemple: pour assets mal chargés), on fail et on nettoie ce qui est à nettoyer
+		else
 		{
 			sceneSelector = Scene::Scenes::Fail;
-			//clean-up éventuel à faire pour s'assurer 
-			//de ne pas avoir de leak (malgré l'échec)
 		}		
 
 		delete activeScene;

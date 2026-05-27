@@ -4,9 +4,6 @@
 
 using namespace sf;
 
-/*
-À NOTER: La couleur Gold pour le texte de "l'action active" : Color(212, 175, 55, 255)
-*/
 class Hud
 {
 public:
