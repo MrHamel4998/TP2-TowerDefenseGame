@@ -274,7 +274,11 @@ void GameScene::update()
 			(game != nullptr) ? game->getScore() : 0,
 			inputs.archerTowerSelected, inputs.mageTowerSelected,
 			inputs.sacredLightSelected, inputs.plagueSelected, isPaused);
-		return;
+			return;
+	}
+	else if (!levelWon)
+	{
+		hud.setSpecialStateText("");
 	}
 
 	if (!levelWon && !gameOver)
@@ -344,7 +348,7 @@ void GameScene::update()
 			}
 			demons[freeSlot]->spawn(getDemonSpawnPosition(), waypoints[0], currentWaveNumber);
 			spawnTimer = 0.0f;
-			nextSpawnTime = MIN_SPAWN_INTERVAL + static_cast<float>(rand()) / RAND_MAX * (MAX_SPAWN_INTERVAL - MIN_SPAWN_INTERVAL);
+			nextSpawnTime = MIN_SPAWN_INTERVAL + static_cast<float>(rand()) / RAND_MAX * (MAX_SPAWN_INTERVAL - MIN_SPAWN_INTERVAL); // Aide de ChatGPT pour faire un random entre 2 float
 			demonsSpawned++;
 		}
 		// Sinon, on réinitialise le timer pour réessayer au prochain intervalle
@@ -362,7 +366,11 @@ void GameScene::update()
 
 	if (levelWon)
 	{
-		hud.setSpecialStateText("- Vague Terminée - \n Appuyez sur Enter");
+		hud.setSpecialStateText("- Vague Terminée - \n - Appuyez sur Enter -");
+	}
+	else
+	{
+		hud.setSpecialStateText("");
 	}
 	hud.update(manaAmount, (game != nullptr) ? game->getScore() : 0, demonsKilled, currentWaveNumber, (game != nullptr) ? game->getScore() : 0,
 		inputs.archerTowerSelected, inputs.mageTowerSelected,
