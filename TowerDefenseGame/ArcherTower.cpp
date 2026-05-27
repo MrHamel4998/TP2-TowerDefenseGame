@@ -19,6 +19,8 @@ bool ArcherTower::init()
 	GameObject::getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
 	GameObject::setHealth(getHealth(), getMaxHealth());
 
+	setAttackSound(ContentPipeline::getInstance().getArcherAttackSoundBuffer());
+
 	return true;
 }
 

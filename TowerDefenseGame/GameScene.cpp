@@ -27,6 +27,8 @@ Scene::Scenes GameScene::run()
 
 bool GameScene::init()
 {
+	if (!music.openFromFile(std::filesystem::path(MUSIC_PATH_ARRAY[rand() % NBR_MUSIC]))) return false;
+
 	inputs.reset();
 
 	map = new Sprite(ContentPipeline::getInstance().getMapTexture(Maps::Map1));
@@ -111,6 +113,10 @@ bool GameScene::init()
 	levelWon = false;
 	gameOver = false;
 	currentWaveNumber = (game != nullptr) ? game->getCurrentWave() : 1;
+
+
+	music.setLooping(true);
+	music.play();
 
 	return true;
 }
@@ -233,6 +239,7 @@ void GameScene::update()
 		{
 			demons[i]->update(deltaTime);
 			demons[i]->shoot(deltaTime, towers, kingTower, NUM_TOWERS * NUM_TOWERS_TYPE, projectiles, NUM_PROJECTILES, currentWaveNumber);
+			demons[i]->getAttacksound();
 		}
 	}
 
@@ -257,6 +264,7 @@ void GameScene::update()
 		{
 			towers[i]->update(deltaTime);
 			towers[i]->shoot(deltaTime, demons, NUM_DEMONS_TOTAL, projectiles, NUM_PROJECTILES, currentWaveNumber);
+			towers[i]->getAttackSound();
 		}
 	}
 

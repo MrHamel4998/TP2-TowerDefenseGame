@@ -26,6 +26,9 @@ bool MageTower::init()
 	GameObject::getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
 	GameObject::setHealth(getHealth(), getMaxHealth());
 
+	
+	setAttackSound(ContentPipeline::getInstance().getMageAttackSoundBuffer());
+
 	return true;
 }
 

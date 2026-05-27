@@ -10,6 +10,7 @@ Tower::Tower()
 
 Tower::~Tower()
 {
+	if (attackSound != nullptr) delete attackSound;
 }
 
 Tower* Tower::createKingTower()
@@ -20,6 +21,16 @@ Tower* Tower::createKingTower()
 TowersType Tower::getType() const
 {
 	return type;
+}
+
+void Tower::setAttackSound(const SoundBuffer& sound)
+{
+	attackSound = new Sound(sound);
+}
+
+void Tower::getAttackSound()
+{
+	attackSound->play();
 }
 
 void Tower::setType(const TowersType type)

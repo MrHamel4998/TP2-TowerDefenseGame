@@ -90,6 +90,15 @@ private:
 	Projectile* projectiles[NUM_PROJECTILES];
 
 
+	Music music;
+
+	const String MUSIC_PATH_ARRAY[NBR_MUSIC] = {
+		"Ressources\\Sounds\\Music\\Theme01.ogg",
+		"Ressources\\Sounds\\Music\\Theme02.ogg",
+		"Ressources\\Sounds\\Music\\Theme03.ogg"
+	};
+
+
 	float manaTimer = 0;
 	int manaAmount = 500;
 	int scorePoints = 0;

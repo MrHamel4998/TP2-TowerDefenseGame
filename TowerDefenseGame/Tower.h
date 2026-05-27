@@ -31,6 +31,8 @@ public:
 
 	TowersType getType() const;
 	void setType(const TowersType type);
+	void setAttackSound(const SoundBuffer& sound);
+	void getAttackSound();
 	int getLifePoints() const;
 	void setLifePoints(const int desiredLifePoints);
 	void heal(const int amount);
@@ -39,7 +41,7 @@ public:
 
 	void notify(Subject* subject, EventType eventType) override;
 
-protected:
+
 	float damageTakenMultiplier = 1.0f;
 	float plagueTimer = 0.0f;
 	float colorEffectTimer = 0.0f;
@@ -51,6 +53,7 @@ private:
 	void onDeath() override;
 
 	TowersType type;
+	Sound* attackSound = nullptr;
 	Sound* towerDeathSound = nullptr;
 	Sound* towerBuilding = nullptr;
 };

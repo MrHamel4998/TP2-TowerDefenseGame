@@ -32,9 +32,11 @@ public:
 	enum AnimationIndex { FLY = 0, DEATH = 1, ANIMATION_COUNT = 2 };
 
 	Demon();
+	~Demon();
 	void spawn(const Vector2f& position, Waypoint* firstWaypoint, int waveNumber);
 	void update(float deltaTime);
 	bool init();
+	void getAttacksound();
 
 	void notify(Subject* subject, EventType eventType) override;
 	void shoot(float deltaTime, ShootingTower* towers[], Tower* kingTower, int towerCount, Projectile* projectiles[], int projectileCount, int waveNumber);
@@ -59,6 +61,7 @@ private:
 	void handleMovement(float deltaTime);
 	void handleWaypointArrival();
 	void updateFlip();
+	Sound* attackSound = nullptr;
 
 	static constexpr float BASE_FIRE_RATE = 1.05f;
 	static constexpr float FIRE_RATE_REDUCTION_PER_WAVE = 0.05f;

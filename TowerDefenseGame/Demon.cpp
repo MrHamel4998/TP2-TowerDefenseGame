@@ -13,6 +13,16 @@ Demon::Demon()
 	init();
 }
 
+Demon::~Demon()
+{
+	if (attackSound != nullptr) delete attackSound;
+}
+
+void Demon::getAttacksound()
+{
+	attackSound->play();
+}
+
 bool Demon::init()
 {
     if (!initAnimationsStructure(ANIMATION_COUNT, Vector2i(RECTANGLE_SIZE_X, RECTANGLE_SIZE_Y))) return false;
@@ -23,6 +33,8 @@ bool Demon::init()
 	setActiveAnimation(FLY, true);
 	   
 	getHealthBar().initHealthBar(ContentPipeline::getInstance().getRedBarTexture(), ContentPipeline::getInstance().getGreenBarTexture());
+
+	attackSound = new Sound(ContentPipeline::getInstance().getDemonAttackSoundBuffer());
 	   
 	return true;
 }
