@@ -1,7 +1,9 @@
-#include "TransitionScene.h"
+﻿#include "TransitionScene.h"
+#include "Game.h"
 #include "ContentPipeline.h"
 
-TransitionScene::TransitionScene(RenderWindow& renderWindow) : Scene(renderWindow)
+TransitionScene::TransitionScene(RenderWindow& renderWindow, Game* game, int levelNumber) 
+	: Scene(renderWindow), game(game), levelNumber(levelNumber)
 {
 	view = renderWindow.getDefaultView();
 }
@@ -23,13 +25,19 @@ Scene::Scenes TransitionScene::run()
 
 bool TransitionScene::init()
 {
-	message = new Text(ContentPipeline::getInstance().getComiciFont(), "Wave X", 80U);
-	//message->setString("Minons of the Dark Lord march on our lands.\n\n             Defend the King's Tower!\n\n                           Wave 1");
-	//message->setCharacterSize(60U);
+	isRunning = true;
+	transitionToScene = Scene::Scenes::Fail;
 
+	String messageStr = "Wave " + std::to_string(levelNumber + 1);
+	nextScene = (levelNumber % 2 == 0) ? Scene::Scenes::Level1 : Scene::Scenes::Level2;
+
+	message = new Text(ContentPipeline::getInstance().getComiciFont(), messageStr, 50U);
 	message->setFillColor(Color::White);
 	message->setPosition({ SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f });
 	message->setOrigin({ message->getGlobalBounds().size.x / 2.0f, message->getGlobalBounds().size.y / 2.0f });
+
+	transitionTimer = 0.0f;
+
 	return true;
 }
 
@@ -37,7 +45,7 @@ void TransitionScene::getInputs()
 {
 	while (const optional event = renderWindow.pollEvent())
 	{
-		//x sur la fen�tre
+		//x sur la fenêtre
 		if (event->is<Event::Closed>())
 		{
 			isRunning = false;
@@ -48,13 +56,22 @@ void TransitionScene::getInputs()
 
 void TransitionScene::update()
 {
+	transitionTimer += deltaTime;
 
+	if (transitionTimer >= TRANSITION_TIME)
+	{
+		isRunning = false;
+		transitionToScene = nextScene;
+	}
 }
 
 void TransitionScene::draw()
 {
 	renderWindow.clear();
-	renderWindow.draw(*message);
+	if (message != nullptr)
+	{
+		renderWindow.draw(*message);
+	}
 	renderWindow.display();
 }
 

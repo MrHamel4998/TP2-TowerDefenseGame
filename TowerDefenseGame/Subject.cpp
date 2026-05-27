@@ -1,12 +1,15 @@
-#include "Subject.h"
+ï»¿#include "Subject.h"
 #include "IObserver.h"
+#include <algorithm>
 
 std::vector<IObserver*> Subject::observers;
 
 void Subject::addObserver(IObserver* observer)
 {
-	//Si l'observateur n'est pas déjà dans la liste...
-	if (!(std::find(observers.begin(), observers.end(), observer) != observers.end()))
+	if (observer == nullptr)
+		return;
+
+	if (std::find(observers.begin(), observers.end(), observer) == observers.end())
 	{
 		observers.push_back(observer);
 	}
@@ -19,20 +22,20 @@ void Subject::removeAllObservers()
 
 void Subject::removeObserver(IObserver* observer)
 {
-	for (int i = 0; i < observers.size(); i++)
+	auto iterator = std::find(observers.begin(), observers.end(), observer);
+	if (iterator != observers.end())
 	{
-		if (observers[i] == observer)
-		{
-			observers.erase(observers.begin() + i);
-			return;
-		}
+		observers.erase(iterator);
 	}
 }
 
-void Subject::notifyAllObservers()
+void Subject::notifyAllObservers(EventType eventType)
 {
-	for (int i = 0; i < observers.size(); i++)
+	for (IObserver* observer : observers)
 	{
-		observers[i]->notify(this);
+		if (observer != nullptr)
+		{
+			observer->notify(this, eventType);
+		}
 	}
 }

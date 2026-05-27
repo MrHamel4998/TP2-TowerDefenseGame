@@ -1,4 +1,4 @@
-#include "Hud.h"
+﻿#include "Hud.h"
 
 const float Hud::TEXT_POSITION_X = 1250.0f;
 
@@ -20,7 +20,7 @@ void Hud::hudInit(const Texture& hudMaskTexture, const Font& font)
 {
 	hudMask = new Sprite(hudMaskTexture);
 
-	specialStateText = new Text(font, "Instructions diverses ici!", 25U);
+	specialStateText = new Text(font, "", 25U);
 	specialStateText->setFillColor(Color::White);
 	specialStateText->setPosition({ TEXT_POSITION_X, 10.0f });
 
@@ -73,4 +73,28 @@ void Hud::draw(sf::RenderWindow& renderWindow)
 
 	for (int i = 0; i < INSTRUCTIONS_NUMBER; i++)
 		renderWindow.draw(*instructionTexts[i]);
+}
+
+void Hud::update(int mana, int score, int kills, int wave, int highScore, bool archerSelected, bool mageSelected, bool sacredLightSelected, bool plagueSelected, bool isPaused)
+{
+	manaText->setString("Mana - " + std::to_string(mana));
+	scoreText->setString("Score - " + std::to_string(score));
+	killsText->setString("Kills - " + std::to_string(kills));
+	waveText->setString("Wave - " + std::to_string(wave));
+	highScoreText->setString("HighScore - " + std::to_string(highScore));
+
+	// Highlight de la sélection active
+	Color gold = Color(212, 175, 55, 255);
+	Color white = Color::White;
+
+	instructionTexts[1]->setFillColor(archerSelected ? gold : white);
+	instructionTexts[2]->setFillColor(mageSelected ? gold : white);
+	instructionTexts[3]->setFillColor(plagueSelected ? gold : white);
+	instructionTexts[4]->setFillColor(sacredLightSelected ? gold : white);
+	instructionTexts[5]->setFillColor(isPaused ? gold : white);
+}
+
+void Hud::setSpecialStateText(const String& text)
+{
+	specialStateText->setString(text);
 }

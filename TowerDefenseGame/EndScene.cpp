@@ -1,7 +1,10 @@
-#include "EndScene.h"
+ï»¿#include "EndScene.h"
 #include "ContentPipeline.h"
+#include "Game.h"
+#include <string>
 
-EndScene::EndScene(RenderWindow& renderWindow) : Scene(renderWindow)
+EndScene::EndScene(RenderWindow& renderWindow, Game* game, bool isVictory) 
+	: Scene(renderWindow), game(game), isVictory(isVictory)
 {
 	view = renderWindow.getDefaultView();
 }
@@ -23,6 +26,9 @@ Scene::Scenes EndScene::run()
 
 bool EndScene::init()
 {
+	isRunning = true;
+	transitionToScene = Scene::Scenes::Title;
+
 	//--Image et musique-------------------------------------------------------------------------//
 	if (isVictory)
 	{
@@ -35,7 +41,7 @@ bool EndScene::init()
 		endGameScreen = new Sprite(ContentPipeline::getInstance().getGameOverScreenTexture());
 	}
 
-	//--Préparation de la font-------------------------------------------------------------------------//
+	//--PrÃ©paration de la font-------------------------------------------------------------------------//
 	instructions[0] = new Text(ContentPipeline::getInstance().getComiciFont(), "", 50U);
 	instructions[0]->setOutlineThickness(4.0f);
 
@@ -53,8 +59,10 @@ bool EndScene::init()
 	//Utilisation du constructeur de copie
 	for (int i = 1; i < INSTRUCTIONS_NUMBER; i++) instructions[i] = new Text(*instructions[0]);
 
-	instructions[0]->setString("Score - 0 (Wave - 1)");
-	instructions[1]->setString("HighScore - 0 (Wave - 1");
+	// Fait avec l'aide de ChatGPT
+	int finalScore = (game != nullptr) ? game->getScore() : 0;
+	instructions[0]->setString("Score - " + std::to_string(finalScore) + " (Wave - " + std::to_string((game != nullptr) ? game->getCurrentWave() : 1) + ")");
+	instructions[1]->setString("High Score - " + std::to_string(finalScore) + " (Wave - " + std::to_string((game != nullptr) ? game->getCurrentWave() : 1) + ")");
 	instructions[2]->setString("Press Enter to go back to title screen");
 	instructions[3]->setString("Press Escape to exit");
 
@@ -86,11 +94,27 @@ void EndScene::getInputs()
 {
 	while (const optional event = renderWindow.pollEvent())
 	{
-		//x sur la fenêtre
+		//x sur la fenÃªtre
 		if (event->is<Event::Closed>())
 		{
 			isRunning = false;
 			transitionToScene = Scene::Scenes::Exit;
+		}
+		else if (const Event::KeyPressed* keyPressed = event->getIf<Event::KeyPressed>())
+		{
+			switch (keyPressed->scancode)
+			{
+				case Keyboard::Scan::Enter:
+					isRunning = false;
+					transitionToScene = Scene::Scenes::Title;
+					break;
+				case Keyboard::Scan::Escape:
+					isRunning = false;
+					transitionToScene = Scene::Scenes::Exit;
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-#include "CollisionCircle.h"
+ï»¿#include "CollisionCircle.h"
 //#include <cmath>
 
 CollisionCircle::CollisionCircle() : radius(0.0f), x(0.0f), y(0.0f)
@@ -18,13 +18,13 @@ bool CollisionCircle::checkCollision(const CollisionCircle& otherCircle) const
 	//float distance = sqrt(lineX * lineX + lineY * lineY);
 	//float totalRadius = this->radius + otherCircle.radius;
 
-	//À la place de faire la racine carré de la distance, on met la somme des rayons des cercles au carré; 
-	//C'est équivalent, c'est plus économe en calcul (sqrt est exigeant) et ne de demande même pas l'inclusion de cmath.
+	//Ã€ la place de faire la racine carrÃ© de la distance, on met la somme des rayons des cercles au carrÃ©; 
+	//C'est Ã©quivalent, c'est plus Ã©conome en calcul (sqrt est exigeant) et ne de demande mÃªme pas l'inclusion de cmath.
 	float distance = lineX * lineX + lineY * lineY;
 	float totalRadius = this->radius + otherCircle.radius;
 	totalRadius *= totalRadius;
 
-	//Deux cercles qui se touchent ne sont pas considérées en collision
+	//Deux cercles qui se touchent ne sont pas considÃ©rÃ©es en collision
 	if (distance < totalRadius) return true;
 
 	return false;

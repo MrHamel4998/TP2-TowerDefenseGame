@@ -1,7 +1,8 @@
-#include "TitleScene.h"
+﻿#include "TitleScene.h"
+#include "Game.h"
 #include "ContentPipeline.h"
 
-TitleScene::TitleScene(RenderWindow& renderWindow) : Scene(renderWindow)
+TitleScene::TitleScene(RenderWindow& renderWindow, Game* game) : Scene(renderWindow), game(game)
 {
 	view = renderWindow.getDefaultView();
 }
@@ -23,6 +24,8 @@ Scene::Scenes TitleScene::run()
 
 bool TitleScene::init()
 {
+	if (game != nullptr) game->reset();
+
 	if (!themeSong.openFromFile("Ressources\\Sounds\\Music\\TitleTheme.ogg")) return false;
 
 	titleScreen = new Sprite(ContentPipeline::getInstance().getTitleScreenTexture());
@@ -41,13 +44,39 @@ bool TitleScene::init()
 
 void TitleScene::getInputs()
 {
+	inputs.reset();
 	while (const optional event = renderWindow.pollEvent())
 	{
-		//x sur la fen�tre
+		//x sur la fenêtre
 		if (event->is<Event::Closed>())
-		{			
+		{
 			isRunning = false;
 			transitionToScene = Scene::Scenes::Exit;
+		}
+		else if (const Event::KeyPressed* keyPressed = event->getIf<Event::KeyPressed>())
+		{
+			switch (keyPressed->scancode)
+			{
+				case Keyboard::Scan::Enter:
+					inputs.enterPressed = true;
+					isRunning = false;
+					transitionToScene = Scene::Scenes::Transition;
+					break;
+			case Keyboard::Scan::S:
+				if (game != nullptr)
+				{
+					game->setShortMode(true);
+				}
+				isRunning = false;
+				transitionToScene = Scene::Scenes::Transition;
+				break;
+				case Keyboard::Scan::Escape:
+					isRunning = false;
+					transitionToScene = Scene::Scenes::Exit;
+					break;
+			default:
+				break;
+			}
 		}
 	}
 }

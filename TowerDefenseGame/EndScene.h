@@ -1,12 +1,14 @@
-#pragma once
+﻿#pragma once
 #include "Scene.h"
 
 using namespace sf;
 
+class Game;
+
 class EndScene : public Scene
 {
 public:
-	EndScene(RenderWindow& renderWindow);
+	EndScene(RenderWindow& renderWindow, Game* game = nullptr, bool isVictory = false);
 	Scenes run() override;
 	bool init() override;
 
@@ -17,6 +19,7 @@ private:
 	bool unload() override;
 
 	View view;
+	Game* game = nullptr;
 
 	Sprite* endGameScreen = nullptr;
 	static const int INSTRUCTIONS_NUMBER = 4;

@@ -1,50 +1,132 @@
-#pragma once
+ï»¿#pragma once
+#include <SFML/Audio.hpp>
 #include "Scene.h"
 #include "Hud.h"
 #include "Inputs.h"
+#include "Waypoint.h"
+#include "Demon.h"
+#include "IObserver.h"
+#include "SacredLight.h"
+#include "Plague.h"
+#include "TowerEmplacement.h"
+#include "Tower.h"
+#include "Projectile.h"
+#include "ShootingTower.h"
+
+class Game;
 
 /*
-Metrics de sceneGame OU du level 1 (à effacer à la fin)
+Metrics de sceneGame OU du level 1 (Ã  effacer Ã  la fin)
 - Position de la tour du roi: 1138, 600
 - Position des emplacements de tour: (470, 170), (770, 250), (440, 370), (650, 520), (120, 650), (470, 700), (850, 710), (660, 950)
 - Position des waypoints: (610, 8), (630, 222), (595, 444), (478, 514), (320, 558), (260, 620), (280, 720), (348, 812), (720, 830), (968, 850), (1110, 682)
-- Position de départ des démons: 610, -100
-- Nombre de démons : 20 (même si on doit en spawer 50, à 20 à la fois, le joueur en a plein les bras).
-- Nombre et de chacun des types de projectiles: à vous de le décider mais il doit être raisonnable ET on ne doit jamais en manquer
-- Temps de spawn entre les démons: de 1 à 3 secondes (60 à 180 rafraichissements) au hasard.
-- Mana: 500 au départ, + 1 par 0.2 secondes (12 rafraichissements), + 25 mana par élimination de démon.
-- Score: 50 par démon abbattu.  les dommages fait par les projectiles sont transférés en points.
+- Position de dÃ©part des dÃ©mons: 610, -100
+- Nombre de dÃ©mons : 20 (mÃªme si on doit en spawner 50, Ã  20 Ã  la fois, le joueur en a plein les bras).
+- Nombre de chacun des types de projectiles: Ã  vous de le dÃ©cider mais il doit Ãªtre raisonnable ET on ne doit jamais en manquer
+- Temps de spawn entre les dÃ©mons: de 1 Ã  3 secondes (60 Ã  180 rafraichissements) au hasard.
+- Mana: 500 au dÃ©part, + 1 par 0.2 secondes (12 rafraichissements), + 25 mana par Ã©limination de dÃ©mon.
+- Score: 50 par dÃ©mon abattu. Les dommages faits par les projectiles sont transfÃ©rÃ©s en points.
 
-- 50 éliminations de démons (donc 50 spawns pour gagner la scène)
+- 50 Ã©liminations de dÃ©mons (donc 50 spawns pour gagner la scÃ¨ne)
 */
 
 /*
-Metrics de du level 2 (à effacer à la fin)
+Metrics du level 2 (Ã  effacer Ã  la fin)
 - Position de la tour du roi: 1138, 564
 - Position des emplacements de tour: (110, 620), (228, 320), (444, 780), (362, 530), (610, 222), (998, 270), (630, 460), (935, 520), (798, 760),
-- Position des waypoints: (88.f, 412.f), (168.f, 465.f), (222.f, 588.f), (308.f, 670.f), (424.f, 668.f), (double sortie: 510.f, 590.f);  
+- Position des waypoints: (88.f, 412.f), (168.f, 465.f), (222.f, 588.f), (308.f, 670.f), (424.f, 668.f), (double sortie: 510.f, 590.f);
                           (478.f, 468.f), (516.f, 380.f), (594.f, 360.f), (806.f, 368.f), (1140.f, 450.f), (660.f, 598.f), (804.f, 650.f), (1140.f, 680.f),
-- Position de départ des démons: -100, 410
+- Position de dÃ©part des dÃ©mons: -100, 410
 
-- Le reste est identique à la scène 1
+- Le reste est identique Ã  la scÃ¨ne 1
 */
 
-class GameScene : public Scene
+class GameScene : public Scene, public IObserver
 {
 public:
-	GameScene(RenderWindow& renderWindow);
+
+	GameScene(RenderWindow& renderWindow, Game* game = nullptr);
 	Scenes run() override;
 	bool init() override;
+	void notify(Subject* subject, EventType eventType) override;
 
-private:
+protected:
+	virtual Maps getMapId() const = 0;
+
+	virtual Vector2f getDemonSpawnPosition() const = 0;
+	virtual Vector2f getKingTowerPosition() const = 0;
+	virtual const Vector2f* getWaypointPositions() const = 0;
+	virtual const Vector2f* getTowerEmplacementPositions() const = 0;
+
+	virtual int getWaypointPositionsCount() const = 0;
+	virtual int getTowerEmplacementPositionsCount() const = 0;
+
+	virtual void configureWaypoints() = 0;
+
+protected:
+	static const int MAX_WAYPOINTS = 14;
+	static const int NUM_TOWERS_TYPE = 2;
+	static const int MAX_TOWERS_EMPLACEMENT = 9;
+	static const int NUM_TOWERS = MAX_TOWERS_EMPLACEMENT;
+	static const int NUM_DEMONS_TOTAL = 20;
+	static const int DEMON_TO_SPAWN = 5;
+
 	void getInputs() override;
 	void update() override;
 	void draw() override;
 	bool unload() override;
 
+	void handleSpells();
+	void drawWaypoints();
+	void handleBuilding();
+	void updateProjectiles();
+	void drawDemons();
+	void drawProjectiles();
+
 	View view;
 	Hud hud;
+	Game* game;
 	Inputs inputs;
 
 	Sprite* map = nullptr;
+	SacredLight sacredLight;
+	Plague plague;
+
+	Waypoint* waypoints[MAX_WAYPOINTS];
+	int waypointCount = 0;
+
+	Demon* demons[NUM_DEMONS_TOTAL];
+
+	Tower* kingTower;
+	ShootingTower* towers[NUM_TOWERS * NUM_TOWERS_TYPE];
+	TowerEmplacement* towersEmplacement[MAX_TOWERS_EMPLACEMENT];
+
+	int towerEmplacementCount = 0;
+	int totalTowersCount = 0;
+
+	GameObject* targets[NUM_DEMONS_TOTAL + MAX_TOWERS_EMPLACEMENT];
+	int targetCount = 0;
+
+	static const int NUM_PROJECTILES = 300;
+	Projectile* projectiles[NUM_PROJECTILES];
+
+	Music music;
+	const String MUSIC_PATH_ARRAY[NBR_MUSIC] = {
+		"Ressources\\Sounds\\Music\\Theme01.ogg",
+		"Ressources\\Sounds\\Music\\Theme02.ogg",
+		"Ressources\\Sounds\\Music\\Theme03.ogg"
+	};
+
+	float manaTimer = 0;
+	int manaAmount = 500;
+	int currentWaveNumber = 1;
+	float spawnTimer = 0.0f;
+	float nextSpawnTime = 0.0f;
+	int demonsSpawned = 0;
+	int demonsKilled = 0;
+
+	bool levelWon = false;
+	bool gameOver = false;
+	bool isPaused = false;
 };
+

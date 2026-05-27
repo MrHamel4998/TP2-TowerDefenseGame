@@ -1,6 +1,7 @@
-#pragma once
+﻿#pragma once
 #include <SFML/Graphics.hpp>
 #include "CollisionCircle.h"
+#include "HealthBar.h"
 
 using namespace sf;
 
@@ -24,8 +25,9 @@ public:
 	void useHorizontalAxisForCircleCollision();
 	void useVerticalAxisForCircleCollision();
 	bool isCircleColliding(const GameObject& other) const;
-	
 
+	HealthBar& getHealthBar();
+	void setHealth(int current, int max);
 
 	void move(const float offsetX, const float offsetY);
 	void move(const Vector2f& offset);
@@ -36,6 +38,7 @@ public:
 private:
 	bool active = false;
 	CollisionCircle collisionCircle;
+	HealthBar healthBar;
 	Vector2f backupPosition;
 
 	static Texture emptyTexture;

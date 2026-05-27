@@ -20,19 +20,29 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimatedObject.h" />
+    <ClInclude Include="ArcherTower.h" />
     <ClInclude Include="CollisionCircle.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Damageable.h" />
     <ClInclude Include="Demon.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="ContentPipeline.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="HealthBar.h" />
     <ClInclude Include="Hud.h" />
     <ClInclude Include="Inputs.h" />
     <ClInclude Include="IObserver.h" />
+    <ClInclude Include="KingTower.h" />
+    <ClInclude Include="Level1.h" />
+    <ClInclude Include="Level2.h" />
+    <ClInclude Include="MageTower.h" />
+    <ClInclude Include="Plague.h" />
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="SacredLight.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="EndScene.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="ShootingTower.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="TransitionScene.h" />
     <ClInclude Include="Spell.h" />
@@ -43,16 +53,26 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnimatedObject.cpp" />
+    <ClCompile Include="ArcherTower.cpp" />
     <ClCompile Include="CollisionCircle.cpp" />
+    <ClCompile Include="Damageable.cpp" />
     <ClCompile Include="Demon.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="ContentPipeline.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="HealthBar.cpp" />
     <ClCompile Include="Hud.cpp" />
+    <ClCompile Include="KingTower.cpp" />
+    <ClCompile Include="Level1.cpp" />
+    <ClCompile Include="Level2.cpp" />
+    <ClCompile Include="MageTower.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Plague.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="EndScene.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="SacredLight.cpp" />
+    <ClCompile Include="ShootingTower.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TransitionScene.cpp" />
     <ClCompile Include="Spell.cpp" />

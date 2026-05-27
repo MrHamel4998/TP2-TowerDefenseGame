@@ -1,26 +1,26 @@
-#include "Game.h"
+ï»¿#include "Game.h"
 #include "ContentPipeline.h"
 #include "TitleScene.h"
 #include "TransitionScene.h"
-#include "GameScene.h"
+#include "Level1.h"
+#include "Level2.h"
 #include "EndScene.h"
-
 
 Game::Game()
 {
-	//On place dans le contructeur ce qui permet à la game elle-même de fonctionner
+	//On place dans le contructeur ce qui permet Ã  la game elle-mÃªme de fonctionner
 
 	renderWindow.create(VideoMode({ SCREEN_WIDTH, SCREEN_HEIGHT }, 32), "Tower Defense Game");// , Style::None, State::Fullscreen);
 
-	//Synchonisation coordonnée à l'écran!  Normalement 60 frames par secondes. À faire absolument
-	//renderWindow.setVerticalSyncEnabled(true);  //De plus en plus d'écrans sont rafraichis à plus de 60 frames par seconde, alors attention.
-	//renderWindow.setFramerateLimit(60);  //Équivalent... normalement, mais pas toujours. À utiliser si la synchonisation de l'écran fonctionne mal.
+	//Synchonisation coordonnÃ©e Ã  l'Ã©cran!  Normalement 60 frames par secondes. Ã€ faire absolument
+	//renderWindow.setVerticalSyncEnabled(true);  //De plus en plus d'Ã©crans sont rafraichis Ã  plus de 60 frames par seconde, alors attention.
+	//renderWindow.setFramerateLimit(60);  //Ã‰quivalent... normalement, mais pas toujours. Ã€ utiliser si la synchonisation de l'Ã©cran fonctionne mal.
 	//https://www.sfml-dev.org/tutorials/3.0/window/window/#controlling-the-framerate
 
 	renderWindow.setKeyRepeatEnabled(false);
 	srand((int)time(0));
 
-	//Nouveau: toujours la même chose pour avoir un icon dans l'explorateur Windows
+	//Nouveau: toujours la mÃªme chose pour avoir un icon dans l'explorateur Windows
 	if (icon.loadFromFile("Ressources\\Sprites\\Misc\\Icon.png"))
 		renderWindow.setIcon({ icon.getSize().x, icon.getSize().y }, icon.getPixelsPtr());
 }
@@ -28,11 +28,12 @@ Game::Game()
 int Game::run()
 {
 	if (!ContentPipeline::getInstance().loadContent()) return EXIT_FAILURE;
-	//Un enum et un pointeur de scene pour faire la manipulation de scène
-	Scene::Scenes sceneSelector = Scene::Scenes::Level1;
-	Scene* activeScene = nullptr; //Pointeur de la super-classe, peut pointer sur n'importe quelle scène
+	//Un enum et un pointeur de scene pour faire la manipulation de scÃ¨ne
+	Scene::Scenes sceneSelector = Scene::Scenes::Title;
+	Scene* activeScene = nullptr; //Pointeur de la super-classe, peut pointer sur n'importe quelle scÃ¨ne
 
-	//Les variables de passage d'information entre scènes devraient être déclarés ici
+	int transitionLevel = 0; // 0 = vers Level1, 1 = vers Level2, etc.
+	int maxWaves = shortMode ? 2 : 10; // 2 vagues en mode court, sinon 10 vagues
 
 	while (true)
 	{
@@ -42,53 +43,145 @@ int Game::run()
 			return EXIT_SUCCESS;
 		if (sceneSelector == Scene::Scenes::Fail)
 			return EXIT_FAILURE;
-		
 
-		//Vous allez ajouter d'autre scènes, alors elles devront
-		//être ajoutées ici
+
+		//Vous allez ajouter d'autre scÃ¨nes, alors elles devront
+		//Ãªtre ajoutÃ©es ici
 		switch (sceneSelector)
 		{
 		case Scene::Scenes::Title:
-			//Les deux attributs sont récessaire et passés par référence
-			activeScene = new TitleScene(renderWindow);
+			activeScene = new TitleScene(renderWindow, this);
 			break;
 		case Scene::Scenes::Transition:
-			//Les deux attributs sont récessaire et passés par référence
-			activeScene = new TransitionScene(renderWindow);
+			activeScene = new TransitionScene(renderWindow, this, transitionLevel);
 			break;
 		case Scene::Scenes::Level1:
-			//Les deux attributs sont récessaire et passés par référence
-			activeScene = new GameScene(renderWindow);
+			activeScene = new Level1(renderWindow, this);
+			break;
+		case Scene::Scenes::Level2:
+			activeScene = new Level2(renderWindow, this);
 			break;
 		case Scene::Scenes::End:
-			activeScene = new EndScene(renderWindow);
+			activeScene = new EndScene(renderWindow, this, victory);
 			break;
 		}
-		
-		if (activeScene->init()) //Si l'initilisation s'est bien passé, on entre dans ce bloc
+
+		Scene::Scenes ranScene = sceneSelector;
+
+		if (activeScene->init()) //Si l'initilisation s'est bien passÃ©, on entre dans ce bloc
 		{
-			//Run est la boucle de jeu de la scène
-			//À la fin de cette méthode, elle retourne la scène
+			//Run est la boucle de jeu de la scÃ¨ne
+			//Ã€ la fin de cette mÃ©thode, elle retourne la scÃ¨ne
 			//Laquelle on transition
 			sceneSelector = activeScene->run();
 
-			//À la fin d'une scène, s'il y a des sauvegardes à faire
-			//C'est possible de les faire là.
+			//C'est possible de les faire lÃ .
 			/*SceneGame* tempScene = dynamic_cast<SceneGame*>(activeScene);
-			if (tempScene != nullptr)//Donc si le cast a réussi.
+			if (tempScene != nullptr)//Donc si le cast a rÃ©ussi.
 			{
 
 			}*/			
 		}
-		else //Si l'initialisation rate (exemple: pour assets mal chargés), on fail et on nettoie ce qui est à nettoyer
+		else //Si l'initialisation rate (exemple: pour assets mal chargÃ©s), on fail et on nettoie ce qui est Ã  nettoyer
 		{
 			sceneSelector = Scene::Scenes::Fail;
-			//clean-up éventuel à faire pour s'assurer 
-			//de ne pas avoir de leak (malgré l'échec)
+			//clean-up Ã©ventuel Ã  faire pour s'assurer 
+			//de ne pas avoir de leak (malgrÃ© l'Ã©chec)
 		}		
 
-		//Nécessaire tout ce qui est crée avec new doit être effacé.
 		delete activeScene;
 		activeScene = nullptr;
+
+		maxWaves = shortMode ? 2 : 10;
+
+		if (sceneSelector == Scene::Scenes::Transition)
+		{
+
+			if (ranScene != Scene::Scenes::Title)
+			{
+				nextWave();
+			}
+			transitionLevel = currentWave - 1;
+		}
+
+		if (currentWave > maxWaves)
+		{
+			setVictory(true);
+			sceneSelector = Scene::Scenes::End;
+		}
+
+		if (isGameOver() && sceneSelector == Scene::Scenes::Transition)
+		{
+			sceneSelector = Scene::Scenes::End;
+		}
 	}
+}
+
+bool Game::isShortMode() const 
+{ 
+	return shortMode;
+}
+
+void Game::setShortMode(bool value) 
+{ 
+	shortMode = value; 
+}
+
+int Game::getCurrentWave() const 
+{ 
+	return currentWave;
+}
+
+int Game::getMaxWaves() const
+{
+	return shortMode ? 2 : 10;
+}
+
+bool Game::isVictory() const 
+{ 
+	return victory;
+}
+
+void Game::setVictory(bool value) 
+{ 
+	victory = value; 
+}
+
+bool Game::isGameOver() const 
+{ 
+	return gameOver;
+}
+
+void Game::setGameOver(bool value) 
+{ 
+	gameOver = value; 
+}
+
+void Game::nextWave() 
+{ 
+	currentWave++; 
+}
+
+int Game::getScore() const
+{
+	return score;
+}
+
+void Game::addScore(int value)
+{
+	score += value;
+}
+
+void Game::setScore(int value)
+{
+	score = value;
+}
+
+void Game::reset()
+{
+	shortMode = false;
+	victory = false;
+	gameOver = false;
+	currentWave = 1;
+	score = 0;
 }
